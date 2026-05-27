@@ -1,0 +1,988 @@
+<!-- <app-navbar></app-navbar> -->
+
+<div [ngStyle]="{
+    'margin-top': isMobile ? '' : '70px'
+  }">
+
+  <div style="width: 100%">
+    <owl-carousel-o #owlCarousel [options]="customOptions" (changed)="onSlideChanged($event)"
+      (initialized)="onCarouselInitialized($event)">
+      <ng-container *ngFor="let banner of banners">
+        <ng-template carouselSlide>
+          <div class="item" (click)="gotoroutube(banner)" [ngStyle]="{
+              'background-image':
+                'url(' + retriveimgUrl + 'bannerImages/' + banner.IMG_URL + ')',
+              'background-size': '100% 100%',
+              'background-position': 'center',
+              height: isMobile?'150px':(banners.length == 1?'370px':'270px'),
+              'border-radius': '10px',
+              margin: '3px'
+            }"></div>
+        </ng-template>
+      </ng-container>
+    </owl-carousel-o>
+  </div>
+  <!-- banner section end -->
+
+  <div class="explore-events">
+    <!-- <div class="container" style="width: 96% !important; margin-left: 2%;max-width: 1200px;"> -->
+    <div class="container">
+      <div class="col-xl-12 col-lg-12 col-md-12 px-4">
+        <div class="section-title">
+          <span style="text-transform: uppercase; font-size: 16px"> Explore {{ categoryName1 }}
+            {{ selectedCityId? 'in '+ City:''}}
+          </span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-3 col-lg-3 col-md-12">
+          <div class="sticky-sidebar " *ngIf="!isMobileView">
+            <div class="bg-white " style="border-radius: 16px;margin-top: 15px;padding-bottom: 3px;">
+              <div class="accordion" id="filterAccordion">
+                <!-- FILTER MAIN HEADER (Always visible, toggles all filters below on mobile) -->
+                <div (click)="showMobileFilters = !showMobileFilters" style="border-radius: 16px;"
+                  class="card-header px-4 py-2 bg-white   d-flex justify-content-between align-items-center d-md-flex d-block">
+                  <div class="d-flex align-items-center justify-content-between w-100">
+                    <h5 class="m-0" style="font-size: 15px !important;font-weight: 600;">Filters</h5>
+                    <div class="d-flex align-items-center gap-3">
+                      <button class="btn btn-link btn-sm px-0 text-danger" (click)="clearAllSelected()"
+                        style="text-decoration: none;color: #a50000 !important;">
+                        Clear All
+                      </button>
+                      <button class="btn btn-sm p-0 border-0 bg-transparent d-md-none" type="button">
+                        <i class="fa" [ngClass]="{
+                          'fa-chevron-down': !showMobileFilters,
+                          'fa-chevron-up': showMobileFilters
+                        }"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- FILTER SECTIONS (Only visible on mobile when toggled) -->
+                <div [ngClass]="{
+  'd-none': !showMobileFilters && isMobileView,
+  'd-block': showMobileFilters || !isMobileView
+}">
+
+                  <!-- Static Date Filter -->
+                  <div class="mb-3"
+                    style="border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 8px; margin: 5px 10px; padding: 12px;">
+                    <h6 style="font-weight: 500; font-size: 14px; margin-bottom: 10px;">Date</h6>
+
+                    <div class="d-flex flex-wrap gap-2 mb-2">
+                      <!-- Example button -->
+                      <button class="btn btn-sm" [class.btn-outline-danger]="selectedDateFilter !== 'today'"
+                        [class.btn-danger]="selectedDateFilter === 'today'"
+                        (click)="selectDateFilter('today')">Today</button>
+
+
+                      <button class="btn btn-sm" [class.btn-outline-danger]="selectedDateFilter !== 'tomorrow'"
+                        [class.btn-danger]="selectedDateFilter === 'tomorrow'" (click)="selectDateFilter('tomorrow')">
+                        Tomorrow
+                      </button>
+
+                      <button class="btn btn-sm" [class.btn-outline-danger]="selectedDateFilter !== 'weekend'"
+                        [class.btn-danger]="selectedDateFilter === 'weekend'" (click)="selectDateFilter('weekend')">
+                        This Weekend
+                      </button>
+
+                      <button class="btn btn-sm" [class.btn-outline-danger]="selectedDateFilter !== 'month'"
+                        [class.btn-danger]="selectedDateFilter === 'month'" (click)="selectDateFilter('month')">
+                        This Month
+                      </button>
+                    </div>
+
+                    <!-- Link to open calendar modal -->
+                    <div class="mt-2" *ngIf="!fromDate && !toDate">
+                      <button class="btn btn-link btn-sm px-0" style="color: #a50000; text-decoration: none;"
+                        (click)="toggleInlineCalendar()">
+                        Select custom date
+                      </button>
+                    </div>
+
+                    <div (click)="toggleInlineCalendar()" *ngIf="fromDate && toDate"
+                      class="color: #a50000;text-muted mt-2" style="font-size: 12px;cursor: pointer;color: #a50000;">
+                      <span>From: {{ fromDate | date: 'dd MMM yyyy' }}</span>
+                      <span> → To: {{ toDate | date: 'dd MMM yyyy' }}</span>
+                    </div>
+                    <!-- *ngIf="(fromDate && toDate) || selectedDateFilter" -->
+                    <button class="btn btn-link btn-sm px-0" style="color: #a50000; text-decoration: none;"
+                      (click)="cleardatefilter()">
+                      Clear Date Filter
+                    </button>
+
+
+                    <div *ngIf="showInlineCalendar" class="calendar-popup shadow rounded mt-2 p-3 bg-white">
+                      <div class="d-flex justify-content-between mb-2">
+                        <strong style="font-size: 13px;">Select Date Range</strong>
+                        <button class="btn-close btn-sm" (click)="toggleInlineCalendar()"></button>
+                      </div>
+
+                      <!-- Place your existing calendar component here -->
+                      <div class="calendar">
+                        <div class="calendar-header">
+                          <div class="calendar-weekdays row g-0">
+                            <div class="col calendar-weekday-col" *ngFor="let weekday of weekdays">
+                              {{ weekday }}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center my-2">
+                          <button class="btn btn-sm btn-outline-secondary" style="border: none;"
+                            (click)="changeMonth(-1)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                              class="bi bi-chevron-left" viewBox="0 0 16 16">
+                              <path fill-rule="evenodd"
+                                d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+                            </svg>
+                          </button>
+                          <h6 class="text-center m-0" id="currentMonthYear" style="font-size: 13px;">
+                            {{ currentMonthName }} {{ currentYear }}
+                          </h6>
+                          <button class="btn btn-sm btn-outline-secondary" style="border: none;"
+                            (click)="changeMonth(1)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                              class="bi bi-chevron-right" viewBox="0 0 16 16">
+                              <path fill-rule="evenodd"
+                                d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+                            </svg>
+                          </button>
+                        </div>
+
+                        <div class="calendar-dates">
+                          <div class="calendar-date-cell" *ngFor="let day of calendarDays" [class]="day?.cssClass"
+                            [class.selected]="day?.isSelected" [class.clickable]="day?.isClickable"
+                            (click)="selectDate1(day)">
+                            {{ day?.dayOfMonth }}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="d-flex justify-content-between mt-3">
+                        <button class="btn btn-outline-danger btn-sm flex-fill me-2" data-bs-target="#calendarModal"
+                          *ngIf="fromDate && toDate" (click)="clearDateRange()">
+                          Clear
+                        </button>
+                        <button class="btn btn-danger btn-sm flex-fill"
+                          (click)="applyDateRange();toggleInlineCalendar()">
+                          Apply Filter
+                        </button>
+                      </div>
+                    </div>
+
+
+                  </div>
+
+
+
+                  <ng-container *ngFor="let filter of filters">
+                    <div class="mb-2" *ngIf="hasOptions(filter)"
+                      style="    border: 1px solid rgba(0, 0, 0, 0.08);border-radius: 8px;margin: 5px 10px;">
+                      <!-- Filter Header -->
+                      <div class="d-flex justify-content-between align-items-center bg-white"
+                        style="cursor: pointer;border-radius: 8px;padding: 12px !important;"
+                        (click)="toggleSection(filter.id)">
+                        <h6 class="m-0" style="font-weight: 400; font-size: 14px;">
+                          {{ checks(filter.name) }}
+                        </h6>
+                        <i class="fa" [ngClass]="{
+          'fa-chevron-down': !expandedSections[filter.id],
+          'fa-chevron-up': expandedSections[filter.id]
+        }"></i>
+                      </div>
+
+                      <!-- Filter Options Section -->
+                      <div *ngIf="expandedSections[filter.id]" class="px-3 pb-2 pt-1">
+                        <!-- Search Box -->
+                        <div class="mb-2 position-relative">
+                          <input type="text" class="form-control form-control-sm ps-4"
+                            style="min-height: 36px; font-size: 12px;"
+                            placeholder="{{ getPlaceholderText(filter.name) }}" [(ngModel)]="filter.searchTerm" />
+                          <i
+                            class="fa fa-search position-absolute top-50 start-0 ps-2 translate-middle-y text-muted"></i>
+                        </div>
+
+                        <!-- Options List -->
+                        <div class="form-check small"
+                          *ngFor="let option of getFilteredOptions(filter).slice(0, filter.visibleCount)">
+                          <input type="checkbox" class="form-check-input" [id]="generateOptionId(option, filter)"
+                            (click)="toggleLanguage(option, filter)" [checked]="isOptionSelected(filter, option)" />
+                          <label class="form-check-label" [for]="generateOptionId(option, filter)">
+                            {{ filter.key === "GenresData" ? option.TYPE : option.NAME }}
+                          </label>
+                        </div>
+
+                        <!-- Load More / Clear -->
+                        <div class="d-flex gap-3 mt-2">
+                          <button *ngIf="getFilteredOptions(filter).length > filter.visibleCount"
+                            class="btn btn-link btn-sm px-0" style="color: #a50000; text-decoration: none;"
+                            (click)="loadMore(filter)">
+                            Load More
+                          </button>
+
+                          <button class="btn btn-link btn-sm px-0" style="color: #a50000; text-decoration: none;"
+                            (click)="clearSelectedOptions(filter)">
+                            Clear {{ checks(filter.name) }}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+
+              </div>
+            </div>
+            <div style="text-align: center;margin-top: 15px;">
+              <a class="btn see-all-link reviewbtn1" (click)="getVenuerouterLink()"
+                routerLinkActive="mixitup-control-active">
+                <!-- <button class="book-btn btn btn-danger mb-3 w-100 w-md-auto"> -->
+                <i class="bi bi-film"></i> Browse by Venues
+                <!-- </button> -->
+              </a>
+            </div>
+          </div>
+          <!-- Filter Row -->
+          <div *ngIf="isMobileView" class="d-flex flex-wrap align-items-center gap-2 my-3"
+            style="gap: .2rem !important;">
+
+            <!-- Browse by Venue Button -->
+            <a class="btn see-all-link" (click)="getVenuerouterLink()" routerLinkActive="mixitup-control-active">
+              <button class="book-btn btn btn-danger w-100 w-md-auto ">
+                <i class="bi bi-film"></i> Browse by Venues
+              </button>
+            </a>
+
+            <!-- Spacer -->
+            <div class="flex-grow-1"></div>
+
+            <!-- Filters Button (Mobile Only) -->
+            <button class="btn btn-outline-danger d-md-none mr-4" (click)="openMobileFilters()">
+              <i class="fa fa-filter me-1"></i> Filters
+            </button>
+          </div>
+
+          <div *ngIf="isMobileFilterOpen" style="z-index: 1036;"
+            class="position-fixed top-0 start-0 w-100 h-100 bg-white z-10 d-md-none">
+            <div class="d-flex flex-column  h-100 ">
+              <!-- Header -->
+              <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                <h6 class="mb-0">Filters</h6>
+                <button class="btn btn-sm btn-outline-secondary" (click)="closeMobileFilters()">
+                  <i class="fa fa-times"></i>
+                </button>
+              </div>
+
+
+              <div class="position-relative">
+                <div *ngIf="showInlineCalendar" class="calendar-popup shadow rounded p-3 bg-white"
+                  style="position: absolute; top: 100%; left: 0; z-index: 1090; width: 100%; max-width: 300px;">
+                  <div class="d-flex justify-content-between mb-2">
+                    <strong style="font-size: 13px;">Select Date Range</strong>
+                    <button class="btn-close btn-sm" (click)="toggleInlineCalendar()"></button>
+                  </div>
+
+                  <!-- Place your existing calendar component here -->
+                  <div class="calendar">
+                    <div class="calendar-header">
+                      <div class="calendar-weekdays row g-0">
+                        <div class="col calendar-weekday-col" *ngFor="let weekday of weekdays">
+                          {{ weekday }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center my-2">
+                      <button class="btn btn-sm btn-outline-secondary" style="border: none;" (click)="changeMonth(-1)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                          class="bi bi-chevron-left" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd"
+                            d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+                        </svg>
+                      </button>
+                      <h6 class="text-center m-0" id="currentMonthYear" style="font-size: 13px;">
+                        {{ currentMonthName }} {{ currentYear }}
+                      </h6>
+                      <button class="btn btn-sm btn-outline-secondary" style="border: none;" (click)="changeMonth(1)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                          class="bi bi-chevron-right" viewBox="0 0 16 16">
+                          <path fill-rule="evenodd"
+                            d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <div class="calendar-dates">
+                      <div class="calendar-date-cell" *ngFor="let day of calendarDays" [class]="day?.cssClass"
+                        [class.selected]="day?.isSelected" [class.clickable]="day?.isClickable"
+                        (click)="selectDate1(day)">
+                        {{ day?.dayOfMonth }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between mt-3">
+                    <button class="btn btn-outline-danger btn-sm flex-fill me-2" data-bs-target="#calendarModal"
+                      *ngIf="fromDate && toDate" (click)="clearDateRange()">
+                      Clear
+                    </button>
+                    <button class="btn btn-danger btn-sm flex-fill"
+                      (click)="applyDateRange1();toggleInlineCalendar(); closeMobileFilters()">
+                      Apply Filter
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Filter body (same content as earlier) -->
+              <!-- DATE FILTER SECTION -->
+              <!-- <div class="w-100 px-2 py-3 border-bottom">
+                <h6 class="fw-semibold mb-2" style="font-size: 14px;">Date</h6>
+
+                <div class="d-flex flex-wrap gap-2">
+                  <button class="btn btn-sm" [class.btn-outline-danger]="selectedDateFilter !== 'today'"
+                    [class.btn-danger]="selectedDateFilter === 'today'" (click)="selectDateFilter('today')">
+                    Today
+                  </button>
+
+                  <button class="btn btn-sm" [class.btn-outline-danger]="selectedDateFilter !== 'tomorrow'"
+                    [class.btn-danger]="selectedDateFilter === 'tomorrow'" (click)="selectDateFilter('tomorrow')">
+                    Tomorrow
+                  </button>
+
+                  <button class="btn btn-sm" [class.btn-outline-danger]="selectedDateFilter !== 'weekend'"
+                    [class.btn-danger]="selectedDateFilter === 'weekend'" (click)="selectDateFilter('weekend')">
+                    This Weekend
+                  </button>
+
+                  <button class="btn btn-sm" [class.btn-outline-danger]="selectedDateFilter !== 'month'"
+                    [class.btn-danger]="selectedDateFilter === 'month'" (click)="selectDateFilter('month')">
+                    This Month
+                  </button>
+                </div>
+
+                <div class="mt-2" *ngIf="!fromDate && !toDate">
+                  <button class="btn btn-link btn-sm px-0" style="color: #a50000; text-decoration: none;"
+                    (click)="toggleInlineCalendar()">
+                    Select custom date
+                  </button>
+                </div>
+
+                <div (click)="toggleInlineCalendar()" *ngIf="fromDate && toDate" class="text-muted mt-2"
+                  style="font-size: 12px; cursor: pointer;">
+                  <span>From: {{ fromDate | date: 'mediumDate' }}</span>
+                  <span> → To: {{ toDate | date: 'mediumDate' }}</span>
+                </div>
+                <div class="position-relative">
+                  <div *ngIf="showInlineCalendar" class="calendar-popup shadow rounded p-3 bg-white"
+                    style="position: absolute; top: 100%; left: 0; z-index: 1090; width: 100%; max-width: 300px;">
+                    <div class="d-flex justify-content-between mb-2">
+                      <strong style="font-size: 13px;">Select Date Range</strong>
+                      <button class="btn-close btn-sm" (click)="toggleInlineCalendar()"></button>
+                    </div>
+
+                    <div class="calendar">
+                      <div class="calendar-header">
+                        <div class="calendar-weekdays row g-0">
+                          <div class="col calendar-weekday-col" *ngFor="let weekday of weekdays">
+                            {{ weekday }}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="d-flex justify-content-between align-items-center my-2">
+                        <button class="btn btn-sm btn-outline-secondary" style="border: none;"
+                          (click)="changeMonth(-1)">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-chevron-left" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                              d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+                          </svg>
+                        </button>
+                        <h6 class="text-center m-0" id="currentMonthYear" style="font-size: 13px;">
+                          {{ currentMonthName }} {{ currentYear }}
+                        </h6>
+                        <button class="btn btn-sm btn-outline-secondary" style="border: none;" (click)="changeMonth(1)">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-chevron-right" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                              d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+                          </svg>
+                        </button>
+                      </div>
+
+                      <div class="calendar-dates">
+                        <div class="calendar-date-cell" *ngFor="let day of calendarDays" [class]="day?.cssClass"
+                          [class.selected]="day?.isSelected" [class.clickable]="day?.isClickable"
+                          (click)="selectDate1(day)">
+                          {{ day?.dayOfMonth }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-3">
+                      <button class="btn btn-outline-danger btn-sm flex-fill me-2" data-bs-target="#calendarModal"
+                        *ngIf="fromDate && toDate" (click)="clearDateRange()">
+                        Clear
+                      </button>
+                      <button class="btn btn-danger btn-sm flex-fill"
+                        (click)="applyDateRange1();toggleInlineCalendar(); closeMobileFilters()">
+                        Apply Filter
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+              <div class="d-flex flex-grow-1 overflow-hidden">
+
+                <!-- Left tabs -->
+                <div class="bg-light" style="width: 120px; overflow-y: auto">
+                  <div class="border-bottom p-2" [class.bg-white]="selectedFilter === 5" (click)="selectedFilter = 5"
+                    style="cursor: pointer;">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span style="font-size: 14px;">Date</span>
+                    </div>
+                  </div>
+                  <div *ngFor="let filter of filters">
+                    <div *ngIf="hasOptions(filter)" class="border-bottom p-2"
+                      [class.bg-white]="selectedFilter?.id === filter.id" (click)="selectedFilter = filter"
+                      style="cursor: pointer;">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span style="font-size: 14px;">{{ checks(filter.name) }}</span>
+                        <span *ngIf="getSelectedCount(filter) > 0" class="text-success fw-bold">
+                          {{ getSelectedCount(filter) }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right options -->
+                <div class="flex-grow-1 p-2 overflow-auto">
+                  <div *ngIf="selectedFilter">
+                    <div class="mb-2 position-relative" *ngIf="selectedFilter!==5">
+                      <input type="text" style="    font-size: 12px !important"
+                        class="form-control form-control-sm ps-4" placeholder="Search {{ selectedFilter.name }}"
+                        [(ngModel)]="selectedFilter.searchTerm" />
+                      <i class="fa fa-search position-absolute top-50 start-0 ps-2 translate-middle-y text-muted"></i>
+                    </div>
+
+                    <div class="form-check small"
+                      *ngFor="let option of getFilteredOptions(selectedFilter).slice(0, selectedFilter.visibleCount)">
+                      <input type="checkbox" class="form-check-input" [id]="generateOptionId(option, selectedFilter)"
+                        (click)="toggleLanguage(option, selectedFilter)"
+                        [checked]="isOptionSelected(selectedFilter, option)" />
+                      <label class="form-check-label" [for]="generateOptionId(option, selectedFilter)">
+                        {{ selectedFilter.key === 'GenresData' ? option.TYPE : option.NAME }}
+                      </label>
+                    </div>
+
+                    <div class="d-flex justify-content-start gap-2 mt-2" *ngIf="selectedFilter!==5">
+                      <button *ngIf="getFilteredOptions(selectedFilter).length > selectedFilter.visibleCount"
+                        class="btn btn-link btn-sm px-0 text-danger" (click)="loadMore(selectedFilter)">
+                        Load More
+                      </button>
+
+                      <button class="btn btn-link btn-sm px-0" style="color: #a50000; text-decoration: none;"
+                        (click)="clearSelectedOptions(selectedFilter)">
+                        Clear {{ checks(selectedFilter.name) }}
+                      </button>
+                    </div>
+
+                    <div class="form-check small" *ngIf="selectedFilter===5" style="padding-left: 0px;">
+                      <div>
+                        <button style="margin-bottom: 10px;" class="btn btn-sm"
+                          [class.btn-outline-danger]="selectedDateFilter !== 'today'"
+                          [class.btn-danger]="selectedDateFilter === 'today'" (click)="selectDateFilter('today')">
+                          Today
+                        </button> &nbsp;
+
+                        <button style="margin-bottom: 10px;" class="btn btn-sm"
+                          [class.btn-outline-danger]="selectedDateFilter !== 'tomorrow'"
+                          [class.btn-danger]="selectedDateFilter === 'tomorrow'" (click)="selectDateFilter('tomorrow')">
+                          Tomorrow
+                        </button><br>
+
+                        <button class="btn btn-sm" [class.btn-outline-danger]="selectedDateFilter !== 'weekend'"
+                          [class.btn-danger]="selectedDateFilter === 'weekend'" (click)="selectDateFilter('weekend')">
+                          This Weekend
+                        </button> &nbsp;
+
+                        <button class="btn btn-sm" [class.btn-outline-danger]="selectedDateFilter !== 'month'"
+                          [class.btn-danger]="selectedDateFilter === 'month'" (click)="selectDateFilter('month')">
+                          This Month
+                        </button>
+
+                        <div (click)="toggleInlineCalendar()" *ngIf="fromDate && toDate" class="text-muted mt-2"
+                          style="font-size: 12px; cursor: pointer;color: #a50000;">
+                          <span>From: {{ fromDate | date: 'dd MMM yyyy' }}</span>
+                          <span> → To: {{ toDate | date: 'dd MMM yyyy' }}</span>
+                        </div>
+                      </div>
+
+                      <div class="mt-2" *ngIf="!fromDate && !toDate">
+                        <button class="btn btn-link btn-sm px-0" style="color: #a50000; text-decoration: none;"
+                          (click)="toggleInlineCalendar()">
+                          Select custom date
+                        </button>
+                      </div>
+                      <!-- *ngIf="(fromDate && toDate) || selectedDateFilter" -->
+                      <button class="btn btn-link btn-sm px-0" style="color: #a50000; text-decoration: none;"
+                        (click)="cleardatefilter()">
+                        Clear Date Filter
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bottom sticky buttons -->
+              <div class="border-top bg-white d-flex justify-content-between p-2">
+                <button class="btn btn-outline-danger w-50 me-2" style="color: #a50000 !important;"
+                  (click)="clearAllSelected(); closeMobileFilters()">
+                  Clear All
+                </button>
+                <button class="btn btn-danger w-50" (click)="closeMobileFilters()">
+                  Apply All
+                </button>
+              </div>
+            </div>
+          </div>
+
+
+
+        </div>
+
+        <div class="col-xl-9 col-lg-9 col-md-12 card-headernew">
+          <!-- <div *ngIf="searchLoading" class="d-flex justify-content-center"> -->
+
+          <!-- </div> -->
+          <!-- <div #stageContainer></div> -->
+          <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12">
+              <div>
+                <div class="event-filter-items">
+                  <section class="shows-section">
+                    <!-- <div class="category-tabs" *ngIf="catergoryname!= 'Activity' && catergoryname!= 'Activities'">
+                      <div class="tab" [class.active]="activeTab === 'nowShowing'" (click)="selectTab('nowShowing')"
+                        data-tab="nowShowing">
+                        Now Showing
+                      </div>
+                      <div class="tab" [class.active]="activeTab === 'upcoming'" (click)="selectTab('upcoming')"
+                        data-tab="upcoming">
+                        Upcoming Shows
+                      </div>
+                    </div> -->
+
+                    <div class="shows-container" *ngIf="activeTab === 'nowShowing'" id="nowShowing">
+                      <div *ngIf="!searchLoading && filteredPlaysData.length === 0" class="col-12 no-data-container">
+                        <img src="assets/nodata1.png" alt="No Data Found" class="no-data-img" />
+                        <p>No shows available for the selected filters.</p>
+                      </div>
+
+                      <div class="row">
+                        <!-- NOW SHOWING -->
+                        <div *ngIf="filteredPlaysData.length > 0">
+                          <div class="row mt-3 row-cols-1 ">
+
+                            <div *ngFor="let event of filteredPlaysData; trackBy: trackById"
+                              class="play-card col-6 col-md-6 col-lg-3 mb-4">
+                              <ng-container>
+                                <div>
+                                  <div class="event-thumbnail">
+                                    <a  (click)=" onEventClick(event)" class="thumbnail-img">
+                                      <img style="
+                                    border-bottom-left-radius: 0px !important;
+                                    border-bottom-right-radius: 0px !important;
+                                    cursor: pointer;
+                                  " [src]="
+                                          retriveimgUrl +
+                                          'eventImages/' +
+                                          event.PLAY_IMAGES
+                                        " alt="{{ event.NAME }}" (error)="onImageError($event)" />
+                                    </a>
+
+                                    <!-- <span *ngIf="memberId" class="bookmark-icon" title="Bookmark" [ngClass]="{
+                                        bookmarked: event.bookmarked
+                                      }" (click)="toggleBookmark(event)">
+                                    </span> -->
+                                    <span class="bookmark-icon" *ngIf="event.IS_PROMOTED">Promoted</span>
+                                  </div>
+                                  <!-- <div class="event-footer bg-black text-white px-2 py-1 rounded-bottom">
+                                    <div class="event-timing small" style="
+                                        color: #e8e8e8;
+                                        font-size: 11px;
+                                        justify-content: space-around;
+                                      ">
+                                      <span><i class="fa-solid fa-calendar-day me-2"></i>{{
+                                        event.RELEASE_DATE | date : "dd MMM"
+                                        }}</span>
+                                      <span class="ms-2"><i class="fa-solid fa-clock me-2"></i>
+
+                                        {{ event.SHOW_TIME }}
+                                      </span>
+                                    </div>
+                                  </div> -->
+                                  <div class="event-content">
+                                    <!-- <span style="
+                                font-size: 11px;
+                                color: #7c5353;
+                                font-weight: 600;
+                              ">
+                                      
+                                      <i class="fa-solid fa-calendar-day"></i>
+
+                                      {{ event?.RELEASE_DATE | date : "MMM dd," }}
+                                      {{ event?.SHOW_TIME }}
+                                      <span *ngIf="event.showOnwards" class="onwards-tag">onwards</span>
+                                    </span> -->
+                                    <div class="event-row">
+                                      <div class="event-half event-date">
+                                        <span class="fontsizee1">
+                                          <i class="fa-solid fa-calendar-day"></i>
+                                          {{ event?.RELEASE_DATE | date : "MMM dd," }}
+                                          {{ event?.SHOW_TIME }} <span *ngIf="event.showOnwards"
+                                            class="onwards-tag">onwards</span>
+                                        </span>
+                                      </div>
+                                      <div class="event-half event-genre">
+                                        <a *ngIf="event?.SUB_CATEGORY_NAME"
+                                          style="height: auto !important;margin-right: 0px !important;"
+                                          [title]="event.SUB_CATEGORY_NAME"
+                                          class="text-dark badgee clamp-text-for-tags fontsizee">
+                                          <!-- <span  style="height: auto !important;" class="text-dark badgee clamp-text-for-tags fontsizee"
+                                            *ngIf="event != undefined && event.SUB_CATEGORY_NAME"
+                                            [title]="event.SUB_CATEGORY_NAME"> -->
+                                          {{ getFirstGenre2(event.SUB_CATEGORY_NAME) }}
+                                          <!-- </span> -->
+                                        </a>
+                                        <a *ngIf="!event.SUB_CATEGORY_NAME && event?.GENRE_NAMES"
+                                          [title]="event.GENRE_NAMES"
+                                          style="height: auto !important;margin-right: 0px !important;"
+                                          class="text-dark badgee clamp-text-for-tags fontsizee">
+                                          <!-- <span style="height: auto !important;" class="text-dark badgee clamp-text-for-tags fontsizee"
+                                            *ngIf="event != undefined && event.GENRE_NAMES" [title]="event.GENRE_NAMES"> -->
+                                          {{ getFirstGenre(event.GENRE_NAMES) }}
+                                          <!-- </span> -->
+                                        </a>
+                                      </div>
+                                    </div>
+
+                                    <a class="event-title" [title]="event.NAME" style="
+                                min-height: 20px;
+                                display: block;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                cursor: pointer;
+                                font-size: 12px !important;
+                              " (click)=" onEventClick(event)">
+                                      {{ event.NAME }}
+                                    </a>
+                                    <div *ngIf="event.VENUE_NAME"
+                                      style="font-size: 10px !important;color: #232323 !important;" class="subnamm"
+                                      [title]="event.VENUE_NAME">
+                                      {{
+                                      event.VENUE_NAME
+                                      }}
+                                    </div>
+                                    <div style="font-size: 10px;" *ngIf="event.LANGUAGES" class="subnamm"
+                                      [title]="event.LANGUAGES">
+                                      {{ event.LANGUAGES?.join(", ") }}
+                                    </div>
+                                    <div style="font-size: 10px;" *ngIf="!event.LANGUAGES && event.EXTRA_OPTIONS"
+                                      class="subnamm" [title]="event.EXTRA_OPTIONS">
+                                      {{
+                                      event.EXTRA_OPTIONS.join(", ")
+                                      }}
+                                    </div>
+
+                                    <!-- <div [title]="event.SUB_CATEGORY_NAME" *ngIf="event.SUB_CATEGORY_NAME">
+                                      <a *ngIf="
+                                  event != undefined &&
+                                  event.SUB_CATEGORY_NAME
+                                ">
+                                        <span style="font-size: 10px !important;" class="text-dark badgee"
+                                          [title]="event.SUB_CATEGORY_NAME">
+                                          {{
+                                          getFirstGenre2(
+                                          event.SUB_CATEGORY_NAME
+                                          )
+                                          }}
+                                        </span> </a><span *ngIf="
+                                  hasMoreGenres(
+                                    event.SUB_CATEGORY_NAME
+                                  )
+                                " style="
+                                  font-size: 10px;
+                                  color: #9c9ea6 !important;
+                                ">+ More</span>
+                                    </div>
+                                    <div style="font-size: 10px;" *ngIf="!event.SUB_CATEGORY_NAME && event.GENRE_NAMES"
+                                      [title]="event.GENRE_NAMES">
+                                      <a *ngIf="
+                                  event != undefined &&
+                                  event.GENRE_NAMES
+                                ">
+                                        <span style="font-size: 10px !important;" class="text-dark badgee"
+                                          [title]="event.GENRE_NAMES">
+                                          {{
+                                          getFirstGenre(
+                                          event.GENRE_NAMES
+                                          )
+                                          }}
+                                        </span> </a><span *ngIf="
+                                  hasMoreGenres(event.GENRE_NAMES)
+                                " style="
+                                  font-size: 10px;
+                                  color: #9c9ea6 !important;
+                                ">+ More</span>
+                                    </div> -->
+                                    <!-- <ng-container *ngIf="event.CATEGORY_ID == 2;else emptyGenre">
+                                      <div *ngIf="event.GENRE_NAMES; " [title]="event.GENRE_NAMES">
+                                        <a>
+                                          <span class="text-dark badgee" [title]="event.GENRE_NAMES">
+                                            {{ getFirstGenre(event.GENRE_NAMES) }}
+                                          </span>
+                                        </a>
+                                        <span *ngIf="hasMoreGenres(event.GENRE_NAMES)"
+                                          style="font-size: 11px; color: #9c9ea6 !important;">
+                                          + More
+                                        </span>
+                                      </div>
+
+                                    </ng-container>
+                                    <ng-template #emptyGenre>
+                                      <div style="height: 24px;"></div>
+
+                                    </ng-template> -->
+
+
+
+                                  </div>
+                                </div>
+                              </ng-container>
+                            </div>
+
+                          </div>
+                        </div>
+                        <!-- NOW SHOWING END -->
+                      </div>
+                      <div class="col-12" *ngIf="searchLoading" style="
+                          display: flex;
+                          justify-content: center;
+                          margin-top: 80px;
+                          margin-bottom: 80px;
+                        ">
+                        <!-- <div class="loader"></div> -->
+                        <img src="assets/TK-Loading-Animation-ver-2.gif" class="img-loader" alt="Loading..." style="  width: 70px;
+  height: auto;
+  display: block;" />
+                      </div>
+                    </div>
+
+                    <div class="shows-container" *ngIf="activeTab === 'upcoming'" id="upcoming">
+                      <div *ngIf="
+                          !searchLoading &&
+                          filteredPlaysDataUpcoming.length === 0
+                        " class="col-12 no-data-container">
+                        <img src="assets/nodata1.png" alt="No Data Found" class="no-data-img" />
+                        <p>No shows available for the selected filters.</p>
+                      </div>
+                      <div class="col-12" *ngIf="searchLoading" style="
+                          display: flex;
+                          justify-content: center;
+                          margin-top: 80px;
+                        ">
+                        <div class="loader"></div>
+                      </div>
+                      <div class="row">
+                        <!-- UPCOMING -->
+                        <div *ngIf="
+                            !searchLoading &&
+                            filteredPlaysDataUpcoming.length > 0
+                          ">
+                          <div class="row mt-3">
+                            <div *ngFor="let event of filteredPlaysDataUpcoming; trackBy: trackById"
+                              class="play-card col-6 col-md-6 col-lg-3 mb-4">
+                              <ng-container>
+                                <div>
+                                  <div class="event-thumbnail">
+                                    <a [routerLink]="[
+                                        '/menu/plays',
+                                        event.PLAY_ID,
+                                        'upcoming'
+                                      ]" class="thumbnail-img">
+                                      <img style="
+                                    border-bottom-left-radius: 0px !important;
+                                    border-bottom-right-radius: 0px !important;
+                                    cursor: pointer;
+                                  " [src]="
+                                          retriveimgUrl +
+                                          'eventImages/' +
+                                          event.PLAY_IMAGES
+                                        " alt="{{ event.NAME }}" (error)="onImageError($event)" />
+                                    </a>
+                                    <!-- <span class="bookmark-icon"
+                                                                [ngClass]="{ 'bookmarked': event.bookmarked }"
+                                                                (click)="toggleBookmark(event)">
+                                                            </span> -->
+                                    <!-- <span *ngIf="memberId" class="bookmark-icon" title="Bookmark" [ngClass]="{
+                                        bookmarked1: event.bookmarked1
+                                      }" (click)="toggleBookmark(event)">
+                                    </span> -->
+                                    <span class="bookmark-icon" *ngIf="event.IS_PROMOTED">Promoted</span>
+                                  </div>
+                                  <!-- <div class="event-footer bg-black text-white px-2 py-1 rounded-bottom">
+                                    <div class="event-timing small" style="
+                                        color: #e8e8e8;
+                                        font-size: 12px;
+                                        justify-content: space-around;
+                                      ">
+                                      <span><i class="fa-solid fa-calendar-day me-2"></i>{{
+                                        event.RELEASE_DATE | date : "dd MMM"
+                                        }}</span>
+                                      <span class="ms-3"><i class="fa-solid fa-film me-2"></i>{{ event.SHOW_TIME
+                                        }}</span>
+                                    </div>
+                                  </div> -->
+                                  <!-- <div class="event-content p-2">
+                                    <a class="event-title d-block text-truncate" style="
+                                        font-size: 14px;
+                                        color: #000000 !important;
+                                      " [routerLink]="[
+                                        '/menu/plays',
+                                        event.PLAY_ID,
+                                        'upcoming'
+                                      ]">
+                                      {{ event.NAME }}
+                                    </a>
+                                    <div class="duration-price-remaining small text-muted" style="font-size: 12px">
+                                      {{ event.LANGUAGES?.join(", ") }} |
+                                      {{ event.THEATER_NAME }}
+                                    </div>
+                                  </div> -->
+                                  <div class="event-content">
+                                    <!-- <span style="
+                                font-size: 9px;
+                                color: #7c5353;
+                                font-weight: 600;
+                              ">
+                                      <i class="fa-solid fa-calendar-day"></i>
+
+                                      {{ event?.RELEASE_DATE | date : "MMM dd," }}
+                                      {{ event?.SHOW_TIME }}
+                                      <span *ngIf="event.showOnwards" class="onwards-tag">Onwards</span>
+
+                                    </span> -->
+                                    <div class="event-row">
+                                      <div class="event-half event-date">
+                                        <span class="fontsizee1">
+                                          <i class="fa-solid fa-calendar-day"></i>
+                                          {{ event?.RELEASE_DATE | date : "MMM dd," }}
+                                          {{ event?.SHOW_TIME }} <span *ngIf="event.showOnwards"
+                                            class="onwards-tag">onwards</span>
+                                        </span>
+                                      </div>
+                                      <div class="event-half event-genre">
+                                        <a *ngIf="event?.SUB_CATEGORY_NAME"
+                                          style="height: auto !important;margin-right: 0px !important;"
+                                          [title]="event.SUB_CATEGORY_NAME"
+                                          class="text-dark badgee clamp-text-for-tags fontsizee">
+                                          <!-- <span  style="height: auto !important;" class="text-dark badgee clamp-text-for-tags fontsizee"
+                                            *ngIf="event != undefined && event.SUB_CATEGORY_NAME"
+                                            [title]="event.SUB_CATEGORY_NAME"> -->
+                                          {{ getFirstGenre2(event.SUB_CATEGORY_NAME) }}
+                                          <!-- </span> -->
+                                        </a>
+                                        <a *ngIf="!event.SUB_CATEGORY_NAME && event?.GENRE_NAMES"
+                                          [title]="event.GENRE_NAMES"
+                                          style="height: auto !important;margin-right: 0px !important;"
+                                          class="text-dark badgee clamp-text-for-tags fontsizee">
+                                          <!-- <span style="height: auto !important;" class="text-dark badgee clamp-text-for-tags fontsizee"
+                                            *ngIf="event != undefined && event.GENRE_NAMES" [title]="event.GENRE_NAMES"> -->
+                                          {{ getFirstGenre(event.GENRE_NAMES) }}
+                                          <!-- </span> -->
+                                        </a>
+                                      </div>
+                                    </div>
+                                    <a class="event-title" [title]="event.NAME" style="
+                                min-height: 20px;
+                                display: block;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                cursor: pointer;
+                              " [routerLink]="[
+                                        '/menu/plays',
+                                        event.PLAY_ID,
+                                        'upcoming'
+                                      ]">
+                                      {{ event.NAME }}
+                                    </a>
+                                    <div *ngIf="event.VENUE_NAME"
+                                      style="font-size: 10px !important;color: #2a2a2a !important;" class="subnamm"
+                                      [title]="event.VENUE_NAME">
+                                      {{
+                                      event.VENUE_NAME
+                                      }}
+                                    </div>
+                                    <div *ngIf="event.LANGUAGE_NAMES" style="font-size: 9px !important;" class="subnamm"
+                                      [title]="event.LANGUAGE_NAMES">
+                                      {{
+                                      event.LANGUAGE_NAMES.split(",")
+                                      .slice(0, 2)
+                                      .join(", ")
+                                      }}
+                                    </div>
+                                    <div *ngIf="!event.LANGUAGE_NAMES && event.TAGS_NAMES"
+                                      style="font-size: 9px !important;" class="subnamm" [title]="event.TAGS_NAMES">
+                                      {{
+                                      event.TAGS_NAMES.split(",")
+                                      .slice(0, 2)
+                                      .join(", ")
+                                      }}
+                                    </div>
+                                    <!-- <div [title]="event.GENRE_NAMES" *ngIf="event.GENRE_NAMES">
+                                      <a *ngIf="event != undefined && event.GENRE_NAMES">
+                                        <span class="text-dark badgee" style=" font-size: 8px;"
+                                          [title]="event.GENRE_NAMES">
+                                          {{ getFirstGenre(event.GENRE_NAMES) }}
+                                        </span> </a><span *ngIf="hasMoreGenres(event.GENRE_NAMES)" style="
+                                  font-size: 8px;
+                                  color: #9c9ea6 !important;
+                                ">+ More</span>
+                                    </div>
+                                    <div [title]="event.SUB_CATEGORY_NAME"
+                                      *ngIf="!event.GENRE_NAMES && event.SUB_CATEGORY_NAME">
+                                      <a *ngIf="
+                                  event != undefined && event.SUB_CATEGORY_NAME
+                                ">
+                                        <span class="text-dark badgee" style=" font-size: 8px;"
+                                          [title]="event.SUB_CATEGORY_NAME">
+                                          {{ getFirstGenre(event.SUB_CATEGORY_NAME) }}
+                                        </span> </a><span *ngIf="hasMoreGenres(event.SUB_CATEGORY_NAME)" style="
+                                  font-size: 8px;
+                                  color: #9c9ea6 !important;
+                                ">+ More</span>
+                                    </div> -->
+                                  </div>
+                                </div>
+                              </ng-container>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- UPCOMING END -->
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

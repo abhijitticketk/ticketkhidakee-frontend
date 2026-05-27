@@ -1,0 +1,605 @@
+<div class="wrapper">
+  <main>
+    <!-- <section class="banner-section">
+        <img
+          src="https://readdy.ai/api/search-image?query=luxury%20theater%20interior%20with%20red%20velvet%20seats%2C%20grand%20ornate%20ceiling%20with%20chandeliers%2C%20golden%20decorations%2C%20dramatic%20lighting%2C%20elegant%20stage%20curtains%2C%20wide%20angle%20view%20of%20the%20auditorium%2C%20high-end%20theater%20architecture&width=1200&height=500&seq=theater1&orientation=landscape"
+          alt="Broadway Palace Theater"
+          class="theater-banner"
+        />
+
+        <div class="banner-overlay"></div>
+        <h1 class="theater-name">{{ theater.name }}</h1>
+        <div class="theater-location">
+          <i class="ri-map-pin-line"></i>
+          <span>{{ theater.location }}</span>
+        </div>
+      </section> -->
+
+    <div class="show-banner relative h-[500px] mb-5 overflow-hidden">
+      <!-- Background image container -->
+      <div [ngStyle]="{
+          'background-image': 'url(' + theaterDetails?.BANNER_IMAGE + ')'
+        }" class="banner-overlay absolute inset-0 z-0"></div>
+
+      <!-- Overlays -->
+      <div class="banner-overlay1 absolute inset-0 z-10"></div>
+
+      <!-- Content -->
+      <div class="container banner-content relative h-full flex items-center justify-center px-4 z-20">
+        <div class="flex flex-col md:flex-row items-center gap-6 w-full max-w-6xl">
+          <div class="w-full md:w-3/4">
+            <h1 class="venue-name text-4xl md:text-5xl font-bold mb-2 drop-shadow-lg text-white"
+              style="font-size: 28px">
+              {{ theaterDetails?.VENUE_NAME }}
+            </h1>
+
+            <div class="flex items-center mb-2">
+              <div class="text-yellow-400 text-lg flex space-x-1" style="font-size: 13px">
+                <!-- <div class="stars mb-1"> -->
+                <i *ngFor="let star of getFullStars(theaterDetails?.rating)" class="bi bi-star-fill"
+                  style="color: #f5b50a"></i>
+                <i *ngIf="hasHalfStar(theaterDetails?.rating)" class="bi bi-star-half" style="color: #f5b50a"></i>
+                <i *ngFor="let star of getEmptyStars(theaterDetails?.rating)" class="bi bi-star"
+                  style="color: #f5b50a"></i>
+                <!-- </div> -->
+              </div>
+              <span style="font-size: 13px" class="ml-3 text-white">{{ reviews?.length }} (reviews)</span>
+            </div>
+
+            <p class="address-details text-white text-base md:text-lg leading-relaxed"
+              style="font-size: 13px;margin-bottom: 5px;">
+              <i class="fa fa-map-marker-alt" style="color: #a50000; cursor: pointer; margin-right: 5px"
+                title="Open in Google Maps" (click)="openGoogleMap(theaterDetails.LATITUDE, theaterDetails.LONGITUDE)">
+              </i>
+              {{ theaterDetails?.ADDRESS_DETAILS }}
+            </p>
+            <a [href]="
+                  'https://www.google.com/maps?q=' +theaterDetails['LATITUDE'] +',' +theaterDetails['LONGITUDE']"
+              target="_blank" *ngIf="theaterDetails">
+              <span class="css-d0985y" style="display: flex;align-items: end;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M5.5 10.0714C5.5 6.2881 8.96304 4 12 4C15.037 4 18.5 6.2881 18.5 10.0714C18.5 12.4463 17.3299 14.5887 15.8656 16.3303C14.4439 18.0211 12.8224 19.2405 12 19.8053C11.1776 19.2405 9.55612 18.0211 8.13442 16.3303C6.67006 14.5887 5.5 12.4463 5.5 10.0714ZM4.5 10.0714C4.5 5.57143 8.59091 3 12 3C15.4091 3 19.5 5.57143 19.5 10.0714C19.5 15.4847 14.1819 19.5305 12.5021 20.6734C12.1968 20.8812 11.8032 20.8812 11.4979 20.6734C9.81808 19.5305 4.5 15.4847 4.5 10.0714ZM10 10.5C10 9.39543 10.8954 8.5 12 8.5C13.1046 8.5 14 9.39543 14 10.5C14 11.6046 13.1046 12.5 12 12.5C10.8954 12.5 10 11.6046 10 10.5ZM12 7.5C10.3431 7.5 9 8.84315 9 10.5C9 12.1569 10.3431 13.5 12 13.5C13.6569 13.5 15 12.1569 15 10.5C15 8.84315 13.6569 7.5 12 7.5Z"
+                    fill="#0C172F"></path>
+                </svg>&nbsp;
+                Get Direction
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <section class="theater-details">
+        <!-- <h2 class="section-title">{{ theaterDetails.VENUE_NAME }} Details</h2> -->
+
+        <h3 class="section-title">About The Venue</h3>
+
+        <div class="theater-description">
+          <p style="text-align: justify" class="custom-link" [innerHTML]="theaterDetails?.DESCRIPTION"
+            *ngIf="theaterDetails?.DESCRIPTION; else nodata">
+
+          </p>
+          <ng-template #nodata>
+            <div class="text-center text-muted py-4">
+              <i class="bi bi-info-circle me-1"></i> No description .
+            </div>
+          </ng-template>
+        </div>
+
+        <h3 class="section-title">Facilities</h3>
+
+        <div class="overflow-x-auto whitespace-nowrap scrollbar-hide px-2">
+          <div class="amenities">
+            <div class="amenity" *ngFor="let item of theaterDetails?.amenities">
+              <img *ngIf="item.icon" [src]="retriveimgUrl + 'amenityIcons/' + item.icon" alt="{{ item.NAME }}"
+                style="height: 16px; width: 16px; margin-right: 5px" />
+              <span>{{ item.name }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <section class="theater-details">
+        <div class="modal fade" id="rateNowModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-md">
+            <div class="modal-content border-0 shadow-sm rounded-4 p-4">
+              <div class="modal-header border-0 pb-0">
+                <h4 class="modal-title fw-bold text-dark w-100 text-center" style="font-size: 16px !important">
+                  We value your opinion.
+                </h4>
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3"
+                  (click)="closeFeedbackModal()"></button>
+              </div>
+
+              <div class="modal-body p-0 pt-4">
+                <form #feedbackForm="ngForm" (ngSubmit)="submitFeedback()">
+                  <p class="text-center mb-3 text-secondary">
+                    Kindly take a moment to tell us what you think.
+                  </p>
+
+                  <!-- Star Rating -->
+                  <div class="d-flex justify-content-center mb-4">
+                    <i class="bi mx-1" *ngFor="let star of [1, 2, 3, 4, 5]"
+                      [ngClass]=" rating >= star ? 'bi-star-fill text-warning' : 'bi-star text-muted' "
+                      (click)="setRating(star)" style="font-size: 22px; cursor: pointer"></i>
+                  </div>
+
+                  <!-- Textarea -->
+                  <!-- <p class="text-center text-secondary mb-2"> Kindly take a moment to tell us what you think. </p> -->
+                  <div class="mb-3">
+                    <textarea class="form-control rounded-3 border-0 p-3" maxlength="512" name="comment"
+                      [(ngModel)]="reviewText" placeholder="Your Opinion Matters" rows="3"
+                      style="font-size: 14px;border: 1px solid rgb(165, 0, 0) !important; " required></textarea>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <div class="text-center" style="display: flex; justify-content: center">
+                    <!-- <button type="submit" class="btn px-4 py-2 rounded-pill fw-semibold text-white d-flex align-items-center justify-content-center custom-review-btn" [disabled]="rating === 0 || !reviewText || ratenowws" > -->
+                    <button type="submit"
+                      class="btn px-4 py-2 rounded-pill fw-semibold text-white d-flex align-items-center justify-content-center"
+                      style="background-color: rgb(165, 0, 0)" [disabled]="rating === 0 || !reviewText || ratenowws">
+                      <span *ngIf="!ratenowws">Submit Review</span>
+                      <span *ngIf="ratenowws" class="spinner-border spinner-border-sm" role="status"
+                        aria-hidden="true"></span>
+                      <span *ngIf="ratenowws" class="ms-2">Submitting...</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <div class="modal fade" id="loginmodal" tabindex="-1" aria-labelledby="loginmodalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-custom-width">
+            <div class="modal-content p-0 rounded-3 border-0">
+              <div class="modal-body">
+                <div class="popup">
+                  <header class="d-flex justify-content-end">
+                    <div class="close" data-bs-dismiss="modal" #closelogin aria-label="Close" style="display: none">
+                      <i class="fa-solid fa-xmark"></i>
+                    </div>
+                    <div class="close" data-bs-dismiss="modal" aria-label="Close">
+                      <i class="fa-solid fa-xmark"></i>
+                    </div>
+                  </header>
+                  <div class="content text-center">
+                    <div>
+                      <img src="assets/playdetails/Group.png" alt="login" class="img-fluid" />
+                    </div>
+                    <button class="book-btn btn btn-danger mt-3 w-100 w-md-auto reviewbtn1" (click)="openlogin()">
+                      Sign In To Continue &nbsp;
+                      <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h3 class="section-title">
+            Top Reviews
+            <span style="font-size: 12px; cursor: pointer" *ngIf="reviewscount > 4" data-bs-toggle="modal"
+              (click)="showrattingmodel()" data-bs-target="#reviewLoadModal">&nbsp;&nbsp;View All <i
+                class="fa-solid fa-arrow-right"></i></span>
+
+          </h3>
+
+          <!-- <butto data-bs-target="#rateNowModal" class="btn btn-outline-danger btn-sm">Write Review</button> -->
+          <button *ngIf="memberId" type="button" class="btn btn-outline-danger btn-sm reviewbtn" data-bs-toggle="modal"
+            data-bs-target="#rateNowModal">
+            Write Review
+          </button>
+          <button *ngIf="!memberId" type="button" class="btn btn-outline-danger btn-sm reviewbtn" id="loginmodaltrack"
+            data-bs-toggle="modal" data-bs-target="#loginmodal">
+            Write Review
+          </button>
+
+        </div>
+
+        <div class="row g-3">
+          <ng-container *ngIf="reviews?.length > 0; else noReviews">
+            <owl-carousel-o [options]="customOptions">
+              <ng-container *ngFor="let banner of reviews; let i = index">
+                <ng-template carouselSlide>
+                  <div class="testimonial-card h-100">
+                    <div class="testimonial-content" style="padding: 15px !important">
+                      <div class="testimonial-user-dt d-flex gap-3 align-items-start"
+                        style="margin-top: 0px !important">
+                        <div class="account-holder-avatar">
+                          <img
+                            style=" height: 60px; width: 60px; border-radius: 50%; border: 1.5px solid #aa0303 !important;object-fit: cover;"
+                            [src]=" banner.MEMBER_PROFILE_IMAGE ? retriveimgUrl + 'profilePic/' + banner.MEMBER_PROFILE_IMAGE : userImage "
+                            alt="avatar" />
+                        </div>
+                        <div>
+                          <h5 class="mb-1" style="font-size: 14px; font-weight: 600" class="text-truncate">
+                            {{
+                            banner.MEMBER_NAME
+                            ? banner.MEMBER_NAME
+                            : "Guest User"
+                            }}
+                          </h5>
+                          <ul class="rating-stars m-0 p-0" style="list-style: none; display: flex; gap: 2px">
+                            <li *ngFor="let star of getStars(banner.RATING)">
+                              <i class="fa-star" [ngClass]=" star <= banner.RATING ? 'fa-solid' : 'fa-regular' "></i>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <!-- <div class="testimonial-text" style="margin-top: 10px"> <p style=" max-width: 100%; cursor: pointer; font-size: 12px; line-height: 1.5; "> {{ review.REVIEW_TEXT }} </p> </div> -->
+                      <div class="testimonial-text" style="margin-top: 10px">
+                        <span style="font-size: 9px;color: #7c5353; font-weight: 600;">
+                          <i class="fa-solid fa-calendar-day"></i>
+
+                          {{
+                          banner.CREATED_MODIFIED_DATE
+                          | date : "MMM dd, yyyy hh:mm a"
+                          }}
+                        </span>
+
+                        <p #textElement [ngClass]="{ 'clamp-text': !expandedReviews[i] }"
+                          (window:resize)="checkOverflow(textElement, i)"
+                          (ngAfterViewInit)="checkOverflow(textElement, i)"
+                          [innerHTML]="formatReviewText(banner.REVIEW_TEXT)" [title]="banner.REVIEW_TEXT"
+                          style="max-width: 100%;font-size: 12px;line-height: 1.4; overflow-wrap: break-word;white-space: pre-line;">
+                          <!-- {{ banner.REVIEW_TEXT }} -->
+                        </p>
+
+                        <a *ngIf=banner !=undefined && banner.REVIEW_TEXT.length> 50 "
+                          (click)="toggleReviewExpand(i)" class="show-more-link"
+                          style="cursor: pointer; user-select: none">
+                          {{ expandedReviews[i] ? "Show Less" : "Show More" }}
+                          <i class="bi ms-1" [ngClass]=" expandedReviews[i] ? 'bi-chevron-up' : 'bi-chevron-down' "></i>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </ng-container>
+            </owl-carousel-o>
+
+            <!-- <ng-container *ngIf="reviews.length < 3; else carouselView"> <div class="col-md-6 col-lg-4" *ngFor="let review of reviews"> <div class="card p-3 h-100 fixed-height-card" style="overflow-y: hidden;"> <div class="d-flex justify-content-between align-items-start mb-2"> <div> <strong>{{ review.reviewerName || 'Guest User' }}</strong> <div class="text-muted small">{{ review.date | date: 'MMM d, y, h:mm a' }}</div> </div>
+
+ <div class="stars mb-1"> <i *ngFor="let star of getFullStars(review.rating)" class="bi bi-star-fill" style="color: #f5b50a"></i> <i *ngIf="hasHalfStar(review.rating)" class="bi bi-star-half" style="color: #f5b50a"></i> <i *ngFor="let star of getEmptyStars(review.rating)" class="bi bi-star" style="color: #f5b50a"></i> </div> </div>
+
+ <p class="mb-2 text-dark" [title]="review.text"> {{ review.text.length > 120 ? (review.text | slice:0:120) + '...' : review.text }} </p> </div> </div>
+ </ng-container>
+
+ <ng-template #carouselView> <owl-carousel-o [options]="carouselOptions"> <ng-container *ngFor="let review of reviews"> <ng-template carouselSlide> <div class="card p-3 h-100 fixed-height-card" style="overflow-y: hidden;"> <div class="d-flex justify-content-between align-items-start mb-2"> <div> <strong>{{ review.reviewerName || 'Guest User' }}</strong> <div class="text-muted small" style="font-size: 11px !important;"> {{ review.date | date: 'MMM d, y, h:mm a' }}</div> </div>
+
+ <div class="stars mb-1"> <i *ngFor="let star of getFullStars(review.rating)" class="bi bi-star-fill" style="color: #f5b50a"></i> <i *ngIf="hasHalfStar(review.rating)" class="bi bi-star-half" style="color: #f5b50a"></i> <i *ngFor="let star of getEmptyStars(review.rating)" class="bi bi-star" style="color: #f5b50a"></i> </div> </div>
+ <p class="text-dark" [innerHTML]="formatReviewText(review.text)" [title]="review.text"></p> </div> </ng-template> </ng-container> </owl-carousel-o>
+ </ng-template> -->
+          </ng-container>
+
+          <ng-template #noReviews>
+            <div class="text-center text-muted py-4">
+              <i class="bi bi-info-circle me-1"></i> No reviews yet.
+
+            </div>
+
+          </ng-template>
+        </div>
+      </section>
+
+
+      <section *ngIf="nowShowing && nowShowing.length > 0" class="shows-section" style="padding-top: 0px">
+        <div class="category-tabs">
+          <div class="tab" [class.active]="activeTab === 'now-showing'" (click)="selectTab('now-showing')"
+            data-tab="now-showing" style="font-size: 16px !important">
+            Available Shows
+          </div>
+        </div>
+
+        <div class="shows-container" *ngIf="activeTab === 'now-showing'" id="now-showing">
+          <div class="container-fluid px-2 scroll-wrapper">
+            <div *ngIf="showLeftRightArrows" class="scroll-arrow-button left" (click)="scrollLeft()">
+              <i class="fa-solid fa-caret-left"></i>
+            </div>
+            <div *ngIf="showLeftRightArrows" class="scroll-arrow-button right" (click)="scrollRight()">
+              <i class="fa-solid fa-caret-right"></i>
+            </div>
+            <div class="row scroll-items" data-ref="event-filter-content" #scrollContainer>
+              <!-- Repeat show cards for now showing -->
+              <!-- class="play-card col-6 col-md-4 custom-col-lg mb-4" -->
+              <div *ngFor="let show of nowShowing" class="col-6 col-sm-6 col-md-4 col-lg-3 event-card-wrapper">
+                <div class="event-thumbnail" (click)="openroutesvenue(show,$event)">
+                  <a class="thumbnail-img">
+                    <img [src]="show.image" [alt]="show.title" (error)="onImageError($event)" />
+                  </a>
+                  <!-- <span class="bookmark-icon" title="Bookmark" [style.cursor]="'pointer'" [ngClass]="{
+                        bookmarked: getBookmarked(show),
+                        disabled: addbookmarkspin
+                      }" (click)="toggleBookmark(show, $event)"></span> -->
+                  <span class="bookmark-icon" *ngIf="show.IS_PROMOTED">Promoted</span>
+                </div>
+
+                <div class="event-content" (click)="openroutesvenue(show,$event)">
+                  <!-- <span style="font-size: 9px; color: #7c5353; font-weight: 600;">
+                  <i class="fa-solid fa-calendar-day"></i>
+                  {{ show.date | date: "dd MMM" }} {{ show.time }}
+                </span> -->
+
+                  {{show.IS_ONWARD}}
+                  <!-- <span style="font-size: 9px; color: #7c5353; font-weight: 600;">
+                    <i class="fa-solid fa-calendar-day"></i>
+                    {{ show.date | date: "MMM dd," }}
+                    <span *ngIf="show.IS_ONWARD; else timeOnly"> onwards</span>
+                    <ng-template #timeOnly> {{ show.time }} </ng-template>
+                  </span> -->
+                  <div class="event-row">
+                    <div class="event-half event-date">
+                      <!-- <span >
+                                          <i class="fa-solid fa-calendar-day"></i>
+                                          {{ event?.RELEASE_DATE | date : "MMM dd," }}
+                                          {{ event?.SHOW_TIME }} <span *ngIf="event.showOnwards"
+                                            class="onwards-tag">onwards</span>
+                                        </span> -->
+
+                      <span class="fontsizee1">
+                        <i class="fa-solid fa-calendar-day"></i>
+                        {{ show.date | date: "MMM dd," }}
+                        <span *ngIf="show.IS_ONWARD; else timeOnly"> onwards</span>
+                        <ng-template #timeOnly> {{ show.time }} </ng-template>
+                      </span>
+                    </div>
+                    <div class="event-half event-genre">
+                      <a *ngIf="show?.category"
+                        style="height: auto !important;margin-right: 0px !important;    padding: 0px 8px !important;"
+                        [title]="show.category" class="text-dark badgee clamp-text-for-tags fontsizee">
+                        <!-- <span  style="height: auto !important;" class="text-dark badgee clamp-text-for-tags fontsizee"
+                                            *ngIf="event != undefined && show.category"
+                                            [title]="show.category"> -->
+                        {{ getFirstGenre(show.category) }}
+                        <!-- </span> -->
+                      </a>
+                      <a *ngIf="!show.category && show?.genre" [title]="show.genre"
+                        style="height: auto !important;margin-right: 0px !important;    padding: 0px 8px !important;"
+                        class="text-dark badgee clamp-text-for-tags fontsizee">
+                        <!-- <span style="height: auto !important;" class="text-dark badgee clamp-text-for-tags fontsizee"
+                                            *ngIf="event != undefined && show.genre" [title]="show.genre"> -->
+                        {{ getFirstGenre(show.genre) }}
+                        <!-- </span> -->
+                      </a>
+                    </div>
+                  </div>
+
+
+                  <a class="event-title" [title]="show.title" style="
+                                min-height: 20px;
+                                display: block;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                cursor: pointer;
+                                font-size: 12px !important;
+                              ">
+                    {{ show.title }}
+                  </a>
+
+                  <div class="subnamm" *ngIf="show.languages" [title]="show.languages">
+
+                    {{
+                    show.languages.split(",")
+                    .slice(0, 2)
+                    .join(", ")
+                    }}
+                  </div>
+
+                  <!-- {{ show.TAGS_NAMES}} -->
+                  <div *ngIf="!show.languages && show.TAGS_NAMES" class="subnamm" [title]="show.TAGS_NAMES">
+                    {{
+                    show.TAGS_NAMES.split(",")
+                    .slice(0, 2)
+                    .join(", ")
+                    }}
+                  </div>
+<!-- 
+                  <ng-container *ngIf="show.genre">
+                    <div [title]="show.genre">
+                      <a *ngIf="show != undefined && show.genre">
+                        <span style="font-size: 10px !important;" class="text-dark badgee" [title]="show.genre">
+                          {{ getFirstGenre(show.genre) }}
+                        </span>
+                      </a>
+                      <span *ngIf="hasMoreGenres(show.genre)" style="font-size: 10px; color: #9c9ea6 !important;">
+                        + More
+                      </span>
+                    </div>
+                  </ng-container> -->
+
+
+                  <!-- <div [title]="show.category" *ngIf="!show.genre && show.category">
+                    <a *ngIf="
+                                  show != undefined &&
+                                  show.category
+                                ">
+                      <span style="font-size: 10px !important;" class="text-dark badgee" [title]="show.category">
+                        {{
+                        getFirstGenre(
+                        show.category
+                        )
+                        }}
+                      </span> </a><span *ngIf="
+                                  hasMoreGenres(
+                                    show.category
+                                  )
+                                " style="
+                                  font-size: 10px;
+                                  color: #9c9ea6 !important;
+                                ">+ More</span>
+                  </div> -->
+
+                  <!-- <button (click)="gotoBookNow(show,$event)" class="book-button btn btn-primary mt-2 w-100">
+                  <i class="bi bi-ticket-fill me-2"></i>
+                  Book Tickets
+                </button> -->
+
+
+                </div>
+              </div>
+
+
+
+
+              <!-- Spinner shown when loading more -->
+
+              <div *ngIf="loading" class="d-flex justify-content-center">
+                <!-- <div class="loader"></div> -->
+                <img src="assets/TK-Loading-Animation-ver-2.gif" class="img-loader" alt="Loading..." style="  width: 70px;
+  height: auto;
+  display: block;" />
+                <!-- Add your loader CSS here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+
+
+
+<button style="display: none" id="loginmodaltrack1" data-bs-toggle="modal" data-bs-target="#loginmodal1">
+  data
+</button>
+<!-- login modal -->
+<div class="modal fade" id="loginmodal1" tabindex="-1" aria-labelledby="loginmodalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="width: 300px;margin:auto;">
+    <div class="modal-content p-3 rounded-3" style="padding: 0px !important; border: none !important">
+      <div class="modal-body">
+        <div class="popup">
+          <header style="justify-content: end; display: flex; padding: 4px 9px">
+            <div class="close" data-bs-dismiss="modal" #closelogin1 aria-label="Close" style="display: none">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="close" data-bs-dismiss="modal" aria-label="Close">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </header>
+          <div class="content">
+            <div style="justify-content: center; display: flex">
+              <img src="assets/playdetails/Group.png" alt="login" />
+            </div>
+            <button class="book-btn btn btn-danger mt-3 w-100 w-md-auto reviewbtn1" (click)="openlogin1()" style="border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;">
+              Sign In To Continue &nbsp; <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="reviewLoadModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content border-0 shadow-sm rounded-4 p-4" style="background-color: #ffffff">
+      <div class="modal-header border-0 pb-0" style="padding: 0px !important">
+        <h4 class="modal-title fw-bold text-dark w-100 text-left">
+          Reviews & Ratings
+        </h4>
+        <button type="button" data-bs-dismiss="modal" aria-label="Close"
+          class="btn-close position-absolute top-0 end-0 m-3"></button>
+      </div>
+      <div class="modal-body p-0 pt-4 custom-scrollbar" style="padding-top: 1px !important">
+        <div class="explore-events p-80" style="padding: 0px">
+          <div class="hide-scrollbar" (scroll)="onScrolllll($event)" style="
+              height: 50vh;
+              overflow-y: scroll;
+              margin-top: 10px;
+              overflow-x: hidden;
+              scrollbar-width: none;
+              -ms-overflow-style: none;
+            ">
+            <div class="row" style="margin: 0px" *ngIf="reviewscount > 0; else elsereviewblock">
+              <div class="col-12" style="margin-bottom: 11px" *ngFor="let review of displayedReviews; let i = index">
+                <div class="testimonial-card h-100">
+                  <div class="testimonial-content" style="padding: 15px !important">
+                    <div class="testimonial-user-dt d-flex gap-3 align-items-start" style="margin-top: 0px !important">
+                      <div class="account-holder-avatar">
+                        <img style="
+                            height: 60px;
+                            width: 60px;
+                            border-radius: 50%;
+                            object-fit: cover;
+                          " [src]="
+                            review.MEMBER_PROFILE_IMAGE
+                              ? retriveimgUrl +
+                                'profilePic/' +
+                                review.MEMBER_PROFILE_IMAGE
+                              : userImage
+                          " alt="avatar" />
+                      </div>
+                      <div>
+                        <h5 class="mb-1" style="font-size: 14px; font-weight: 600" class="text-truncate">
+                          {{ review.MEMBER_NAME ? review.MEMBER_NAME : "User" }}
+                        </h5>
+                        <ul class="rating-stars m-0 p-0" style="list-style: none; display: flex; gap: 2px">
+                          <li *ngFor="let star of getStars(review.RATING)">
+                            <i class="fa-star" [ngClass]="
+                                star <= review.RATING
+                                  ? 'fa-solid'
+                                  : 'fa-regular'
+                              "></i>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="testimonial-text" style="margin-top: 10px; display:flex; flex-direction:column;">
+
+                      <p #textElement [ngClass]="{ 'clamp-text': !expandedReviews[i] }"
+                        (window:resize)="checkOverflow(textElement, i)"
+                        (ngAfterViewInit)="checkOverflow(textElement, i)"
+                        [innerHTML]="formatReviewText(review.REVIEW_TEXT)" [title]="review.REVIEW_TEXT"
+                        style="max-width: 100%; font-size: 12px; line-height: 1.5; overflow-wrap: break-word;  white-space: pre-line">
+                        <!-- {{ review.REVIEW_TEXT }} -->
+                      </p>
+
+                      <a *ngIf="review!=undefined && review.REVIEW_TEXT.length>120" (click)="toggleReviewExpand(i)"
+                        class="show-more-link">
+                        {{ expandedReviews[i] ? 'Show Less' : 'Show More' }}
+                        <i class="bi ms-1" [ngClass]="expandedReviews[i] ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+                      </a>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="isLoading" class="text-center mt-2">
+                <i class="fa fa-spinner fa-spin"></i> Loading more reviews...
+              </div>
+            </div>
+            <ng-template #elsereviewblock>
+              <div style="
+                  width: 100% !important;
+                  height: 143px;
+                  width: 162px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  align-self: center;
+                ">
+                <img src="assets/playdetails/noresult.png" alt="No result" />
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

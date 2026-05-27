@@ -1,0 +1,690 @@
+<div class="event-dt-block" [ngStyle]="{
+    'margin-top': isMobile ? '' : '5%'
+  }" style="background: white; position: relative" *ngIf="!searchLoading && PlaysData">
+  <!-- <img [src]="BannerImage" alt="" class="img-fluid w-100 poster-img displaybannertop margintop1"
+    *ngIf="isMobile && videourls.length == 0" /> -->
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-8 col-lg-7 col-md-12">
+        <div class="main-event-dt margintop">
+          <div class="event-img position-relative" *ngIf="PlaysData.BANNER_IMAGE && videourls.length == 0">
+            <img [src]="BannerImage" alt="" class="img-fluid w-100 poster-img dispbanner"
+              style="border-radius: 16px !important; padding: 0px;height: auto !important; width: 100%;" />
+            <!-- <div class="position-absolute top-0 start-0 w-100 h-100" style="z-index: 1"></div> -->
+          </div>
+          <div class="event-img position-relative" *ngIf="PlaysData.BANNER_IMAGE && videourls.length > 0">
+            <owl-carousel-o [options]="customOptions" #owlCarousel (translated)="stopVideo()">
+              <ng-container>
+                <ng-template carouselSlide>
+                  <div class="item custom-carousel-item">
+                    <img [src]="BannerImage" alt="Banner"
+                      style="width: 100%; height: auto; display: block; border-radius: 10px;" />
+                  </div>
+                </ng-template>
+
+                <ng-template carouselSlide *ngFor="let video of videourls; let i = index; trackBy: trackByVideo">
+                  <div
+                    style="aspect-ratio: 16/9; width: 100%; border-radius: 12px; overflow: hidden; position: relative;">
+                    <ng-container *ngIf="activeVideoIndex !== i">
+                      <img [src]="'https://img.youtube.com/vi/' + videoId(video.URL) + '/hqdefault.jpg'"
+                        alt="Video Thumbnail" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                      <div (click)="playVideo(i, video)" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                  background: rgba(0,0,0,0.6); border-radius: 50%; width: 60px; height: 60px;
+                  display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </ng-container>
+
+                    <iframe *ngIf="activeVideoIndex === i" [id]="'video-iframe-' + i" width="100%" height="100%"
+                      style="border-radius: 12px; position: absolute; top: 0; left: 0;" [src]="video.embedUrlSanitized"
+                      frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+                    </iframe>
+                  </div>
+                </ng-template>
+              </ng-container>
+            </owl-carousel-o>
+          </div>
+
+          <div class="d-block d-md-none mt-3">
+            <div class="main-card event-right-dt" style="
+                margin-top: 8px;
+                border-radius: 16px;
+                padding: 6px 0px 0px 0px;
+              ">
+              <div class="col-md-12" style="line-height: 30px; padding: 15px; padding-top: 15px">
+                <div class="bp-title" style="border: none">
+                  <h4 style="padding: 0px !important">
+                    <h1 class="fw-bold fs-3 fs-md-1 font-ss maint" style="margin-bottom: 12px">
+                      {{ PlaysData.EVENT_NAME }}
+                    </h1>
+                  </h4>
+                </div>
+
+                <div class="icon-text-pair" style="margin-top: 9px" *ngIf="
+                  isSingleDate &&
+                  PlaysData != undefined && mainShowDates!=undefined && mainShowDates.length> 0
+                ">
+                  <i class="fa-regular fa-calendar"></i>
+                  <span style="font-size: 13px;margin-left: 3px;"> {{ mainShowDates[0] | date : "MMM dd, yyyy" }}</span>
+                </div>
+
+                <div class="icon-text-pair" style="margin-top: 9px" *ngIf="
+                  !isSingleDate &&
+                  PlaysData != undefined &&
+                  mainShowDates != undefined &&
+                  mainShowDates.length > 0
+                ">
+                  <i class="fa-regular fa-calendar"></i>
+                  <span style="font-size: 13px;margin-left: 3px;"> {{ mainShowDates[0] | date : "MMM dd," }} onwards
+                  </span>
+                </div>
+
+                <div class="icon-text-pair" *ngIf="PlaysData != undefined">
+                  <i class="fa-regular fa-clock"></i>
+                  <span style="font-size: 13px;margin-left: 3px;"> {{ mulTime.length==1?mulTime[0]:'Multiple
+                    Show Times'}}
+                  </span>
+                </div>
+                <div class="icon-text-pair" *ngIf="PlaysData != undefined">
+                  <i class="fa-sharp fa-solid fa-location-dot"></i>
+                  <span style="font-size: 13px;margin-left: 3px;"> {{
+                    venues.length==1?venues[0]:'Multiple
+                    Venues'}}
+                  </span>
+                </div>
+                <div class="icon-text-pair scroll-wrappera" *ngIf="PlaysData.CATEGORY_NAME != undefined">
+                  <i class="fa-solid fa-tags icon-fixed"></i>
+                  <div class="scroll-itemsa" style="font-size: 13px;display: inline;margin-left: 3px;"> {{
+                    PlaysData.CATEGORY_NAME }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="main-event-content mt-3 shadowclass" style="
+              padding-top: 0px;
+              margin-top: 17px !important;
+              padding-left: 0px;
+              padding-right: 0px;
+            ">
+            <!-- <div
+              class="d-flex justify-content-between align-items-center mb-3"
+              style="margin-top: 12px; margin-bottom: 0px !important"
+            >
+              <h3 class="css-fnaook" style="margin-bottom: 0px !important">
+                About This Event
+              </h3>
+              <div style="background: none; cursor: pointer">
+                <img
+                  alt="share"
+                  data-bs-toggle="modal"
+                  data-bs-target="#shareModal"
+                  width="36"
+                  height="36"
+                  class="sc-eykeme-1 iVbwwW"
+                  style="
+                    border-radius: 0px;
+                    opacity: 1;
+                    transition: 0.5s;
+                    width: 100%;
+                    min-height: 34px;
+                    max-height: 34px;
+                  "
+                  src="assets/playdetails/share_v2.png"
+                />
+              </div>
+            </div> -->
+
+            <!-- Container -->
+            <div
+              class="d-flex flex-row flex-md-row justify-content-between align-items-center align-items-md-center mb-3 gap-3"
+              style="margin-top: 12px">
+              <!-- Title -->
+              <div class="flex-grow-1">
+                <h3 class="css-fnaook mb-2 mb-md-0" style="margin-bottom: 0 !important">
+                  About This Event
+                </h3>
+              </div>
+
+              <!-- Desktop View: Like + Button + Share -->
+              <div class="d-none d-md-flex align-items-center gap-3 flex-nowrap">
+                <!-- Like + Count -->
+                <!-- <div class="d-flex align-items-center gap-2" *ngIf="+PlaysData?.LIKE_COUNT > 0">
+                  <i class="bi bi-hand-thumbs-up-fill text-success"></i>
+                  <span>
+                    {{
+                    PlaysData.liked == 1
+                    ? +PlaysData.LIKE_COUNT === 1
+                    ? "You are interested"
+                    : "You and " +
+                    (+PlaysData.LIKE_COUNT - 1) +
+                    (+PlaysData.LIKE_COUNT - 1 === 1
+                    ? " other"
+                    : " others") +
+                    " are interested"
+                    : +PlaysData.LIKE_COUNT === 1
+                    ? "1 person is interested"
+                    : +PlaysData.LIKE_COUNT + " people are interested"
+                    }}
+                  </span>
+                </div> -->
+                <!-- Share Icon -->
+                <div style="cursor: pointer">
+                  <img alt="share" data-bs-toggle="modal" data-bs-target="#shareModal" width="36" height="36" style="
+                      border-radius: 50%;
+                      background: #f1f3f6;
+                      padding: 8px;
+                    " src="assets/playdetails/share_v2.png" />
+                </div>
+              </div>
+
+              <!-- Mobile View: Like + Button + Share in two columns -->
+              <div class="d-flex d-md-none justify-content-between align-items-center  flex-wrap gap-2">
+
+
+                <!-- Share Icon -->
+                <div style="cursor: pointer">
+                  <img alt="share" data-bs-toggle="modal" data-bs-target="#shareModal" width="36" height="36" style="
+                      border-radius: 50%;
+                      background: #f1f3f6;
+                      padding: 8px;
+                    " src="assets/playdetails/share_v2.png" />
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 15px" class="description" #desc [class.expanded]="expanded"
+              [innerHTML]="PlaysData.DESCRIPTION"></div>
+
+            <button (click)="toggle()" *ngIf="showbutton == true" style="
+                font-size: 14px;
+                font-weight: 600;
+                line-height: 133%;
+                letter-spacing: normal;
+                color: rgb(36, 46, 68);
+              ">
+              {{ expanded ? "Show Less" : "Show More" }}&nbsp;
+              <i class="fa-solid" [ngClass]="expanded ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+            </button>
+          </div>
+          <!-- <hr
+            *ngIf="castData?.length > 0 || crewData?.length > 0"
+            style="color: #909193; margin-top: 20px"
+          /> -->
+
+          <div *ngIf="galleryData.length > 0" class="container gallery-wrapper my-4"
+            style="padding-left: 0px; padding-right: 0px">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h3 class="css-fnaook">Gallery</h3>
+              <button class="btn btn-link p-0 text-decoration-none show-all-btn d-block d-md-none"
+                (click)="openModal(0)">
+                Show All
+              </button>
+            </div>
+
+            <div class="gallery-scroll d-flex gap-2 overflow-auto">
+              <div *ngFor="let image of galleryData.slice(0, 5); let i = index" class="gallery-thumb"
+                (click)="openModal(i)">
+                <img [src]="image.fullUrl" [alt]="image.alt" class="img-fluid" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal -->
+          <div class="modal fade" id="galleryModal" tabindex="-1">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+              <div class="modal-content bg-dark text-white">
+                <div class="modal-body position-relative p-0">
+                  <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3"
+                    data-bs-dismiss="modal"></button>
+
+                  <div class="text-center py-3 modal-img-container">
+                    <img [src]="galleryData[selectedIndex]?.fullUrl" class="modal-main-image" />
+                  </div>
+
+                  <div class="modal-thumbs-wrapper overflow-auto px-3 pb-3">
+                    <div class="d-flex flex-nowrap gap-2 justify-content-center">
+                      <img *ngFor="let img of galleryData; let i = index" [src]="img.fullUrl"
+                        (click)="selectedIndex = i" [class.border]="i === selectedIndex"
+                        class="img-thumbnail thumb-img" />
+                    </div>
+                  </div>
+
+                  <button class="modal-nav left" (click)="prevImage()" *ngIf="canShowPrev()">
+                    ❮
+                  </button>
+                  <button class="modal-nav right" (click)="nextImage()" *ngIf="canShowNext()">
+                    ❯
+                  </button>
+
+                  <!-- <button (click)="prevImage()" *ngIf="canShowPrev()">
+                    Prev
+                  </button>
+                  <button (click)="nextImage()" *ngIf="canShowNext()">
+                    Next
+                  </button> -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr *ngIf="
+              PlaysData !== undefined &&
+              ExtraInfo.length > 0
+            " style="
+              color: #909193;
+              margin-top: 27px;
+              margin-bottom: 22px !important;
+            " />
+          <div *ngIf="
+              PlaysData !== undefined &&
+              ExtraInfo.length > 0
+            " class="d-flex justify-content-between align-items-center" style="
+              margin-top: 0px;
+              padding: 0px 10px;
+              padding-left: 0px;
+              padding-right: 0px;
+            ">
+            <h3 class="css-fnaook">Extra Information</h3>
+          </div>
+          <div class="mt-4" Style="padding: 0px 10px;" *ngIf="
+              PlaysData !== undefined &&
+              ExtraInfo.length > 0
+            " style="
+              border-radius: 0px;
+              border: none;
+              background: #ffffff;
+              padding: 0px 10px;
+              margin-top: 0px !important;
+            ">
+            <div [ngClass]="{ 'clamp-text': !showextra }">
+              <div *ngFor="let extra of ExtraInfo | slice : 0 : (showextra ? ExtraInfo.length : 5);">
+                <p *ngIf="ExtraInfo!==undefined "
+                  style="font-weight: 600 !important;font-size: 17px !important;    margin-bottom: 3px !important;">
+                  {{extra?.TITLE}}</p>
+                <div [innerHTML]="extra?.DESCRIPTION" style="margin-bottom: 20px !important;">
+                </div>
+              </div>
+            </div>
+
+
+            <button *ngIf="ExtraInfo.length > 0" (click)="showextra = !showextra"
+              style="font-size: 14px; font-weight: 600; margin-top: 15px">
+              {{ showextra ? "Show Less" : "Show More" }}
+              <i class="fa-solid" [ngClass]="showextra ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+            </button>
+          </div>
+
+
+          <!-- <div *ngIf="socialFeedData.length > 0">
+            <hr style="
+                color: #909193;
+                margin-top: 22px;
+                margin-bottom: 21px !important;
+                padding: 0px 10px;
+              " /> -->
+          <!-- <div class="d-flex justify-content-between align-items-center mb-3"
+              style="margin-top: 0; margin-bottom: 0 !important">
+              <h3 class="css-fnaook" style="margin-bottom: 5px !important">
+                Social Media Details
+              </h3>
+            </div> -->
+          <!-- <div style="padding-left: 10px">
+              <ul class="social-feed-list">
+                <li style="font-size: 13px" *ngFor="let item of socialFeedData" (click)="openLink(item.URL)">
+                  {{ item.TITLE }}
+                </li>
+              </ul>
+            </div> -->
+
+          <!-- <section class="py-3" *ngIf="socialFeedData?.length > 0"
+              style="background: #ffffff; border-radius: 12px;padding-top: 0px !important;">
+              <div class="container px-0">
+                <div class="social-scroll-containers" style="padding-bottom: 0px !important;">
+                  <div class="gallery-thumbs" *ngFor="let item of socialFeedData" (click)="openLink(item.URL)">
+                    <img [src]="
+            item.MIMAGE
+              ? retriveimgUrl + 'socialFeedImage/' + item.MIMAGE
+              : 'assets/images/event-imgs/socialThumbnail.jpg'
+          " alt="{{ item.TITLE }}" class="img-fluid"
+                      style="border: 1.5px solid #aa0303 !important;height: 200px !important;" />
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </div> -->
+
+          <div>
+            <hr style="
+                color: #909193;
+                margin-top: 22px;
+                margin-bottom: 21px !important;
+                padding: 0px 10px;
+              " />
+            <div class="filter-container">
+              <button class="filter-chip" [class.active]="selectedTags.length === 0" (click)="clearTags()">
+                All
+              </button>
+              <button class="filter-chip" [ngClass]="{'active': selectedTags.includes(tagname)}"
+                (click)="toggleTag(tagname)" *ngFor="let tagname of TAGS_NAMESList">{{tagname}}</button>
+
+            </div>
+
+          </div>
+          <div class="explore-events p-80" style="padding: 0px; ">
+            <div class="container-fluid px-2 scroll-wrapper">
+              <!-- <div *ngIf="showLeftRightArrows" class="scroll-arrow-button left" (click)="scrollLeft()">
+                <i class="fa-solid fa-caret-left"></i>
+              </div>
+              <div *ngIf="showLeftRightArrows" class="scroll-arrow-button right" (click)="scrollRight()">
+                <i class="fa-solid fa-caret-right"></i>
+              </div> -->
+              <div class="row scroll-items" data-ref="event-filter-content" #scrollContainer
+                *ngIf="listofallcategorydata != undefined && listofallcategorydata.length > 0">
+                <div class="col-6 col-sm-6 col-md-3 col-lg-3 event-card-wrapper" style="margin-bottom: 0px !important"
+                  *ngFor="let event of listofallcategorydata; let j = index">
+                  <div class="main-card mt-4">
+                    <div class="event-thumbnail">
+                      <a (click)="onEventClick(event)" class="thumbnail-img" style="
+                          border-top-left-radius: 16px;
+                          border-top-right-radius: 16px;
+                        ">
+                        <img *ngIf="event.EVENT_IMAGE" style="
+                            border-bottom-left-radius: 0px !important;
+                            border-bottom-right-radius: 0px !important;
+                          " [src]=" retriveimgUrl +
+                  'eventImages/' +event.EVENT_IMAGE" alt="{{ event.EVENT_IMAGE }}" (error)="onImageError($event)" />
+                      </a>
+                      <span class="bookmark-icon" *ngIf="event.IS_PROMOTED">Promoted</span>
+                    </div>
+                    <!-- <div class="event-footer"
+                                            style="background-color: black;border-bottom-right-radius: 5px;border-bottom-left-radius: 5px;padding: 3px 6px;">
+
+                                            <div class="event-timing small"
+                                                style="color: #e8e8e8; font-size: 11px; justify-content: space-around;">
+                                                <span><i
+                                                        class="fa-solid fa-calendar-day me-2"></i>{{event.schedules[0].SHOW_DATE
+                                                    | date:'MMM dd'}}</span><span class="ms-3"><i
+                                                        class="fa-solid fa-clock me-2"></i>{{event.schedules[0]['SHOW_TIME']}}</span>
+                                            </div>
+                                        </div> -->
+                    <div class="event-content single-line-tooltip" style="
+                        padding: 4px 10px 12px;
+                        border: 1px solid rgba(0, 0, 0, 0.0784313725);
+                        border-radius: 0px 0px 16px 16px;
+                        background: #ffffff;
+                        border-top: none;
+                      ">
+                      <!-- <span style="
+                          font-size: 11px;
+                          color: #7c5353;
+                          font-weight: 600;
+                        ">
+                      
+                        <i class="fa-solid fa-calendar-day"></i>
+
+                        {{ event?.schedules[0].SHOW_DATE | date : "dd MMM," }}
+                        {{ event?.schedules[0]["SHOW_TIME"] }}
+                      </span> -->
+
+                      <div class="event-row">
+                        <div class="event-half event-date">
+                          <span class="fontsizee1">
+                            <i class="fa-solid fa-calendar-day"></i>
+                            {{ event?.schedules[0].SHOW_DATE | date : "dd MMM," }}
+                            {{ event?.schedules[0]["SHOW_TIME"] }}
+                          </span>
+                        </div>
+                        <div class="event-half event-genre">
+                          <a style="height: auto !important;" *ngIf="event?.SUB_CATEGORY_NAME"
+                            class="text-dark badgee clamp-text-for-tags fontsizee" [title]="event.SUB_CATEGORY_NAME">
+                            <!-- <span style="height: auto !important;"  *ngIf="event != undefined && event.SUB_CATEGORY_NAME"
+           > -->
+                            {{ getFirstGenre2(event.SUB_CATEGORY_NAME) }}
+                            <!-- </span> -->
+                          </a>
+                          <a style="height: auto !important;" *ngIf="!event.SUB_CATEGORY_NAME && event?.GENRE_NAMES"
+                            [title]="event.GENRE_NAMES" class="text-dark badgee clamp-text-for-tags fontsizee">
+                            <!-- <span style="height: auto !important;"  *ngIf="event != undefined && event.GENRE_NAMES"
+            > -->
+                            {{ getFirstGenre(event.GENRE_NAMES) }}
+                            <!-- </span> -->
+                          </a>
+                        </div>
+                      </div>
+                      <a class="event-title" [title]="event.EVENT_NAME" style="
+                          min-height: 20px;
+                          display: block;
+                          white-space: nowrap;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                          cursor: pointer;
+                          line-height: 20px !important;
+                          font-size: 12px !important;
+                          margin-bottom: 0px;
+                          letter-spacing: 1px;
+                          color: #000 !important;
+                        " (click)="onEventClick(event)">
+                        {{ event.EVENT_NAME }}
+                      </a>
+                      <div *ngIf="event.VENUE_NAME"
+                        style="font-size: 11px !important;margin-top: 0px !important;color: #313131 !important;"
+                        class="subnamm" [title]="event.VENUE_NAME">
+                        {{
+                        event.VENUE_NAME
+                        }}
+                      </div>
+                      <!-- vaishnavi -->
+                      <div *ngIf="event.LANGUAGE_NAMES" style="font-size: 10px !important" class="subnamm"
+                        [title]="event.LANGUAGE_NAMES">
+                        {{
+                        event.LANGUAGE_NAMES.split(",").slice(0, 2).join(", ")
+                        }}
+                      </div>
+                      <div *ngIf="!event.LANGUAGE_NAMES && event.TAGS_NAMES" style="font-size: 10px !important"
+                        class="subnamm" [title]="event.TAGS_NAMES">
+                        {{ event.TAGS_NAMES.split(",").slice(0, 2).join(", ") }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="load-more-sentinel col-12 text-center py-3" *ngIf="hasMoreEvents">
+                  <div *ngIf="isLoadingMore" class="spinner-border text-secondary" role="status" style="width: 1.5rem; height: 1.5rem;">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                </div>
+                <div *ngIf="listofallcategorydata?.length==0" style="height: 50vh; align-items: center;"
+                  class=" col-12">
+                  <div style="text-align: center;">
+                    <p>No events data available</p>
+                    <button class="book-btn btn btn-danger mt-3 w-md-auto"
+                      style="font-weight: 500;width: auto !important;" (click)="gotoHome()">
+                      <i class="fa-solid fa-arrow-left"></i> Back To Home &nbsp;
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr style="
+              color: #909193;
+              margin-bottom: 22px !important;
+            " />
+          <div *ngIf="
+              PlaysData !== undefined &&
+              PlaysData.TERMS_CONDITIONS &&
+              cleanedTerms.length > 0
+            " class="d-flex justify-content-between align-items-center" style="
+              margin-top: 0px;
+              padding: 0px 10px;
+              padding-left: 0px;
+              padding-right: 0px;
+            ">
+            <h3 class="css-fnaook">Terms & Conditions</h3>
+          </div>
+          <div class="mt-4" *ngIf="
+              PlaysData !== undefined &&
+              PlaysData.TERMS_CONDITIONS &&
+              cleanedTerms.length > 0
+            " style="
+              border-radius: 0px;
+              border: none;
+              background: #ffffff;
+              padding: 0px !important;
+              margin-top: 0px !important;
+              margin-bottom: 50px !important;
+            ">
+            <ul style="padding-left: 16px !important; list-style: disc !important">
+              <li *ngFor="
+                  let line of cleanedTerms
+                    | slice : 0 : (showTerms ? cleanedTerms.length : 5)
+                " style="font-size: 13px !important;">
+                <span style="letter-spacing: 0.1px;line-height: 1.6;">{{ line }}</span>
+              </li>
+            </ul>
+
+            <button *ngIf="cleanedTerms.length>5" (click)="toggleTerms()"
+              style="font-size: 14px; font-weight: 600; margin-top: 15px">
+              {{ showTerms ? "Show Less" : "Show More" }}&nbsp;
+              <i class="fa-solid" [ngClass]="showTerms ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-4 col-lg-5 col-md-12 d-none d-md-block">
+        <div class="sticky-sidebar">
+          <div class="main-card event-right-dt" style="border-radius: 16px;">
+            <div class="col-md-12" style="line-height: 30px; padding: 15px; padding-top: 15px">
+              <div class="bp-title" style="border: none">
+                <h4 style="padding: 0px !important">
+                  <h1 class="fw-bold fs-3 fs-md-1 font-ss maint" style="margin-bottom: 12px">
+                    {{ PlaysData.EVENT_NAME }}
+                  </h1>
+                </h4>
+              </div>
+
+              <div class="icon-text-pair" style="margin-top: 9px" *ngIf="
+                  isSingleDate &&
+                  PlaysData != undefined && mainShowDates!=undefined && mainShowDates.length> 0
+                ">
+                <i class="fa-regular fa-calendar"></i>
+                <span style="font-size: 13px;margin-left: 3px;"> {{ mainShowDates[0] | date : "MMM dd, yyyy" }}</span>
+              </div>
+
+              <div class="icon-text-pair" style="margin-top: 9px" *ngIf="
+                  !isSingleDate &&
+                  PlaysData != undefined &&
+                  mainShowDates != undefined &&
+                  mainShowDates.length > 0
+                ">
+                <i class="fa-regular fa-calendar"></i>
+                <span style="font-size: 13px;margin-left: 3px;"> {{ mainShowDates[0] | date : "MMM dd," }} onwards
+                </span>
+              </div>
+
+              <div class="icon-text-pair" *ngIf="PlaysData != undefined">
+                <i class="fa-regular fa-clock"></i>
+                <span style="font-size: 13px;margin-left: 3px;"> {{ mulTime.length==1?mulTime[0]:'Multiple
+                  Show Times'}}
+                </span>
+              </div>
+              <div class="icon-text-pair" *ngIf="PlaysData != undefined">
+                <i class="fa-sharp fa-solid fa-location-dot"></i>
+                <span style="font-size: 13px;margin-left: 3px;"> {{
+                  venues.length==1?venues[0]:'Multiple
+                  Venues'}}
+                </span>
+              </div>
+              <div class="icon-text-pair scroll-wrappera" *ngIf="PlaysData.CATEGORY_NAME != undefined">
+                <i class="fa-solid fa-tags icon-fixed"></i>
+                <div class="scroll-itemsa" style="font-size: 13px;display: inline;margin-left: 3px;"> {{
+                  PlaysData.CATEGORY_NAME }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="main-card event-right-dt" style="border-radius: 16px; margin-top: 20px"
+            *ngIf="PlaysData != undefined ">
+            <div class="col-md-12" style="line-height: 30px; padding: 15px; padding-top: 15px">
+              <div class="bp-title" style="border: none !important">
+                <h4 style="padding: 0px !important; border: none !important">
+                  <h1 class="fw-bold fs-3 fs-md-1 font-ss maint" style="margin-bottom: 12px; border: none !important">
+                    Venue{{
+                    PlaysData != undefined &&
+                    mainShowDates.length > 1
+                    ? "s"
+                    : ""
+                    }}
+                  </h1>
+                </h4>
+              </div>
+
+              
+              <div *ngFor="let venue of mainShowVenues ; let i = index">
+                <hr style="color: #909193; margin-top: 0px" />
+
+                <div class="css-49j8g3 flex">
+                  <p class="css-1osrlwy">
+                    {{venue=='To Be Decided' ? 'Venue ' + venue : venue }}
+                  </p>
+
+                </div>
+                
+              </div>
+            
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+    <!-- Share Modal -->
+    <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" style="width: 300px; margin: auto">
+        <div class="modal-content p-3 rounded-3" style="padding: 0px !important; border: none !important">
+          <div class="modal-body">
+            <div class="popup">
+              <header style="margin: 6px 0px !important">
+                <span>Share Link Via</span>
+                <div class="close" data-bs-dismiss="modal" aria-label="Close">
+                  <i class="fa-solid fa-xmark"></i>
+                </div>
+              </header>
+              <div class="content">
+                <ul class="icons">
+                  <a [href]="'https://www.facebook.com/sharer/sharer.php?u=' + currentUrl" target="_blank">
+                    <i class="fab fa-facebook-f"></i>
+                  </a>
+                  <a [href]="'https://twitter.com/intent/tweet?url=' + currentUrl" target="_blank">
+                    <i class="fab fa-twitter"></i>
+                  </a>
+                  <a [href]="'https://api.whatsapp.com/send?text=' + currentUrl" target="_blank">
+                    <i class="fab fa-whatsapp"></i>
+                  </a>
+                  <a [href]="'https://www.linkedin.com/sharing/share-offsite/?url=' + currentUrl" target="_blank">
+                    <i class="fab fa-linkedin"></i>
+                  </a>
+                </ul>
+
+                <div class="field" style="margin-top: 28px; border: 1px solid grey; border-radius: 9px;">
+                  <i class="fa-solid fa-link"></i>
+                  <input type="text" readonly [value]="currentUrl" />
+                  <button
+                    style="cursor: pointer !important; border-top-right-radius: 9px; border-bottom-right-radius: 9px; padding: 6px 10px !important;"
+                    (click)="copyToClipboard()">
+                    Copy
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>

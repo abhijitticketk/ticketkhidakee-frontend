@@ -1,0 +1,32 @@
+
+p {
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+h5 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    padding-top: 7px;
+}
+a:hover{
+    color: #a50000 !important;
+    font-weight: 800;
+}
+@media (max-width: 900px) {
+  .ptop{
+    padding-top: 0px !important;
+  }
+
+  .wrapMT{
+    margin-top: 20px !important;
+  }
+}
+
+@media (min-width: 901px) {
+  .ptop{
+    padding-top: 64px !important;
+  }
+
+}

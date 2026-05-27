@@ -1,0 +1,109 @@
+<!-- <app-common-loader *ngIf="isLoading$ | async" class="overlay-loader"></app-common-loader> -->
+
+<!-- <app-common-loader [isVisible]="(isLoading$ | async) ?? false"></app-common-loader>
+
+<div *ngIf="!(isLoading$ | async)">
+  <app-navbar *ngIf="showFooter"></app-navbar>
+  <router-outlet></router-outlet>
+  <app-footer *ngIf="showFooter"></app-footer>
+</div> -->
+
+<app-common-loader [isVisible]="(isLoading$ | async) ?? false"></app-common-loader>
+
+<app-navbar *ngIf="showFooter"></app-navbar>
+
+<!-- Prevent content from rendering during loader -->
+<div *ngIf="!(isLoading$ | async)">
+  <router-outlet></router-outlet>
+</div>
+
+<app-footer *ngIf="(!(isLoading$ | async) || showFooter || hideFooter) && hidefooteronly "></app-footer>
+<!-- <app-footer *ngIf="showFooter && hideFooter"></app-footer> -->
+<!-- Internet Disconnected Overlay -->
+<div *ngIf="!isOnline" class="app-no-internet-overlay">
+  <div class="app-no-internet-modal">
+    <div class="app-no-internet-svg" style="    display: flex
+;
+    justify-content: center;">
+      <!-- Animated WiFi SVG -->
+      <svg viewBox="0 0 64 64" width="120" height="120" class="wifi-svg">
+        <circle cx="32" cy="48" r="4" class="dot"></circle>
+        <path d="M20 40a16 16 0 0 1 24 0" class="wave wave1"></path>
+        <path d="M14 34a24 24 0 0 1 36 0" class="wave wave2"></path>
+        <path d="M8 28a32 32 0 0 1 48 0" class="wave wave3"></path>
+        <line x1="0" y1="0" x2="64" y2="64" class="cut-line" />
+      </svg>
+    </div>
+
+    <h2 class="title">Oops! You’ve lost connection. </h2>
+    <h2 class="title">Please check your internet or wait — the page will refresh
+      automatically when you're back online.</h2>
+    <p class="subtitle">Trying to reconnect…</p>
+  </div>
+</div>
+
+<!-- Internet Reconnected Banner -->
+<div *ngIf="showReconnected" class="app-internet-restored-banner">
+  ✅ Internet Restored — Refreshing...
+</div>
+
+
+
+<div class="modal fade" id="openad" tabindex="-1" aria-labelledby="selectSesdsdsdatCountModalLabel" aria-hidden="true">
+
+  <div *ngIf="!IsMobile" class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content rounded-3 shadow-xl border-0">
+      <div class="modal-body p-0 text-center position-relative">
+
+        <div class="position-absolute end-0 me-2 mt-2 d-flex align-items-center" style="z-index: 1050;">
+          <!-- <span *ngIf="countdownValue !== undefined && countdownValue > 0"
+                class="me-2 p-1 px-2 rounded-pill text-white fw-bold"
+                style="background-color: rgba(0, 0, 0, 0.6); font-size: 14px;">
+            Closing in {{ countdownValue }}
+          </span> -->
+          <span *ngIf="countdownValue !== undefined && countdownValue > 0"
+            class="me-2 p-1 px-2 rounded-pill text-white fw-bold"
+            [ngStyle]="{'background-color': getTimerBackgroundColor()}" style="font-size: 14px;">
+            Closing in {{ countdownValue }}
+          </span>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"
+            style="background-color: white; color: black; font-size: 20px !important; font-weight: bold"
+            aria-label="Close"></button>
+        </div>
+
+        <img (click)="routeeee()" [src]="addimgURL" style="width: 100%;border-radius: 0.5rem;" alt="image"
+          class="img-fluid">
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="IsMobile" class="modal-dialog modal-dialog-centered modal-xl" style="align-items: self-start;
+    justify-content: center;
+    padding-top: 30px;">
+    <div class="modal-content rounded-3 shadow-xl border-0"
+      style="max-height: 80vh !important;width: max-content !important;background: none;">
+
+      <div class="modal-body p-0 text-center position-relative" style="max-height: 80vh !important;">
+
+        <div class="position-absolute end-0 me-2 mt-2 d-flex align-items-center" style="z-index: 1050;">
+          <!-- <span *ngIf="countdownValue !== undefined && countdownValue > 0"
+                class="me-2 p-1 px-2 rounded-pill text-white fw-bold"
+                style="background-color: rgba(0, 0, 0, 0.6); font-size: 14px;">
+            Closing in {{ countdownValue }}
+          </span> -->
+          <span *ngIf="countdownValue !== undefined && countdownValue > 0"
+            class="me-2 p-1 px-2 rounded-pill text-white fw-bold"
+            [ngStyle]="{'background-color': getTimerBackgroundColor()}" style="font-size: 14px;">
+            Closing in {{ countdownValue }}
+          </span>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"
+            style="background-color: white;color: black;font-size: 20px !important;font-weight: bold;"
+            aria-label="Close"></button>
+        </div>
+
+        <img (click)="routeeee()" [src]="addimgURL" style="width: 100%;border-radius: 0.5rem;height: 80vh !important;"
+          alt="image" class="img-fluid">
+      </div>
+    </div>
+  </div>
+</div>

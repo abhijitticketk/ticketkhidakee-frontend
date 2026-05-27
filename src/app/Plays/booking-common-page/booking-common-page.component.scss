@@ -1,0 +1,3117 @@
+:root {
+    /* #a50000: #a50000;
+            #fed7d7: #fed7d7; */
+    --gray-light: #f7fafc;
+    --gray: #e2e8f0;
+    --gray-dark: #000;
+    --text-dark: #1a202c;
+    --white: #ffffff;
+    --success: #38a169;
+    --warning: #f6ad55;
+    --border-radius: 8px;
+}
+
+// header
+
+.custom-header {
+    margin-top: 69px;
+    // background: linear-gradient(135deg, #b71c1c, #d32f2f);
+    // background:linear-gradient(135deg, #f0f0f0, #f0f0f0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    position: sticky;
+    top: 69px;
+    //   top: 70px;
+    z-index: 1000;
+    padding: 10px 0;
+}
+
+.header-container {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    color: #fff;
+    border-radius: 6px;
+    padding: 0 10px;
+    font-size: 14px;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    //   gap: 4px;
+    gap: 0px;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    // padding: 8px 0;
+    padding: 0px 0;
+    color: rgb(32, 32, 32);
+}
+
+// .page-title {
+//     flex: 1;
+//     text-align: center;
+//     font-size: 1.25rem;
+//     font-weight: 600;
+// }
+
+.page-title {
+    font-size: 14px;
+    margin: 0;
+    font-weight: 600;
+    //   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.venue-details {
+    margin: 0;
+    font-size: 11px;
+    font-weight: bold;
+
+    // text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    color: #3d3d3d;
+}
+
+.datetime-separator {
+    padding: 0 4px;
+}
+
+.datetime-info .date,
+.datetime-info .time {
+    display: inline;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.loginDIv {
+    padding: 15px !important;
+}
+
+/* Responsive for mobile */
+
+
+
+// * {
+//     margin: 0;
+//     padding: 0;
+//     box-sizing: border-box;
+//     // font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+// }
+
+body {
+    background-color: #f5f5f5;
+    color: #1a202c;
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    overflow: auto;
+    min-height: 30px;
+}
+
+.queue-warning {
+    background: #fff3cd;
+    /* soft warning yellow */
+    border: 1px solid #ffeeba;
+    color: #856404;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.1;
+    text-align: justify;
+}
+
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 95%;
+}
+
+/* Ensure main stretches */
+.flex-fill {
+    flex: 1 1 auto;
+}
+
+.customcontainer {
+    max-width: 95vw;
+    margin: 0 auto;
+    padding: 0 1rem;
+    overflow: auto;
+}
+
+header {
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+
+
+.back-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #1a202c;
+}
+
+
+
+.stepper {
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 0;
+    position: relative;
+    // padding-bottom: 10px;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex: 1;
+}
+
+.step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 21px;
+    left: 54%;
+    width: calc(100% - 1rem);
+    height: 2px;
+    background-color: #e2e8f0;
+    /* default */
+    z-index: 1;
+    transform: translateX(0%);
+    transition: background-color 0.3s ease-in-out;
+}
+
+.step.completed:not(:last-child)::after {
+    background-color: #a50000;
+}
+
+/* Optional: Shorter line so it only reaches halfway to next step */
+// .step:not(:last-child)::after {
+//     left: 50%;
+//     width: calc(100% - 1rem); /* adjust as needed */
+//     transform: translateX(0%);
+// }
+/* Step circle */
+.step-number {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 2px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    z-index: 2;
+}
+
+/* Highlight active/completed step */
+.step.active .step-number,
+.step.completed .step-number {
+    background-color: #a50000;
+    border-color: #a50000;
+    color: #ffffff;
+}
+
+/* Step label styling */
+.step-label {
+    font-size: 0.875rem;
+    color: #000;
+    text-align: center;
+}
+
+.step.active .step-label {
+    color: #a50000;
+    font-weight: 600;
+}
+
+.step-number,
+.step-label {
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out,
+        border-color 0.3s ease-in-out;
+}
+
+.step.completed .step-label {
+    color: #a50000;
+}
+
+.main-content {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin: 0px 0px 2rem;
+    padding: 1.5rem;
+    // margin-top: 16px;
+    // height: 60vh;
+}
+
+.main-content11 {
+    // background-color: #ffffff;
+    // border-radius: 8px;
+    // box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    margin-top: 16px;
+}
+
+.section-title1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0;
+    // margin-bottom: 1.5rem;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0;
+    // margin-bottom: 1.5rem;
+}
+
+.legend {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.legend-indicator {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+}
+
+.available-indicator {
+    background-color: #38a169;
+}
+
+.filling-indicator {
+    background-color: #f6ad55;
+}
+
+.soldout-indicator {
+    background-color: #e2e8f0;
+}
+
+.date-selection {
+    margin-bottom: 2rem;
+}
+
+.date-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.date-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.date-card:hover {
+    border-color: #a50000;
+}
+
+.date-card.selected {
+    border-color: #a50000;
+    background-color: #fed7d7;
+}
+
+.date-card.active {
+    background-color: #a50000;
+    border-color: #a50000;
+    color: #ffffff;
+}
+
+.see-more {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    color: #a50000;
+    font-size: 0.875rem;
+    text-decoration: none;
+    gap: 0.25rem;
+}
+
+.time-selection {
+    margin-bottom: 2rem;
+}
+
+.time-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+}
+
+.time-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.time-card:hover {
+    border-color: #a50000;
+}
+
+.time-card.selected {
+    border-color: #a50000;
+    background-color: #a50000;
+    color: #fff;
+}
+
+.tstatus-filling-fast {
+    display: grid;
+    border: 1px solid #FFD700;
+    border-left: 3px solid #FFD700;
+    // color: #ffd901;
+}
+
+.tstatus-almost-sold {
+    display: grid;
+    border: 1px solid #ff6200;
+    border-left: 3px solid #ff6200;
+    // color: #ff6200;
+}
+
+.tstatus-sold-out {
+    display: grid;
+    opacity: 1 !important;
+    border: 1px solid #a50000 !important;
+    border-left: 3px solid #a50000 !important;
+}
+
+.tstatus-filling-fast1 {
+    color: #FFD700 !important;
+}
+
+.tstatus-almost-sold1 {
+    color: #ff6200 !important;
+}
+
+.tstatus-sold-out1 {
+    color: #a50000 !important;
+}
+
+.time-card.disabled {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+    background-color: #f0f0f0;
+    color: #3f3f3f;
+}
+
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #ffffff;
+    padding: 8px 0;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    /* optional: ensure it's above other content */
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    outline: none;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    background-color: #a50000;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #c53030;
+}
+
+.btn-primary:disabled {
+    background-color: #e2e8f0;
+    cursor: not-allowed;
+}
+
+.btn-outline {
+    background-color: transparent;
+    //   border: 1px solid #1f2937; /* Use a darker gray or black */
+    border: 1px solid #ccc;
+    color: #1f2937;
+    border-radius: 4px;
+    /* Slight rounding for smoother look */
+    transition: all 0.2s ease-in-out;
+    box-shadow: none;
+    /* Ensure no box blur */
+}
+
+.btn-outline:hover {
+    border-color: #dc2626;
+    /* Tailwind's red-600 */
+    color: #dc2626;
+    background-color: rgba(220, 38, 38, 0.05);
+    /* light hover bg for feedback */
+}
+
+
+.footer-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+/* --- NEW STYLES FOR TICKET CATEGORY (STEP 2) --- */
+
+.ticket-info-text {
+    font-size: 0.9em;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.ticket-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    /* Soft, prominent shadow */
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    /* Align to top for "Know less" details */
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    /* Allow wrapping on smaller screens */
+}
+
+.ticket-details {
+    flex-grow: 1;
+    /* Allows details to take available space */
+    margin-right: 20px;
+    /* Space between details and action, for larger screens */
+    /* On smaller screens, this margin might be overridden by flex-wrap */
+}
+
+.ticket-category-title {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.ticket-price {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #000;
+    /* Black for price */
+    margin-bottom: 10px;
+    display: flex;
+    /* Align currency, price, and status horizontally */
+    align-items: start;
+    /* Align text baselines */
+}
+
+.price-currency {
+    font-size: 0.8em;
+    /* Smaller for currency symbol */
+    margin-right: 2px;
+}
+
+.availability-status {
+    font-size: 0.7em;
+    font-weight: normal;
+    color: #ff9800;
+    /* Orange for fast filling */
+    margin-left: 10px;
+    padding: 2px 8px;
+    background-color: #fff3e0;
+    /* Light orange background */
+    border-radius: 4px;
+    white-space: nowrap;
+    /* Prevent text wrapping */
+}
+
+/* Know More / Know Less Section */
+.know-more {
+    margin-top: 10px;
+}
+
+.know-more-checkbox {
+    display: none;
+    /* Hide the actual checkbox input */
+}
+
+.know-more-label {
+    color: #007bff;
+    /* Blue for the toggle text */
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+    /* Use a pseudo-element to change "Know less" to "Know more" */
+    /* This makes the CSS a bit more complex than directly changing text,
+       but allows for pure CSS toggle. If you need dynamic text changes,
+       consider using ngIf or a component property. */
+}
+
+/* Style for the icon within the label */
+.know-more-label i {
+    margin-left: 5px;
+    transition: transform 0.3s ease;
+}
+
+/* When the checkbox is checked (meaning details are visible, so label should say "Know less") */
+.know-more-checkbox:checked+.know-more-label i {
+    transform: rotate(180deg);
+    /* Arrow points up for "Know less" */
+}
+
+/* When the checkbox is NOT checked (meaning details are hidden, so label should say "Know more") */
+.know-more-checkbox:not(:checked)+.know-more-label i {
+    transform: rotate(0deg);
+    /* Arrow points down for "Know more" */
+}
+
+/* Pseudo-element to control the text 'Know more'/'Know less' */
+.know-more-label::before {
+    content: "Know less";
+    /* Default text when details are shown */
+}
+
+.know-more-checkbox:not(:checked)+.know-more-label::before {
+    content: "Know more";
+    /* Change text when details are hidden */
+}
+
+.know-more-details {
+    list-style: disc;
+    /* Bullet points */
+    padding-left: 20px;
+    /* Indentation for bullet points */
+    margin-top: 10px;
+    font-size: 0.85em;
+    color: #555;
+    max-height: 0;
+    /* Initially hide content */
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    /* Smooth collapse/expand */
+    opacity: 0;
+}
+
+.know-more-checkbox:checked~.know-more-details {
+    max-height: 200px;
+    /* Sufficient height to show content (adjust if needed) */
+    padding-top: 10px;
+    /* Space above list items */
+    opacity: 1;
+}
+
+/* Ticket Action (Add Button / Quantity Selector) */
+.ticket-action {
+    display: flex;
+    align-items: center;
+    /* Vertically align items */
+    justify-content: flex-end;
+    /* Push to the right on larger screens */
+    // margin-top: 10px;
+    /* Provides space if ticket-details wraps above it on smaller screens */
+    min-width: 120px;
+    /* Ensure enough space for the quantity selector */
+}
+
+.btn-add {
+    background-color: #a50000;
+    /* Red color for 'Add' as per image */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 25px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+    /* Prevent text wrapping inside button */
+}
+
+.btn-add:hover {
+    background-color: #c82333;
+    /* Darker red on hover */
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    /* Ensures buttons and quantity display stay within border-radius */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    /* Subtle shadow for the selector */
+}
+
+.btn-quantity-minus,
+.btn-quantity-plus {
+    // background-color: #f0f0f0;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    color: #333;
+    /* Dark grey for icons/text */
+    min-width: 40px;
+    /* Ensure consistent button size */
+    display: flex;
+    /* For centering the icon */
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+// .btn-quantity-minus,
+// .btn-quantity-plus {
+//     // background-color: #f0f0f0;
+//     border: none;
+//     padding: 10px 15px;
+//     font-size: 1em;
+//     cursor: pointer;
+//     transition: background-color 0.2s ease;
+//     color: #333;
+//     /* Dark grey for icons/text */
+//     min-width: 40px;
+//     /* Ensure consistent button size */
+//     display: flex;
+//     /* For centering the icon */
+//     justify-content: center;
+//     align-items: center;
+// }
+
+.btn-quantity-minus:hover,
+.btn-quantity-plus:hover {
+    background-color: #e0e0e0;
+}
+
+.quantity-display {
+    padding: 10px 10px;
+    /* Adjust horizontal padding to fit the number */
+    font-size: 1em;
+    font-weight: bold;
+    color: #333;
+    min-width: 30px;
+    /* Ensure space for two-digit numbers */
+    text-align: center;
+    // border-left: 1px solid #eee;
+    // border-right: 1px solid #eee;
+}
+
+/* Responsive adjustments for ticket card */
+
+
+// booking code
+
+// .container {
+// display: flex;
+// max-width: 1200px;
+// margin: 0 auto;
+// padding: 16px;
+// gap: 16px;
+// }
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.display-flex {
+    display: flex;
+    flex-direction: column;
+    /* Stacks columns vertically on mobile */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 8px;
+    /* Reduced padding for mobile */
+    gap: 8px;
+    /* Reduced gap for mobile */
+}
+
+.left-column,
+.right-column {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 12px;
+    /* Reduced padding */
+    margin-bottom: 8px;
+    /* Add some space between columns on mobile */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    /* Subtle shadow for cards */
+}
+
+.option-heading {
+    font-size: 13px;
+    /* Adjusted font size */
+    font-weight: 400;
+    color: #666;
+    margin-bottom: 12px;
+    /* Reduced margin */
+}
+
+.ticket-option {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    /* Reduced margin */
+    border: 1px solid #a50000;
+    /* Highlight selected option */
+    border-radius: 6px;
+    padding: 10px;
+    background-color: #fff8f8;
+    /* Light background for selected */
+}
+
+.radio-input {
+    margin-right: 8px;
+    /* Reduced margin */
+    margin-top: 2px;
+    appearance: none;
+    width: 16px;
+    /* Slightly smaller radio button */
+    height: 16px;
+    /* Slightly smaller radio button */
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+    /* Prevent shrinking */
+}
+
+.radio-input:checked {
+    border-color: #a50000;
+}
+
+.radio-input:checked::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    /* Adjusted for smaller radio button */
+    height: 8px;
+    /* Adjusted for smaller radio button */
+    background-color: #a50000;
+    border-radius: 50%;
+}
+
+.ticket-label {
+    font-weight: 500;
+    font-size: 13px;
+    /* Adjusted font size */
+}
+
+.eco-message {
+    display: flex;
+    align-items: center;
+    color: #4caf50;
+    font-size: 12px;
+    /* Adjusted font size */
+    margin-top: 2px;
+    margin-left: 24px;
+    /* Adjusted for smaller radio button */
+}
+
+.eco-icon {
+    margin-right: 4px;
+    /* Reduced margin */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-box {
+    background-color: #f0f5ff;
+    border-radius: 8px;
+    padding: 12px;
+    /* Reduced padding */
+    margin-top: 12px;
+    /* Reduced margin */
+}
+
+.info-title {
+    font-weight: 500;
+    margin-bottom: 8px;
+    /* Reduced margin */
+    color: #333;
+    font-size: 14px;
+    /* Adjusted font size */
+}
+
+.info-list {
+    list-style-position: inside;
+    color: #444;
+    font-size: 12px;
+    /* Adjusted font size */
+    padding-left: 0;
+    /* Remove default padding from ol */
+}
+
+.info-list li {
+    margin-bottom: 6px;
+    /* Reduced margin */
+}
+
+.event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    /* Reduced margin */
+}
+
+.event-title {
+    font-weight: 500;
+    font-size: 14px;
+    /* Adjusted font size */
+}
+
+.event-price {
+    font-weight: 600;
+    font-size: 14px;
+    /* Adjusted font size */
+    color: #a50000;
+}
+
+.ticket-type {
+    color: #666;
+    font-size: 12px;
+    /* Adjusted font size */
+    // margin-bottom: 8px; /* Reduced margin */
+}
+
+.event-details {
+    // margin-bottom: 16px;
+    // padding-bottom: 8px;
+    border-bottom: 1px dashed #eee;
+    /* Dotted line separator */
+}
+
+.event-date,
+.event-time {
+    font-size: 13px;
+    /* Adjusted font size */
+    margin-bottom: 2px;
+    /* Reduced margin */
+    color: #555;
+}
+
+.event-venue {
+    margin-top: 8px;
+    /* Reduced margin */
+}
+
+.event-venue p {
+    font-size: 13px;
+    /* Adjusted font size */
+    margin: 0;
+    /* Remove default paragraph margin */
+    color: #555;
+}
+
+.early-bird {
+    font-weight: 500;
+    margin-top: 12px;
+    /* Reduced margin */
+    margin-bottom: 6px;
+    /* Reduced margin */
+    font-size: 13px;
+    /* Adjusted font size */
+    color: #333;
+}
+
+.price-breakdown {
+    border-top: 1px solid #eee;
+    padding-top: 12px;
+    /* Reduced padding */
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    /* Reduced margin */
+    font-size: 12px;
+    /* Adjusted font size */
+    color: #555;
+}
+
+.price-row span:last-child {
+    font-weight: 500;
+    color: #333;
+}
+
+.booking-fee {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    /* Adjusted font size */
+}
+
+.fee-dropdown {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: #666;
+    padding: 0;
+    font-size: 14px;
+    /* Icon size */
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    margin-top: 8px;
+    /* Reduced margin */
+    margin-bottom: 6px;
+    /* Reduced margin */
+    padding-top: 8px;
+    /* Reduced padding */
+    border-top: 1px solid #eee;
+    font-size: 14px;
+    /* Adjusted font size */
+    color: #333;
+}
+
+.state-selection {
+    margin-bottom: 6px;
+}
+
+.state-select-label {
+    font-size: 12px;
+    /* Adjusted font size */
+    color: #666;
+    // margin-bottom: 6px; /* Reduced margin */
+    display: block;
+    /* Ensures it takes its own line */
+}
+
+.state-select {
+    width: 100%;
+    padding: 10px;
+    /* Reduced padding */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    /* Adjusted font size */
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    /* Adjusted position */
+    background-size: 16px;
+    cursor: pointer;
+}
+
+.consent-message {
+    display: flex;
+    align-items: flex-start;
+    font-size: 12px;
+    /* Adjusted font size */
+    color: #666;
+    margin-bottom: 6px;
+    /* Reduced margin */
+    line-height: 1.4;
+    /* Improve readability */
+}
+
+p {
+    font-size: 14px;
+}
+
+.info-icon {
+    margin-right: 6px;
+    /* Reduced margin */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #999;
+    /* Slightly subdued icon color */
+}
+
+.proceed-button {
+    width: 100%;
+    padding: 12px;
+    /* Reduced padding */
+    background-color: #a50000;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    /* Slightly smaller border-radius */
+    font-weight: 500;
+    font-size: 14px;
+    /* Adjusted font size */
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.proceed-button:hover {
+    background-color: #e05;
+}
+
+/* Media query for larger screens (e.g., tablets and desktops) */
+
+
+.location123 {
+    color: #040404 !important;
+    text-decoration: none !important;
+}
+
+.shadowclass {
+    border-radius: 5px;
+    padding: 12px;
+    border: 1px solid #efefef;
+    background-color: #ffffff;
+}
+
+h4 {
+    font-weight: 700;
+}
+
+.location123:hover {
+    color: #af0404 !important;
+}
+
+.badgee {
+    font-size: 11px;
+    padding: 2px 8px !important;
+    border: 1px solid #474747;
+    background: #3d3d3d;
+    margin-right: 2px;
+    color: #ffffff !important;
+    border-radius: 24px;
+}
+
+.main-event-content {
+    background-color: white;
+    border: 1px solid #a5a5a5;
+    /* Default thin gray border (equivalent to border-gray-200) */
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-top: 0px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    /* Existing shadow */
+
+    transition: all 0.3s ease;
+}
+
+.main-event-content:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    /* Enhanced hover shadow */
+}
+
+.main-event-content.selected {
+    border: 2px solid #a50000;
+}
+
+.custom-select {
+    padding: 0.625rem 1rem;
+    border-radius: 0.375rem;
+    border: 1px solid #d1d5db;
+    background-color: white;
+    appearance: none;
+    background-image: none;
+    color: #374151;
+}
+
+.text-primary {
+    color: #a50000 !important;
+}
+
+.bg-primary {
+    background-color: #a50000;
+}
+
+.icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-top: 0.125rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.border-red-500 {
+    border-color: #ef4444;
+    /* This is typically the color for red-500 in Tailwind CSS */
+}
+
+.border-gray-200 {
+    border-color: #e5e7eb;
+    /* This is typically the color for gray-200 in Tailwind CSS */
+}
+
+.ring-2 {
+    box-shadow: 0 0 0 2px var(--tw-ring-color);
+    /* Adds a 2px ring */
+}
+
+.ring-red-500 {
+    --tw-ring-color: #ef4444;
+    /* Sets the ring color to red-500 */
+}
+
+.main-content1 {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 10px;
+    /* Consistent spacing between city sections */
+    padding: 1rem 1.5rem;
+    /* Slightly less vertical padding */
+}
+
+
+
+
+.mopadding {
+    padding: 10px 10% !important
+}
+
+
+
+.section-title {
+    display: flex;
+    align-items: center;
+}
+
+.paddingnew {
+    padding-left: 10px !important;
+    padding-right: 5% !important;
+}
+
+.section-title span {
+    font-weight: bold;
+    letter-spacing: 2px;
+    white-space: nowrap;
+}
+
+/* Horizontal line on desktop */
+.section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #ccc;
+    margin-left: 15px;
+}
+
+/* Hide the line if "See All" is present (adjust if needed) */
+.section-title .see-all-link {
+    margin-left: 15px;
+    white-space: nowrap;
+}
+
+/* Mobile: center text with lines on both sides, hide See All */
+
+
+.rotate-180 {
+    transform: rotate(180deg);
+}
+
+.section-title-small {
+    font-size: 14px;
+    /* Setting a consistent font size here */
+    margin: 10px 0px;
+    display: flex;
+    align-items: center;
+    padding-left: 5px !important;
+    padding-right: 2% !important;
+}
+
+.section-title-small span {
+    font-weight: bold;
+    letter-spacing: 1px;
+    /* Slightly reduced letter spacing for better readability at smaller sizes */
+    white-space: nowrap;
+    color: #333;
+    /* Darker color for prominence */
+}
+
+/* Horizontal line on desktop */
+.section-title-small::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #e0e0e0 !important;
+    /* Lighter grey for the line */
+    margin-left: 10px;
+}
+
+/* Responsive adjustments for mobile */
+
+
+/* Custom styles for input focus states */
+.rounded-md {
+    border-radius: 0.375rem;
+    /* Tailwind's default rounded-md */
+}
+
+.border-red-500 {
+    border-color: red !important;
+}
+
+
+//
+
+.calendar-card {
+    max-width: 500px;
+    margin: auto;
+    // border-radius: 10px;
+    // box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    font-size: 13px;
+    /* General reduction */
+}
+
+.legend-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.available {
+    background-color: #28a745;
+}
+
+.fast-filling {
+    background-color: #ffc107;
+}
+
+.sold-out {
+    background-color: #6c757d;
+}
+
+.calendar-header {
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    padding: 6px 0;
+    /* reduced padding */
+    font-size: 12.5px;
+}
+
+.calendar-weekdays .calendar-weekday-col {
+    text-align: center;
+    font-weight: 600;
+    color: #555;
+    padding: 4px 0;
+    /* reduced padding */
+    font-size: 12.5px;
+}
+
+.calendar-dates {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    padding-top: 8px;
+}
+
+.calendar-date-cell {
+    text-align: center;
+    // padding: 8px 0; /* reduced vertical padding */
+    padding: 10px 0;
+    /* reduced vertical padding */
+    font-size: 12.5px;
+    // border-radius: 5px;
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    user-select: none;
+}
+
+.calendar-date-cell:hover:not(.empty-cell):not(.unavailable) {
+    background-color: #e9ecef;
+}
+
+.calendar-date-cell.selected {
+    background-color: #d32f2f;
+    color: white;
+}
+
+.calendar-date-cell.status-fast-filling {
+    color: black;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.calendar-date-cell.status-sold-out {
+    color: #aaa;
+    text-decoration: line-through;
+    cursor: not-allowed;
+    font-size: 12px;
+}
+
+.calendar-date-cell.empty-cell {
+    visibility: hidden;
+}
+
+.calendar-date-cell.inactive {
+    color: #ccc;
+    cursor: not-allowed;
+    font-size: 12px;
+}
+
+
+.see-more {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    margin-top: 6px;
+    text-decoration: none;
+    color: #007bff;
+    transition: color 0.3s ease;
+}
+
+.see-more:hover {
+    color: darkred !important;
+}
+
+.skeleton {
+    background-color: #e2e8f0;
+    /* Tailwind slate-300 */
+    border-radius: 4px;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+
+
+/* HTML: <div class="loader"></div> */
+.loader {
+    width: 50px;
+    --b: 8px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    padding: 1px;
+    background: conic-gradient(#0000 10%, #f03355) content-box;
+    -webkit-mask:
+        repeating-conic-gradient(#0000 0deg, #000 1deg 20deg, #0000 21deg 36deg),
+        radial-gradient(farthest-side, #0000 calc(100% - var(--b) - 1px), #000 calc(100% - var(--b)));
+    -webkit-mask-composite: destination-in;
+    mask-composite: intersect;
+    animation: l4 1s infinite steps(10);
+}
+
+@keyframes l4 {
+    to {
+        transform: rotate(1turn)
+    }
+}
+
+
+.scroll-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+    background-color: #bbb;
+    border-radius: 4px;
+}
+
+
+.ticket-summary-card {
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    /* Tailwind border-gray-200 */
+    border-radius: 0.5rem;
+    /* rounded-md */
+    padding: 1rem;
+    /* px-3 py-3 equivalent */
+    margin-bottom: 1rem;
+    /* mb-3 */
+    margin-left: 0.75rem;
+    /* mx-3 */
+    margin-right: 0.75rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.ticket-summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+
+
+
+
+
+
+
+
+
+// tushar
+
+
+.card {
+    background-color: #ffffff;
+
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin: 1.5rem 0;
+    padding: 1.5rem;
+    margin-top: 0px;
+}
+
+.konva-stage-wrapper {
+    height: 500px;
+    width: 100%;
+    // overflow: hidden;
+    touch-action: none;
+    border-radius: 16px;
+    padding-top: 50px;
+
+    overflow: hidden;
+    touch-action: none;
+    position: relative;
+}
+
+
+.sticky-sidebar {
+    position: sticky;
+    // top: 80px;
+    /* adjust based on your header height */
+    margin: 0px 0 21px 0;
+    //   z-index: 1;
+}
+
+
+.icon-text-pair {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0px;
+}
+
+.icon-text-pair i,
+.icon-text-pair svg {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    color: #0c172f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.maint {
+    font-size: 21px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 20px;
+    -webkit-letter-spacing: normal;
+    -moz-letter-spacing: normal;
+    -ms-letter-spacing: normal;
+    letter-spacing: normal;
+    color: #0D0F13;
+    word-break: break-word;
+}
+
+:where([class^="ri-"])::before {
+    content: "\f3c2";
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f9fafb;
+}
+
+.ticket {
+    background-image: radial-gradient(circle at top right, rgba(225, 29, 72, 0.05), transparent 70%),
+        radial-gradient(circle at bottom left, rgba(225, 29, 72, 0.05), transparent 70%);
+}
+
+.ticket-stub {
+    position: relative;
+}
+
+.ticket-stub::before {
+    content: "";
+    position: absolute;
+    left: -1px;
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background: repeating-linear-gradient(0deg, transparent, transparent 5px, #e11d48 5px, #e11d48 10px);
+}
+
+.booking-id {
+    font-family: 'Roboto Mono', monospace;
+}
+
+.tear-line {
+    background: repeating-linear-gradient(90deg, transparent, transparent 5px, #e11d48 5px, #e11d48 7px, transparent 7px, transparent 12px);
+    height: 2px;
+}
+
+@media (max-width: 640px) {
+    .ticket-container {
+        flex-direction: column;
+    }
+
+    .ticket-stub::before {
+        display: none;
+    }
+
+    .tear-line {
+        background: repeating-linear-gradient(0deg, transparent, transparent 5px, #e11d48 5px, #e11d48 7px, transparent 7px, transparent 12px);
+        width: 2px;
+        height: auto;
+    }
+}
+
+.seat-container {
+    margin: 5px;
+    font-size: 10px !important;
+    border-radius: 50%;
+
+    /* background-color: #7fffce47; */
+
+    /* margin: 5px;
+    padding: 5px 0;
+    border: 1px solid #ccc;
+    text-align: center;
+    min-width: 20px;
+    height: 20px;
+    font-size: 10px !important;
+    border-radius: 50%;
+    background-color: aquamarine; */
+}
+
+.gap-container {
+    margin: 5px;
+    // border: 0px solid #f1768b9c;
+    font-size: 10px !important;
+    border-radius: 50%;
+    cursor: default;
+    background-color: transparent !important;
+}
+
+.gap-container1 {
+    margin: 5px;
+    border: 0px solid #f1768b9c;
+    font-size: 10px !important;
+    border-radius: 50%;
+}
+
+.gap11-container {
+    margin: 2.5px;
+    text-align: center;
+    min-width: 20px;
+
+}
+
+.gap1-container:hover {
+    background: #ff008b !important;
+    color: white !important;
+    transition: transform 0.1s;
+    transform: scale(1.1);
+    z-index: 1000;
+    cursor: pointer;
+}
+
+
+.gap11-container:hover {
+    background: #ff008b !important;
+    color: white !important;
+    transition: transform 0.1s;
+    transform: scale(1.1);
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.sectionDisplay {
+    font-weight: bold;
+    min-height: 35px;
+    place-items: center;
+    padding: 5px !important;
+    padding-bottom: 0px !important;
+
+}
+
+.gap-container-door {
+    margin: 5px;
+    padding: 0px 0;
+    border: none !important;
+    text-align: center;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+
+    cursor: none;
+}
+
+.gap1-container {
+    margin: 2.5px;
+    text-align: center;
+    min-width: 20px;
+}
+
+.mousehover {
+    transition: transform 0.1s;
+}
+
+.mousehover:hover {
+    transform: scale(1.2);
+    z-index: 1000;
+    cursor: pointer;
+}
+
+// ::-webkit-scrollbar-track {
+//     -webkit-box-shadow: inset 0 0 0px rgba(252, 252, 252, 0.1);
+//     background-color: #F5F5F5;
+//     border-radius: 10px;
+//     display: none;
+// }
+
+// ::-webkit-scrollbar {
+//     height: 5px;
+//     width: 5px;
+// }
+
+::-webkit-scrollbar-thumb {
+    background: #108cf4;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #108cf4;
+}
+
+.my-max {
+    margin: 2px;
+    border: 1px solid rgba(0, 0, 0, .25);
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px #0003;
+    padding: 5px;
+}
+
+
+
+.Coridor {
+    width: 100% !important;
+    padding: auto;
+    text-align: center;
+    font-weight: 900;
+}
+
+.ScreenName {
+    cursor: pointer;
+    padding: 5px 10px;
+    font-weight: bolder;
+    text-align: center;
+    margin: 2px;
+    border: 1px solid rgba(0, 0, 0, .25);
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px #0003;
+}
+
+.my-max-grouping {
+    border: 1px dashed #e9e9e9;
+    border-radius: 6px;
+    margin: 12px 5px;
+    margin-bottom: 5px;
+    background-color: #fafafa;
+    padding: 5px;
+}
+
+th {
+    text-align: center !important;
+}
+
+::ng-deep .color-picker {
+    z-index: 23242 !important;
+}
+
+.ticket-wrapper {
+    position: relative;
+    overflow: auto;
+    width: 100%;
+    height: 86vh;
+    /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
+}
+
+::ng-deep .ant-slider {
+    margin-top: 5px !important;
+}
+
+.shapetype {
+    border: 1px solid #141414;
+    display: flex !important;
+    align-items: center;
+    width: 23px;
+    height: 23px;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    background: white;
+}
+
+.circle {
+    border-radius: 50%;
+}
+
+.sqaure {
+    border-radius: 1px;
+}
+
+.rect {
+    border-radius: 10px 10px 0px 0px;
+}
+
+.shapetypebutton {
+    border: 1px solid #dedede;
+    display: flex !important;
+    align-items: center;
+    width: 34px;
+    height: 34px;
+    justify-content: center;
+    border-radius: 3px;
+    background: white;
+}
+
+
+.columTitle {
+    font-weight: 600;
+    font-size: 12px !important;
+    display: flex;
+    width: 20px;
+    height: 22px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.selectedColumn {
+    background: #ff008b !important;
+    color: white !important;
+    font-weight: 600;
+    font-size: 12px !important;
+    display: flex;
+    width: 20px;
+    height: 22px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.positionbutton {
+    border: 1px solid #c2c2c2;
+    border-radius: 2px;
+    display: flex !important;
+    align-items: center;
+    width: 60px;
+
+    justify-content: center;
+    background: white;
+}
+
+.positionbutton2 {
+    border: 1px solid #c2c2c2;
+    border-radius: 2px;
+    display: flex !important;
+    align-items: center;
+    width: 30px;
+    height: 60px;
+    justify-content: center;
+    background: white;
+}
+
+.rowTitle {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 5px;
+    color: #181818;
+    border-top: 1px solid rgb(225 225 225);
+    padding-top: 5px;
+    margin-top: 12px;
+}
+
+.seat-details-panel {
+    position: fixed;
+    right: 20px;
+    top: 100px;
+    width: 250px;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    color: #333;
+}
+
+.booking-summary {
+    max-width: 350px;
+    background: #fff;
+    // border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    color: #000;
+    text-align: left;
+}
+
+.seat-status-container {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    padding: 0;
+}
+
+
+
+.summary-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.movie-info {
+    display: flex;
+    gap: 12px;
+}
+
+.poster {
+    width: 70px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.movie-details {
+    flex: 1;
+    text-align: left;
+}
+
+.movie-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.movie-meta,
+.movie-time,
+.movie-theatre {
+    font-size: 12px;
+    margin: 2px 0;
+    color: #333;
+}
+
+.section {
+    //   margin-top: 20px;
+    border-top: 1px solid #e0e0e0;
+    padding-top: 10px;
+}
+
+.section-title123 {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 0px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+}
+
+.seat-category {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.seats {
+    display: flex;
+    gap: 8px;
+}
+
+.seat-tag {
+    background-color: #fcefdc;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.ticket-price123,
+.price-line,
+.total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin: 4px 0;
+}
+
+.dropdown-toggle {
+    font-size: 13px;
+    color: #888;
+    cursor: pointer;
+}
+
+.total {
+    border-top: 1px solid #e0e0e0;
+    padding-top: 10px;
+    font-weight: 600;
+    margin-top: 12px;
+    font-size: 15px;
+}
+
+.proceed-btn {
+    background: #d32f2f;
+    color: #ffffff;
+    border: none;
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    margin-top: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.proceed-btn:hover {
+    background: #f5c400;
+}
+
+.selected-seats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.seat-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+    background: #fdfdfd;
+}
+
+.seat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.seat-name {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.remove-btn {
+    background: transparent;
+    border: none;
+    font-size: 18px;
+    color: #ff5252;
+    cursor: pointer;
+}
+
+.zoom-controls-plus {
+    margin-bottom: 8px;
+    position: absolute;
+    top: 0px;
+    left: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 4px 6px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    z-index: 10;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 9%);
+}
+
+.zoom-controls-minus {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 4px 6px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    z-index: 10;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.zoom-wrapper {
+    width: 100%;
+    max-height: 60vh;
+    min-height: 300px;
+    overflow: hidden;
+    position: relative;
+    touch-action: none;
+
+}
+
+
+
+.zoom-wrapper:active {
+    cursor: grabbing;
+}
+
+.zoom-content {
+    transform-origin: top left;
+    transition: transform 0.1s ease-out;
+}
+
+
+@media (max-width: 760px) {
+    .konva-stage-wrapper {
+        max-height: 500px;
+        /* or whatever size */
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        touch-action: auto;
+    }
+}
+
+/* Custom styles for the Compact & Attractive Seat Count Modal */
+.modal-dialog.modal-sm {
+    max-width: 380px;
+    /* Slightly wider than default modal-sm to accommodate content */
+}
+
+.modal-content {
+    border-radius: 0.75rem;
+    /* More rounded corners */
+    overflow: visible;
+    /* Allows scooter image to extend */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    /* Stronger, attractive shadow */
+}
+
+.modal-header {
+    background-color: #ffffff;
+    color: white;
+    border-bottom: none;
+    position: relative;
+    // padding: 10px;
+    /* Reduced top padding, some bottom padding */
+}
+
+.scooter-img {
+    width: 70px;
+    /* Slightly smaller image */
+    height: 70px;
+    object-fit: contain;
+    /* Use contain to ensure full image is visible, or cover if aspect ratio is okay */
+    position: absolute;
+    top: -35px;
+    /* Half of image height to sit on top edge */
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    border: 4px solid white;
+    background-color: white;
+    padding: 3px;
+    /* Slightly less padding */
+    // box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    /* Enhanced shadow for image */
+    z-index: 10;
+    /* Ensure it's above other elements */
+}
+
+.modal-title {
+    font-size: 1.1rem;
+    /* Smaller font for title */
+    letter-spacing: 0.5px;
+    /* Slight letter spacing */
+    margin-bottom: 0;
+    /* Remove default margin */
+}
+
+.btn-close-white {
+    filter: brightness(0) invert(1);
+    opacity: 0.8;
+    /* Slightly less opaque for a softer look */
+    transition: opacity 0.2s ease;
+}
+
+.btn-close-white:hover {
+    opacity: 1;
+}
+
+.modal-body {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    /* Reduced overall padding */
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+
+.seat-count-btn {
+    width: 25px;
+    /* Smaller buttons */
+    height: 25px;
+    border-radius: 50%;
+    font-size: 1rem;
+    /* Smaller font for numbers */
+    font-weight: 600;
+    /* Slightly bolder */
+    background-color: #e9ecef;
+    /* Light gray */
+    color: #495057;
+    /* Darker gray text */
+    border: none;
+    transition: all 0.2s ease-in-out;
+    /* Faster transition */
+    // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    /* Prevent shrinking in flex container */
+}
+
+.seat-count-btn:hover {
+    background-color: #d3d9df;
+    transform: scale(1.08);
+    /* Slightly more prominent hover */
+}
+
+.seat-count-btn.selected {
+    background-color: #c82333;
+    /* Vibrant green */
+    color: white !important;
+    transform: scale(1.15);
+    /* More prominent selection */
+    // box-shadow: 0 4px 10px #c82333;
+    /* Green tinted shadow */
+    outline: none;
+    /* Remove outline on focus */
+}
+
+.seat-types-info {
+    margin-top: 1rem;
+    /* Reduced top margin */
+    margin-bottom: 1rem;
+    /* Reduced bottom margin */
+}
+
+.seat-type-label {
+    font-size: 0.7rem;
+    /* Smaller font */
+    color: #343a40;
+    /* Darker text */
+    margin-bottom: 0.1rem;
+    /* Minimal margin */
+    line-height: 1.2;
+    padding-top: 3px;
+    /* Tighter line height */
+}
+
+.seat-price {
+    font-size: 0.75rem;
+    /* Smaller font */
+    color: #6c757d !important;
+    /* Muted text */
+    margin-bottom: 0.1rem;
+    /* Minimal margin */
+    text-align: left !important;
+}
+
+.seat-availability {
+    font-size: 0.7rem;
+    /* Even smaller for availability */
+    font-weight: 600;
+    color: #28a745;
+    /* Ensure green color */
+}
+
+.confirm-btn {
+    background-color: #c82333;
+    border: none;
+    font-size: 0.95rem;
+    /* Smaller font for button text */
+    letter-spacing: 0.5px;
+    // box-shadow: 0 4px 12px #c82333;
+    /* Green tinted shadow */
+    transition: all 0.2s ease;
+    min-width: 150px;
+    /* Ensure a decent width */
+}
+
+.confirm-btn:hover {
+    background-color: #c82333;
+    transform: translateY(-3px);
+    /* More noticeable lift */
+    // box-shadow: 0 4px 12px #b41f2e;
+    /* Stronger shadow on hover */
+}
+
+
+
+.seat-status-item {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.seat {
+    width: 17px;
+    height: 17px;
+    border: 1px solid;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.crown {
+    color: #4a3aff;
+}
+
+.wheelchair {
+    color: #1d4ed8;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+
+
+/* Dynamic styling (already handled by Angular directives in HTML):
+   - selectedSeatCount and selectSeatCount(count) manage active button state
+   - [disabled]="!selectedSeatCount" manages confirm button enabled/disabled state
+   To make seat types truly dynamic, you'd bind them from your Angular component's data:
+   e.g., *ngFor="let type of seatTypes" and then {{ type.label }}, {{ type.price }}, {{ type.availability }}
+*/
+
+
+
+.img-loader {
+    width: 70px;
+    /* or any size you want */
+    height: auto;
+    display: block;
+}
+
+.card {
+    background-color: white;
+    box-shadow: 0px 3px 12px rgba(0, 0, 0, 0.15);
+    border-radius: 6px;
+
+}
+
+
+
+.tooltip-content {
+    background: #ffffff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #a5000061;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    font-size: 13px;
+    min-width: 150px;
+}
+
+.tooltip-arrow {
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #ffffff;
+    margin-top: -2px;
+}
+
+
+
+.main-btnnnn {
+    font-size: 14px;
+    color: #fff;
+    font-weight: 400;
+    text-align: center;
+    background: #a50000;
+
+    display: inline-block;
+
+    padding: 5px 30px;
+    border-radius: 3px;
+    border: 1px solid #a50000;
+}
+
+a:hover {
+    color: #a50000 !important;
+}
+
+
+.tooltip-card {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+
+    transform-origin: center center;
+    z-index: 3456;
+    display: flex;
+    background-color: white;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+}
+
+
+.header-content {
+    //   position: relative;
+    text-align: center;
+    min-height: 20px;
+    /* Center align h1 and p inside */
+}
+
+.header-content .inline-flex {
+    position: absolute;
+    left: 0;
+    /* Align to the left */
+    top: 0;
+}
+
+
+@media (max-width: 760px) {
+    .marginleftt {
+        margin-left: 5px !important;
+    }
+
+    .marginleftt>span {
+        font-size: 12px !important;
+    }
+}
+
+@media (min-width: 761px) {
+    .marginleftt {
+        margin-left: 80px !important;
+
+    }
+
+    .marginleftt>span {
+        font-size: 14px !important;
+    }
+}
+
+.custom-placeholder::placeholder {
+    font-size: 12px !important;
+}
+
+.ticket-status-badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 0px 8px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Status-based background colors */
+.status-filling-fast {
+    //   border: 1px solid #FFD700; /* Yellow */
+    color: #ffd901;
+    /* black text for better contrast */
+    letter-spacing: 1.1px;
+    // font-style: italic;
+}
+
+.status-almost-sold {
+    //    border: 1px solid #FFA500; /* Orange */
+    color: #ff6200;
+    letter-spacing: 1.1px;
+    // font-style: italic;
+}
+
+.status-sold-out {
+    // border: 1px solid #a50000;
+    /* Red */
+    color: #a50000;
+    letter-spacing: 1.1px;
+    // font-style: italic;
+}
+
+/* Put in your component CSS */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 46px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: #a50000;
+}
+
+input:checked+.slider:before {
+    transform: translateX(22px);
+}
+
+
+.form-control {
+    font-size: 12px !important;
+    padding: 0 11px !important;
+    min-height: 30px !important;
+}
+
+.bg-orange {
+    background-color: #fd7e14 !important;
+}
+
+#toast-container {
+    z-index: 2147483648 !important;
+}
+
+
+.seat-tooltip {
+    background-color: #212121;
+    color: #ffffff;
+    padding: 25px 20px;
+    border-radius: 8px;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    min-width: 150px;
+    position: relative;
+}
+
+.captcha-wrapper {
+    transform: scale(0.72);
+    transform-origin: 0 0;
+    max-width: 404px;
+    // margin: 0 auto;        
+}
+
+
+/* Other CSS remains the same */
+
+.tooltip-seat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    line-height: 1;
+}
+
+.tooltip-section {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+
+    padding: 10 10 0 0;
+}
+
+.tooltip-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+/* Make sure this is active in your CSS */
+.border-bottom {
+    border-bottom: 1px solid;
+}
+
+.border-light {
+    border-color: #ffffff !important;
+}
+
+.tooltip-members-only {
+    font-size: 0.9rem;
+    color: #cccccc;
+    margin-top: -5px;
+    margin-bottom: 15px;
+}
+
+.tooltip-status-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+    font-size: 1.1rem;
+}
+
+.tooltip-status-line .bi {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+.text-warning {
+    color: #ffc107 !important;
+}
+
+.text-success {
+    letter-spacing: 0.8px;
+    color: #28a745 !important;
+}
+
+.text-secondary {
+    color: #6c757d !important;
+}
+
+.seat-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 20px;
+    height: 20px;
+    background-color: #212121;
+    z-index: -1;
+}
+
+
+
+// @media (min-width: 769px) {
+//     .desktop-card {
+//         min-height: 200px !important;
+//         max-height: 600px !important;
+//     }
+
+//     .zoom-wrapper {
+//         max-height: 560px !important;
+//         min-height: 450px !important;
+//     }
+// }
+
+
+
+
+
+.scrollable-container {
+    height: 100%;
+    padding-bottom: 12px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.scrollable-container::-webkit-scrollbar {
+    display: none;
+}
+
+
+.scrollable-container::-webkit-scrollbar {
+    display: none;
+}
+
+.tugoz-container {
+    margin-top: 1%;
+}
+
+@media (min-width: 769px) {
+    .desktop-card {
+        height: 65vh;
+        overflow: hidden;
+    }
+
+    .zoom-wrapper {
+        height: 100%;
+        overflow: visible;
+        touch-action: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .tugoz-container {
+        margin-top: 16%;
+    }
+
+    .booking-wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .date-grid,
+    .time-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+
+
+    .booking-summary {
+        max-width: 100% !important;
+        position: sticky;
+        bottom: 0;
+        background: #fff;
+        z-index: 10;
+        padding: 10px;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .mopadding {
+        padding: 10px 1% !important
+    }
+
+    .formobile {
+        font-size: 14px !important;
+    }
+
+    .ticket-card {
+        // flex-direction: column;
+        /* Stack details and action vertically */
+        align-items: stretch;
+        /* Stretch items to fill width */
+    }
+
+    .ticket-details {
+        margin-right: 0;
+        /* Remove right margin when stacked */
+        margin-bottom: 1px;
+        /* Add space between stacked sections */
+    }
+
+    // .ticket-action {
+    //     // width: 100%;
+    //     /* Make action section full width */
+    //     // justify-content: center;
+    //     /* Center the add button/quantity selector */
+    // }
+
+    .btn-add,
+    .quantity-selector {
+        width: 100%;
+        /* Make add button and selector full width */
+    }
+
+    .quantity-display {
+        flex-grow: 1;
+        /* Allow quantity display to expand to fill space */
+    }
+
+    .section-title {
+        justify-content: center;
+        margin-top: 60px;
+    }
+
+    .section-title::before,
+    .section-title::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background-color: #ccc;
+        margin: 0 10px;
+    }
+
+    .see-all-link {
+        display: none !important;
+    }
+
+    .section-title-small {
+        justify-content: center;
+        padding-left: 0 !important;
+        /* Remove specific padding for centering */
+        padding-right: 0 !important;
+    }
+
+    .section-title-small::before,
+    .section-title-small::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background-color: #e0e0e0;
+        margin: 0 8px;
+        /* Adjusted margin for better visual balance */
+    }
+
+
+    .display-flex {
+        flex-direction: row;
+        /* Arranges columns horizontally on larger screens */
+        padding: 16px;
+        /* Original padding for larger screens */
+        gap: 16px;
+        /* Original gap for larger screens */
+    }
+
+    .left-column,
+    .right-column {
+        padding: 20px;
+        /* Original padding for larger screens */
+        margin-bottom: 0;
+        /* No margin between columns on larger screens */
+    }
+
+    .option-heading {
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+
+    .ticket-option {
+        padding: 12px;
+    }
+
+    .radio-input {
+        margin-right: 12px;
+        margin-top: 4px;
+        width: 18px;
+        height: 18px;
+    }
+
+    .radio-input:checked::after {
+        width: 10px;
+        height: 10px;
+    }
+
+    .ticket-label {
+        font-size: 14px;
+        /* Reset to default */
+    }
+
+    .eco-message {
+        font-size: 13px;
+        margin-top: 4px;
+        margin-left: 30px;
+    }
+
+    .eco-icon {
+        margin-right: 8px;
+    }
+
+    .info-box {
+        padding: 16px;
+        margin-top: 16px;
+    }
+
+    .info-title {
+        font-size: 14px;
+        /* Reset to default */
+        margin-bottom: 12px;
+    }
+
+    .info-list {
+        font-size: 13px;
+        padding-left: 16px;
+        /* Restore default list padding for larger screens */
+    }
+
+    .info-list li {
+        margin-bottom: 8px;
+    }
+
+    .event-header {
+        margin-bottom: 8px;
+    }
+
+    .event-title {
+        font-size: 14px;
+    }
+
+    .event-price {
+        font-size: 14px;
+        /* Reset to default */
+    }
+
+    .ticket-type {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .event-details {
+        margin-bottom: 6px;
+        padding-bottom: 6px;
+    }
+
+    .event-date,
+    .event-time {
+        font-size: 14px;
+        /* Reset to default */
+        margin-bottom: 4px;
+    }
+
+    .event-venue {
+        margin-top: 12px;
+    }
+
+    .event-venue p {
+        font-size: 14px;
+        /* Reset to default */
+    }
+
+    .early-bird {
+        // margin-top: 16px;
+        // margin-bottom: 24px;
+        //  font-size: 14px;; /* Reset to default */
+    }
+
+    .price-breakdown {
+        padding-top: 16px;
+    }
+
+    .price-row {
+        margin-bottom: 12px;
+        font-size: 12px;
+        /* Reset to default */
+    }
+
+    .booking-fee {
+        font-size: 14px;
+        /* Reset to default */
+    }
+
+    .total-row {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        padding-top: 16px;
+        font-size: 14px;
+        /* Reset to default */
+    }
+
+    .state-select-label {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .state-select {
+        padding: 12px;
+        margin-bottom: 16px;
+        font-size: 14px;
+        /* Reset to default */
+        background-position: right 12px center;
+    }
+
+    .consent-message {
+        font-size: 13px;
+        margin-bottom: 24px;
+    }
+
+    .consent-message .info-icon {
+        margin-right: 8px;
+    }
+
+    .proceed-button {
+        padding: 14px;
+        border-radius: 8px;
+        font-size: 14px;
+        /* Reset to default */
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .tugoz-container {
+        margin-top: 16%;
+    }
+
+    .main-cards {
+        min-height: auto !important;
+        max-height: 60vh !important;
+    }
+
+    .mobile-card {
+        min-height: 30vh !important;
+        max-height: 60vh !important;
+    }
+
+    .zoom-wrapper {
+        min-height: 25vh !important;
+        max-height: 50vh !important;
+        touch-action: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .tugoz-container {
+        margin-top: 16%;
+    }
+
+    .stepper {
+        padding: 1rem 0;
+    }
+
+    .step-label {
+        font-size: 0.75rem;
+    }
+
+    .date-grid,
+    .time-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .page-title {
+        font-size: 11px !important;
+    }
+
+    .loginDIv {
+        padding: 0px 0px !important;
+        margin-top: 20%;
+    }
+
+    .seat-status-container {
+        padding: 10px 0px !important;
+        gap: 10px !important
+    }
+
+    .seat-status-item>span {
+        font-size: 8px !important;
+    }
+
+    .venue-details {
+        font-size: 9px !important;
+        text-align: center;
+    }
+
+    .custom-header {
+        padding: 8px 0;
+        margin-top: 0px;
+    }
+
+    .header-content {
+        gap: 2px;
+    }
+
+    .main-cards {
+        min-height: auto !important;
+        max-height: 54vh !important;
+
+    }
+
+    .mobile-card {
+        min-height: 30vh !important;
+        max-height: 54vh !important;
+        margin: 0px 0 10px 0 !important;
+    }
+
+    .zoom-wrapper {
+        min-height: 25vh !important;
+        max-height: 44vh !important;
+        touch-action: none;
+    }
+
+    .booking-wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+#zoom-wrapper {
+    overflow: hidden;
+    touch-action: none;
+    position: relative;
+}
+
+#zoom-content {
+    transform-origin: 0 0;
+    transition: transform 0.05s ease-out;
+    will-change: transform;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    touch-action: none;
+}

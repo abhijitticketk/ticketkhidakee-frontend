@@ -1,0 +1,352 @@
+
+.receipt-container {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 25px 25px 0 25px;
+  width: 100%;              
+  max-width: 700px;         
+  overflow: hidden;
+  margin: 1% auto;           
+  box-sizing: border-box;   
+}
+@media (max-width: 576px) {
+  .receipt-container {
+   padding: 10px;
+  margin: 1% auto;           
+  padding: 25px 25px 0 25px;
+
+  }
+}
+
+.receipt-header {
+  background-color: #d32f2f;
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.receipt-body {
+  background-color: #fff;
+  padding: 20px;
+}
+
+.receipt-footer {
+  background-color: #fff;
+  padding: 10px 20px;
+  border-top: 1px dashed #ccc;
+}
+
+.total-text {
+  color: green;
+  font-weight: bold;
+}
+
+.terms {
+  font-size: 0.85rem;
+  color: #777;
+  font-weight: bold;
+}
+
+.terms-detail {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+
+
+@media (max-width: 768px) {
+  // #print-section {
+  //   transform: scale(0.4);
+  //   transform-origin: left top;
+  //   margin: 1% auto !important;
+  //   width: 700px;
+    
+  // }
+
+  .customBtnDiv {
+    display: flex;
+    justify-content: center;
+  }
+
+  .ticket-side {
+    width: 60px;
+    background-color: #a0a0a0;
+    border-left: 2px solid #000;
+  }
+
+  .qr-section {
+    text-align: center;
+    margin-top: -55px;
+  }
+
+  .imgcustom {
+    height: 50px;
+  }
+
+  .imageCustomtd {
+    width: 25%;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .customer-info {
+    margin-top: -8px;
+  }
+
+
+  .pricing-info {
+    padding-top: 10px;
+  }
+
+  .booking-id {
+    margin-bottom: -10px;
+  }
+
+  .ribbon {
+    left: 3cqmax;
+    padding: 3px 6px;
+  }
+}
+
+.custom-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #444;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.custom-btn:hover {
+  background-color: #f7f7f7;
+}
+
+.icon-style {
+  color: #888;
+  font-size: 16px;
+}
+
+.customBtnDiv {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.btnDiv {
+  width: 800px;
+  margin: 1% auto;
+}
+
+
+
+.btnDiv {
+  width: 100%;
+  max-width: 700px;
+  margin: 1% auto;
+  padding: 0 16px;
+}
+
+.customBtnDiv {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.custom-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #444;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  white-space: nowrap;
+}
+
+.custom-btn:hover {
+  background-color: #f7f7f7;
+}
+
+.icon-style {
+  color: #888;
+  font-size: 16px;
+}
+
+@media (max-width: 576px) {
+  .customBtnDiv {
+    justify-content: center;
+  }
+
+  .custom-btn {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .customBtnDiv {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .custom-btn {
+    padding: 4px 8px;
+    font-size: 12px;
+    gap: 4px;
+    flex-shrink: 1;
+  }
+
+  .icon-style {
+    font-size: 14px;
+  }
+}
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact !important; 
+    print-color-adjust: exact !important;        
+    background: white !important;
+  }
+
+  .btnDiv {
+    display: none !important; 
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .receipt-container,
+  .receipt-container * {
+    visibility: visible;
+  }
+
+   .receipt-container {
+    position: relative; 
+    left: 40%;
+    transform: translateX(-50%);
+    width: 100% !important;
+    max-width: 600px; 
+    margin: 0 auto;
+    background: white !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1) !important;
+  }
+
+  .receipt-header {
+    background-color: #d32f2f !important; 
+    color: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+.loader {
+  width: 50px;
+  --b: 8px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  padding: 1px;
+  background: conic-gradient(#0000 10%, #f03355) content-box;
+  -webkit-mask: repeating-conic-gradient(#0000 0deg,
+      #000 1deg 20deg,
+      #0000 21deg 36deg),
+    radial-gradient(farthest-side,
+      #0000 calc(100% - var(--b) - 1px),
+      #000 calc(100% - var(--b)));
+  -webkit-mask-composite: destination-in;
+  mask-composite: intersect;
+  animation: l4 1s infinite steps(10);
+}
+
+@keyframes l4 {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+
+
+.flexxxxxx {
+  display: flex;
+  // margin: 1% auto;
+  padding: 15px;
+  width: 100%;
+  text-align: justify;
+}
+
+  .mobile-zoom-enabled .flexxxxxx {
+    width: 800px;
+  }
+
+
+  
+@page {
+  size: A4;
+  margin: 20mm;
+}
+ 
+.terms-and-conditions {
+  width: 100%;
+  font-size: 12px;
+  line-height: 1.5;
+}
+ 
+.terms-list {
+  margin: 0px;
+  padding: 0px;
+}
+ 
+// .terms-list li {
+//   display: block;
+//   margin-bottom: 10px;
+//   page-break-inside: avoid;  
+//   break-inside: avoid;      
+// }
+
+// .terms-list li {
+//   margin-bottom: 15px;
+//   padding: 5px 0;
+//   page-break-inside: avoid;
+//   break-inside: avoid;
+//     list-style-type: disc; 
+// }
+::ng-deep ol, ul{
+  list-style : disc !important;
+}
+
+.terms-list ol>li {
+  margin-bottom: 15px !important;
+  padding: 5px 0  !important;
+  page-break-inside: avoid  !important;
+  break-inside: avoid  !important;
+  display: list-item !important;
+  list-style-type: disc  !important;
+}
+
+
+.term-text {
+  text-align: left;
+  padding: 5px 0;
+  border: 0 !important;
+  position: relative;
+  padding-left: 15px;  
+  text-indent: 0px;    
+  line-height: 20px;
+}
+
+
+

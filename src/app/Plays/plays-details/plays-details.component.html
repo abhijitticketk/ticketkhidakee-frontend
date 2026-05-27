@@ -1,0 +1,1797 @@
+<div *ngIf="searchLoading && dataCount==2" style="height: 50vh; padding-top: 120px"
+  class="d-flex justify-content-center">
+  <div>
+    <!-- <div class="loader"></div> -->
+    <img src="assets/TK-Loading-Animation-ver-2.gif" class="img-loader" alt="Loading..."
+      style="width: 70px; height: auto; display: block" />
+  </div>
+</div>
+
+<div *ngIf="!searchLoading && PlaysData.length===0 && dataCount===0 "
+  style="height: 50vh; padding-top: 50px;align-items: center;" class="d-flex justify-content-center">
+  <div style="text-align: center;">
+    <!-- <div class="loader"></div> -->
+    <p>Ticket booking will be available soon or has already closed.</p>
+    <button class="book-btn btn btn-danger mt-3 w-md-auto" style="font-weight: 500;width: auto !important;"
+      (click)="gotoHome()">
+      <i class="fa-solid fa-arrow-left"></i> Back To Home &nbsp;
+    </button>
+  </div>
+</div>
+<!-- <div  >
+  <div id="tugoz-container2" class="inline-flex cursor-pointer marginleftt" (click)="goBacks()" style="display: none;" >
+    <span class="text-[#ff1b31db] font-medium page-title" style="display: flex; align-items: center;" [ngStyle]="{
+    'margin-top': isMobile ? '4px' : '70px'
+  }">
+      <span style="font-size: 20px;">&lt;&nbsp;</span> Back
+    </span>
+  </div>
+  <div *ngIf="loadBookingFlag2" style="width: 360px;margin: auto;position: relative;">
+    <div
+      style="width: 360px;background: rgb(255 255 255);height: max-content;position: absolute;top: 80px;z-index: 1000;left: 0;margin: auto;">
+      <div style="display: flex;justify-content: center;margin-top: 20px;margin-bottom: 20px; ">
+        <img src="assets/TK-Loading-Animation-ver-2.gif" class="img-loader" alt="Loading..." />
+      </div>
+      <h6 class="text-center m-0" id="currentMonthYear" style="font-size: 13px;margin-bottom: 20px !important">
+        Please wait while we load your booking details...
+      </h6>
+    </div>
+  </div>
+  <div id="tugoz-container" style="min-height: 350px;width: 100%;padding: 10px;display: none;">
+  </div>
+</div> -->
+<div class="event-dt-block" [ngStyle]="{
+    'margin-top': isMobile ? '' : '5%'
+  }" style="background: white; position: relative" *ngIf="!searchLoading && PlaysData && dataCount==1">
+  <img [src]="BannerImage" alt="" class="img-fluid w-100 poster-img displaybannertop margintop1"
+    *ngIf="isMobile && videourls.length == 0" />
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-8 col-lg-7 col-md-12">
+        <div class="main-event-dt margintop">
+          <div class="event-img position-relative" *ngIf="PlaysData.BANNER_IMAGE && videourls.length == 0">
+            <img [src]="BannerImage" alt="" class="img-fluid w-100 poster-img dispbanner"
+              style="border-radius: 16px !important; padding: 0px;height: auto !important; width: 100%;" />
+            <!-- <div class="position-absolute top-0 start-0 w-100 h-100" style="z-index: 1"></div> -->
+          </div>
+          <div class="event-img position-relative" *ngIf="PlaysData.BANNER_IMAGE && videourls.length > 0">
+            <owl-carousel-o [options]="customOptions" #owlCarousel (translated)="stopVideo()">
+              <ng-container>
+                <ng-template carouselSlide>
+                  <div class="item custom-carousel-item">
+                    <img [src]="BannerImage" alt="Banner"
+                      style="width: 100%; height: auto; display: block; border-radius: 10px;" />
+                  </div>
+                </ng-template>
+
+                <ng-template carouselSlide *ngFor="let video of videourls; let i = index; trackBy: trackByVideo">
+                  <div
+                    style="aspect-ratio: 16/9; width: 100%; border-radius: 12px; overflow: hidden; position: relative;">
+                    <ng-container *ngIf="activeVideoIndex !== i">
+                      <img [src]="'https://img.youtube.com/vi/' + videoId(video.URL) + '/hqdefault.jpg'"
+                        alt="Video Thumbnail" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                      <div (click)="playVideo(i, video)" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                  background: rgba(0,0,0,0.6); border-radius: 50%; width: 60px; height: 60px;
+                  display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                        <svg width="30" height="30" viewBox="0 0 24 24" fill="white">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </ng-container>
+
+                    <iframe *ngIf="activeVideoIndex === i" [id]="'video-iframe-' + i" width="100%" height="100%"
+                      style="border-radius: 12px; position: absolute; top: 0; left: 0;" [src]="video.embedUrlSanitized"
+                      frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+                    </iframe>
+                  </div>
+                </ng-template>
+              </ng-container>
+            </owl-carousel-o>
+          </div>
+
+          <div class="d-block d-md-none mt-3">
+            <div class="main-card event-right-dt" style="
+                margin-top: 8px;
+                border-radius: 16px;
+                padding: 6px 0px 0px 0px;
+              ">
+              <div class="col-md-12" style="line-height: 30px; padding: 8px 15px 6px !important">
+                <div class="bp-title" style="border: none">
+                  <h4 style="padding: 0px !important">
+                    <h1 class="fw-bold fs-3 fs-md-1 font-ss maint" style="margin-bottom: 12px">
+                      {{ PlaysData.EVENT_NAME }}
+                    </h1>
+                  </h4>
+                </div>
+
+                <div class="icon-text-pair" style="margin-top: 9px" *ngIf="
+                    isSingleDate &&
+                    PlaysData != undefined &&
+                    uniqueEvents != undefined &&
+                    uniqueEvents.length > 0
+                  ">
+                  <i class="fa-regular fa-calendar"></i>
+                  <span style="font-size: 12px">{{
+                    singleDate | date : "MMM dd, yyyy"
+                    }}</span>
+                </div>
+                <div class="icon-text-pair" style="margin-top: 9px" *ngIf="
+                    !isSingleDate &&
+                    PlaysData != undefined &&
+                    uniqueEvents != undefined &&
+                    uniqueEvents.length > 0
+                  ">
+                  <i class="fa-regular fa-calendar"></i>
+                  <span style="font-size: 12px">
+                    {{ minShowDate | date : "MMM dd, yyyy" }} -
+                    {{ maxShowDate | date : "MMM dd, yyyy" }}</span>
+                </div>
+                <div class="icon-text-pair" *ngIf="PlaysData != undefined">
+                  <i class="fa-regular fa-clock"></i>
+                  <span style="font-size: 13px">
+                    {{ismultidate==1?singletime:'Multiple Show Times'}}
+                  </span>
+                </div>
+
+
+                <div class="icon-text-pair" *ngIf="PlaysData != undefined && PlaysData?.DURATION">
+                  <i class="fa-regular fa-hourglass-half"></i>
+                  <span style="font-size: 12px">{{ getFormattedDuration(PlaysData.DURATION) }} &nbsp;{{
+                    PlaysData.HAVE_INTERVAL ? "(with Interval)" : ""
+                    }}</span>
+                </div>
+
+                <div class="icon-text-pair" *ngIf="
+                    PlaysData != undefined &&
+                    PlaysData.AGE_GROUP !== undefined &&
+                    PlaysData.AGE_GROUP !== null &&
+                    PlaysData.AGE_GROUP !== '' &&
+                    PlaysData?.AGE_GROUP
+                  ">
+                  <i class="fa fa-users"></i>
+                  <span style="font-size: 12px" *ngIf="PlaysData.AGE_GROUP=='No_Limit'">No Age Limit</span>
+                  <span style="font-size: 12px" *ngIf="PlaysData.AGE_GROUP !='No_Limit'">{{ PlaysData.AGE_GROUP
+                    }}</span>
+                </div>
+
+                <div class="icon-text-pair scroll-wrappera" *ngIf="
+                    languageList != undefined &&
+                    languageList.length > 0 &&
+                    languageList?.length
+                  ">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="#0c172f" width="18px" height="20px" viewBox="0 0 24 24"
+                    data-name="Layer 1" class="icon-fixed">
+                    <path
+                      d="M21.05566,12h-2a1,1,0,0,0,0,2v2H17.8714a2.96481,2.96481,0,0,0,.18426-1A2.99955,2.99955,0,0,0,12.458,13.50049a.99992.99992,0,1,0,1.73242.999A1.0009,1.0009,0,0,1,15.05566,14a1,1,0,0,1,0,2,1,1,0,0,0,0,2,1,1,0,1,1,0,2,1.0009,1.0009,0,0,1-.86523-.49951.99992.99992,0,1,0-1.73242.999A2.99955,2.99955,0,0,0,18.05566,19a2.96481,2.96481,0,0,0-.18426-1h1.18426v3a1,1,0,0,0,2,0V14a1,1,0,1,0,0-2ZM9.08594,11.24268a.99963.99963,0,1,0,1.93945-.48536L9.26855,3.72754a2.28044,2.28044,0,0,0-4.4248,0L3.08594,10.75732a.99963.99963,0,1,0,1.93945.48536L5.58618,9H8.52545ZM6.0863,7l.6969-2.78711a.29222.29222,0,0,1,.5459,0L8.02563,7Zm7.96936,0h1a1.001,1.001,0,0,1,1,1V9a1,1,0,0,0,2,0V8a3.00328,3.00328,0,0,0-3-3h-1a1,1,0,0,0,0,2Zm-4,9h-1a1.001,1.001,0,0,1-1-1V14a1,1,0,0,0-2,0v1a3.00328,3.00328,0,0,0,3,3h1a1,1,0,0,0,0-2Z" />
+                  </svg>
+                  <div class="scroll-itemsa" style="font-size: 12px">
+                    {{ languageList }}
+                  </div>
+                </div>
+
+                <div class="icon-text-pair scroll-wrappera" *ngIf="
+                    genreList != undefined &&
+                    genreList.length > 0 &&
+                    genreList?.length
+                  ">
+                  <i class="fa-solid fa-masks-theater icon-fixed"></i>
+                  <div class="scroll-itemsa" style="font-size: 12px">
+                    {{ genreList }}
+                  </div>
+                </div>
+
+                <div class="icon-text-pair scroll-wrappera" *ngIf="
+                    TAGS_NAMESList != undefined &&
+                    TAGS_NAMESList.length > 0 &&
+                    TAGS_NAMESList?.length
+                  ">
+                  <i class="fa-solid fa-tags icon-fixed"></i>
+                  <div class="scroll-itemsa" style="font-size: 12px">
+                    {{ TAGS_NAMESList }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="main-event-content mt-3 shadowclass" style="
+              padding-top: 0px;
+              margin-top: 17px !important;
+              padding-left: 0px;
+              padding-right: 0px;
+            ">
+            <!-- <div
+              class="d-flex justify-content-between align-items-center mb-3"
+              style="margin-top: 12px; margin-bottom: 0px !important"
+            >
+              <h3 class="css-fnaook" style="margin-bottom: 0px !important">
+                About This Event
+              </h3>
+              <div style="background: none; cursor: pointer">
+                <img
+                  alt="share"
+                  data-bs-toggle="modal"
+                  data-bs-target="#shareModal"
+                  width="36"
+                  height="36"
+                  class="sc-eykeme-1 iVbwwW"
+                  style="
+                    border-radius: 0px;
+                    opacity: 1;
+                    transition: 0.5s;
+                    width: 100%;
+                    min-height: 34px;
+                    max-height: 34px;
+                  "
+                  src="assets/playdetails/share_v2.png"
+                />
+              </div>
+            </div> -->
+
+            <!-- Container -->
+            <div
+              class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-3"
+              style="margin-top: 12px">
+              <!-- Title -->
+              <div class="flex-grow-1">
+                <h3 class="css-fnaook mb-2 mb-md-0" style="margin-bottom: 0 !important">
+                  About This Event
+                </h3>
+              </div>
+
+              <!-- Desktop View: Like + Button + Share -->
+              <div class="d-none d-md-flex align-items-center gap-3 flex-nowrap">
+                <!-- Like + Count -->
+                <div class="d-flex align-items-center gap-2" *ngIf="+PlaysData?.LIKE_COUNT > 0">
+                  <i class="bi bi-hand-thumbs-up-fill text-success"></i>
+                  <span>
+                    {{
+                    PlaysData.liked == 1
+                    ? +PlaysData.LIKE_COUNT === 1
+                    ? "You are interested"
+                    : "You and " +
+                    (+PlaysData.LIKE_COUNT - 1) +
+                    (+PlaysData.LIKE_COUNT - 1 === 1
+                    ? " other"
+                    : " others") +
+                    " are interested"
+                    : +PlaysData.LIKE_COUNT === 1
+                    ? "1 person is interested"
+                    : +PlaysData.LIKE_COUNT + " people are interested"
+                    }}
+                  </span>
+                </div>
+
+                <!-- Button -->
+                <button *ngIf="!PlaysData.liked" class="btn btn-outline-danger btn-sm reviewbtn" (click)="openLogin()">
+                  I'm Interested
+                </button>
+
+                <!-- Share Icon -->
+                <div style="cursor: pointer">
+                  <img alt="share" data-bs-toggle="modal" data-bs-target="#shareModal" width="36" height="36" style="
+                      border-radius: 50%;
+                      background: #f1f3f6;
+                      padding: 8px;
+                    " src="assets/playdetails/share_v2.png" />
+                </div>
+              </div>
+
+              <!-- Mobile View: Like + Button + Share in two columns -->
+              <div class="d-flex d-md-none justify-content-between align-items-center w-100 flex-wrap gap-2">
+                <!-- Like + Count + Button -->
+                <div class="d-flex align-items-center gap-2" *ngIf="+PlaysData?.LIKE_COUNT > 0">
+                  <i class="bi bi-hand-thumbs-up-fill text-success"></i>
+                  <span>
+                    {{
+                    PlaysData.liked == 1
+                    ? +PlaysData.LIKE_COUNT === 1
+                    ? "You are interested"
+                    : "You and " +
+                    (+PlaysData.LIKE_COUNT - 1) +
+                    (+PlaysData.LIKE_COUNT - 1 === 1
+                    ? " other"
+                    : " others") +
+                    " are interested"
+                    : +PlaysData.LIKE_COUNT === 1
+                    ? "1 person is interested"
+                    : +PlaysData.LIKE_COUNT + " people are interested"
+                    }}
+                  </span>
+                </div>
+
+                <!-- Button -->
+                <button *ngIf="!PlaysData.liked" class="btn btn-outline-danger btn-sm reviewbtn" (click)="openLogin()">
+                  I'm Interested
+                </button>
+                <!-- </div> -->
+
+                <!-- Share Icon -->
+                <div style="cursor: pointer">
+                  <img alt="share" data-bs-toggle="modal" data-bs-target="#shareModal" width="36" height="36" style="
+                      border-radius: 50%;
+                      background: #f1f3f6;
+                      padding: 8px;
+                    " src="assets/playdetails/share_v2.png" />
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 15px" class="description" #desc [class.expanded]="expanded"
+              [innerHTML]="PlaysData.DESCRIPTION"></div>
+
+            <button (click)="toggle()" *ngIf="showbutton == true" style="
+                font-size: 14px;
+                font-weight: 600;
+                line-height: 133%;
+                letter-spacing: normal;
+                color: rgb(36, 46, 68);
+              ">
+              {{ expanded ? "Show Less" : "Show More" }}&nbsp;
+              <i class="fa-solid" [ngClass]="expanded ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+            </button>
+          </div>
+          <!-- <hr
+            *ngIf="castData?.length > 0 || crewData?.length > 0"
+            style="color: #909193; margin-top: 20px"
+          /> -->
+          <hr *ngIf="firstImage && firstImage.length > 0 && firstImage[0].fullUrl!= ''"
+            style="color: #909193; margin-top: 20px" />
+
+          <div *ngIf="firstImage && firstImage.length > 0 && firstImage[0].fullUrl != ''"
+            class="d-flex justify-content-between align-items-center layout-toggle-header"
+            style="margin-top: 20px; cursor: pointer;" (click)="layoutExpanded = !layoutExpanded">
+            <h3 class="css-fnaook" style="margin: 0;">Event Layout</h3>
+            <i class="fa-solid" [ngClass]="layoutExpanded ? 'fa-chevron-up' : 'fa-chevron-down'"
+              style="color: #909193;"></i>
+          </div>
+
+          <div *ngIf="PlaysData && firstImage.length > 0 && firstImage[0].fullUrl != '' && layoutExpanded"
+            class="d-flex justify-content-center align-items-center" style="margin-top: 20px;">
+            <img [src]="firstImage[0].fullUrl" alt="Layout" class="img-fluid" style="border-radius: 8px;" />
+          </div>
+
+          <div *ngIf="galleryData.length > 0" class="container gallery-wrapper my-4"
+            style="padding-left: 0px; padding-right: 0px">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h3 class="css-fnaook">Gallery</h3>
+              <button class="btn btn-link p-0 text-decoration-none show-all-btn d-block d-md-none"
+                (click)="openModal(0)">
+                Show All
+              </button>
+            </div>
+
+            <div class="gallery-scroll d-flex gap-2 overflow-auto">
+              <div *ngFor="let image of galleryData.slice(0, 5); let i = index" class="gallery-thumb"
+                (click)="openModal(i)">
+                <img [src]="image.fullUrl" [alt]="image.alt" class="img-fluid" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal -->
+          <div class="modal fade" id="galleryModal" tabindex="-1">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+              <div class="modal-content bg-dark text-white">
+                <div class="modal-body position-relative p-0">
+                  <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3"
+                    data-bs-dismiss="modal"></button>
+
+                  <div class="text-center py-3 modal-img-container">
+                    <img [src]="galleryData[selectedIndex]?.fullUrl" class="modal-main-image" />
+                  </div>
+
+                  <div class="modal-thumbs-wrapper overflow-auto px-3 pb-3">
+                    <div class="d-flex flex-nowrap gap-2 justify-content-center">
+                      <img *ngFor="let img of galleryData; let i = index" [src]="img.fullUrl"
+                        (click)="selectedIndex = i" [class.border]="i === selectedIndex"
+                        class="img-thumbnail thumb-img" />
+                    </div>
+                  </div>
+
+                  <button class="modal-nav left" (click)="prevImage()" *ngIf="canShowPrev()">
+                    ❮
+                  </button>
+                  <button class="modal-nav right" (click)="nextImage()" *ngIf="canShowNext()">
+                    ❯
+                  </button>
+
+                  <!-- <button (click)="prevImage()" *ngIf="canShowPrev()">
+                    Prev
+                  </button>
+                  <button (click)="nextImage()" *ngIf="canShowNext()">
+                    Next
+                  </button> -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr *ngIf="castData?.length > 0 || crewData?.length > 0" style="color: #909193; margin-top: 20px" />
+
+          <!-- Cast Section -->
+          <div *ngIf="castData?.length > 0" class="d-flex justify-content-between align-items-center"
+            style="margin-top: 20px">
+            <h3 class="css-fnaook">Cast</h3>
+          </div>
+          <section class="py-5" *ngIf="castData?.length" style="
+              border-radius: 12px;
+              border: 1px solid #f0f1f2 !important;
+              background: #ffffff !important;
+              padding: 5px 8px 6px 8px !important;
+              margin-top: 0px;
+            ">
+            <div class="container scroll-wrapper" style="padding: 0px !important">
+              <div class="scroll-container scroll-items mt-3" style="padding-bottom: 5px">
+                <div style="
+                    cursor: pointer;
+                    align-items: center;
+                    justify-content: center;
+                    display: flex;
+                    flex-direction: column;
+                    align-self: center;
+                  " *ngFor="let cast of castData" class="cast-item text-center ">
+                  <img (click)="goToCastProfile(cast)" style="
+                      
+                      padding: 0px;
+                      object-fit: cover;
+                    " [src]="
+                      cast.CAST_PHOTO
+                        ? retriveimgUrl + 'castImages/' + cast.CAST_PHOTO
+                        : 'assets/images/profile-imgs/usernoimage.jpg'
+                    " alt="{{ cast.CAST_NAME }}" class="cast-img rounded-circle imgcast" />
+                  <h6 class="mt-2" style="
+                      font-size: 13px;
+                      font-weight: 500;margin-bottom: 0px;
+                      margin-top: 0px !important;
+                    " (click)="goToCastProfile(cast)">
+                    {{ cast.CAST_NAME }}
+                  </h6>
+                  <span style="font-size: 10px;font-weight: 600;">{{cast.ROLE_ID}}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Crew Section -->
+          <div *ngIf="crewData?.length > 0" class="d-flex justify-content-between align-items-center"
+            style="margin-top: 20px">
+            <h3 class="css-fnaook">Crew</h3>
+          </div>
+          <section class="py-3" *ngIf="crewData?.length > 0" style="
+              border-radius: 12px;
+              border: 1px solid #f0f1f2 !important;
+              background: #ffffff !important;
+              padding: 5px 8px 6px 8px !important;
+              margin-top: 0px;
+            ">
+            <div class="container scroll-wrapper" style="padding: 0px !important">
+              <div class="scroll-container scroll-items mt-3" style="padding-bottom: 5px">
+                <div style="
+                    cursor: pointer;
+                    align-items: center;
+                    justify-content: center;
+                    display: flex;
+                    flex-direction: column;
+                    align-self: center;
+                  " *ngFor="let crew of crewData" class="cast-item text-center ">
+                  <img (click)="goToCastProfile(crew)" style="
+                  
+                      padding: 0px;
+                      object-fit: cover;
+                    " [src]="
+                      crew.CAST_PHOTO
+                        ? retriveimgUrl + 'castImages/' + crew.CAST_PHOTO
+                        : 'assets/images/profile-imgs/usernoimage.jpg'
+                    " alt="{{ crew.CAST_NAME }}" class="cast-img rounded-circle imgcast" />
+                  <h6 class="mt-2 " style="
+                      font-size: 13px;text-align: center;
+                      font-weight: 500;margin-bottom: 0px;
+                      margin-top: 0px !important;
+                    " (click)="goToCastProfile(crew)">
+                    {{ crew.CAST_NAME }}
+                  </h6>
+                  <span style="font-size: 10px;font-weight: 600;">{{crew.ROLE_ID}}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <div *ngIf="Artistdata?.length > 0" class="d-flex justify-content-between align-items-center"
+            style="margin-top: 20px">
+            <h3 class="css-fnaook">Artist</h3>
+          </div>
+          <section class="py-3" *ngIf="Artistdata?.length > 0" style="
+              border-radius: 12px;
+              border: 1px solid #f0f1f2 !important;
+              background: #ffffff !important;
+              padding: 5px 8px 6px 8px !important;
+              margin-top: 0px;
+            ">
+            <div class="container scroll-wrapper" style="padding: 0px !important">
+              <div class="scroll-container scroll-items mt-3" style="padding-bottom: 5px">
+                <div style="
+                    cursor: pointer;
+                    align-items: center;
+                    justify-content: center;
+                    display: flex;
+                    flex-direction: column;
+                    align-self: center;
+                  " *ngFor="let crew of Artistdata" class="cast-item text-center ">
+                  <img (click)="goToCastProfile(crew)" style="
+                      background-color: #fff;
+                      border-radius: 100%;
+                      border: 1.5px solid #aa0303;
+                      padding: 0px;
+                      object-fit: cover;
+                    " [src]="
+                      crew.CAST_PHOTO
+                        ? retriveimgUrl + 'castImages/' + crew.CAST_PHOTO
+                        : 'assets/images/profile-imgs/usernoimage.jpg'
+                    " alt="{{ crew.CAST_NAME }}" class="cast-img rounded-circle imgcast" />
+                  <h6 class="mt-2" style="text-align: center;
+                      font-size: 13px;
+                      font-weight: 500;
+                      margin-top: 0px !important;
+                    " (click)="goToCastProfile(crew)">
+                    {{ crew.CAST_NAME }}
+                  </h6>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <hr *ngIf="isMobile" style="
+              color: #909193;
+              margin-top: 22px;
+              margin-bottom: 21px !important;
+            " />
+          <div *ngIf="
+              isMobile &&
+              PlaysData != undefined &&
+              uniqueEvents != undefined &&
+              uniqueEvents.length > 0
+            " class="d-flex justify-content-between align-items-center" style="
+              margin-top: 0px;
+              padding: 0px 10px;
+              padding-left: 0px;
+              padding-right: 0px;
+            ">
+            <h3 class="css-fnaook">Venue</h3>
+          </div>
+          <div style="
+  border-radius: 12px;
+  border: 1px solid #f0f1f2;
+  background: #ffffff;
+  padding: 15px 15px 10px 15px;
+" *ngIf="isMobile && PlaysData && uniqueEvents?.length > 0 && isShowStopped == false">
+
+            <ng-container *ngFor="let event of uniqueEvents; let i = index">
+              <div class="css-49j8g3 flex" style="cursor: pointer;">
+
+
+
+                <p class="css-1osrlwy">
+                  {{ event.DISPLAY_NAME=='To Be Decided' ? 'Venue ' + event.DISPLAY_NAME : event.DISPLAY_NAME }}
+                  <span>-</span>
+                  <span>
+                    {{ event.VENUE_CITY=='To Be Decided' ? 'City ' + event.VENUE_CITY : event.VENUE_CITY }}
+                  </span>
+                </p>
+
+              </div>
+              <div
+                [class.disabled]="event?.DISPLAY_NAME === 'Multiple Venues' || event?.DISPLAY_NAME === 'Multiple Venue' || event?.DISPLAY_NAME === 'To Be Decided'"
+                (click)="setLocation(event.DISPLAY_NAME,event['LATITUDE'], event['LONGITUDE'])"
+                style="cursor: pointer;width: max-content;height: 26px;margin-bottom: 8px;padding: 0px 8px 0px 4px;border: 1px solid;border-radius: 4px;color: #af0404;display: flex;align-items: center;font-size: 12px;gap: 0px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M5.5 10.0714C5.5 6.2881 8.96304 4 12 4C15.037 4 18.5 6.2881 18.5 10.0714C18.5 12.4463 17.3299 14.5887 15.8656 16.3303C14.4439 18.0211 12.8224 19.2405 12 19.8053C11.1776 19.2405 9.55612 18.0211 8.13442 16.3303C6.67006 14.5887 5.5 12.4463 5.5 10.0714ZM4.5 10.0714C4.5 5.57143 8.59091 3 12 3C15.4091 3 19.5 5.57143 19.5 10.0714C19.5 15.4847 14.1819 19.5305 12.5021 20.6734C12.1968 20.8812 11.8032 20.8812 11.4979 20.6734C9.81808 19.5305 4.5 15.4847 4.5 10.0714ZM10 10.5C10 9.39543 10.8954 8.5 12 8.5C13.1046 8.5 14 9.39543 14 10.5C14 11.6046 13.1046 12.5 12 12.5C10.8954 12.5 10 11.6046 10 10.5ZM12 7.5C10.3431 7.5 9 8.84315 9 10.5C9 12.1569 10.3431 13.5 12 13.5C13.6569 13.5 15 12.1569 15 10.5C15 8.84315 13.6569 7.5 12 7.5Z"
+                    fill="#af0404"></path>
+                </svg>
+
+                Get Direction
+              </div>
+
+
+              <hr style="margin-top: 0px !important;" *ngIf="i < uniqueEvents.length - 1" />
+            </ng-container>
+
+            <!-- <p *ngIf="uniqueEvents.length > 4" data-bs-toggle="modal" data-bs-target="#venuesModal"
+              style="margin-left: 0px; font-size: 12px; margin-bottom: 0px; font-weight: 600; color: #ff2c52; margin-top: 10px; cursor: pointer;">
+              View Other Venues
+            </p> -->
+
+          </div>
+          <div style="
+  border-radius: 12px;
+  border: 1px solid #f0f1f2;
+  background: #ffffff;
+  padding: 15px 15px 10px 15px;
+" *ngIf="isShowStopped == true && this.PlaysData?.latestStoppedSchedule">
+
+            <ng-container>
+              <div class="css-49j8g3 flex" style="cursor: pointer;">
+
+
+
+                <p class="css-1osrlwy">
+                  {{ this.PlaysData?.latestStoppedSchedule.VENUE_NAME=='To Be Decided' ? 'Venue ' +
+                  this.PlaysData?.latestStoppedSchedule.VENUE_NAME : this.PlaysData?.latestStoppedSchedule.VENUE_NAME }}
+                  <span>-</span>
+                  <span>
+                    {{ this.PlaysData?.latestStoppedSchedule.VENUE_CITY=='To Be Decided' ? 'City ' +
+                    this.PlaysData?.latestStoppedSchedule.VENUE_CITY : this.PlaysData?.latestStoppedSchedule.VENUE_CITY
+                    }}
+                  </span>
+                </p>
+
+              </div>
+              <div
+                [class.disabled]="this.PlaysData?.latestStoppedSchedule?.VENUE_NAME === 'Multiple Venues' || this.PlaysData?.latestStoppedSchedule?.VENUE_NAME === 'Multiple Venue' || this.PlaysData?.latestStoppedSchedule?.VENUE_NAME === 'To Be Decided'"
+                (click)="setLocation(this.PlaysData?.latestStoppedSchedule.VENUE_NAME,this.PlaysData?.latestStoppedSchedule['LATITUDE'], this.PlaysData?.latestStoppedSchedule['LONGITUDE'])"
+                style="cursor: pointer;width: max-content;height: 26px;margin-bottom: 8px;padding: 0px 8px 0px 4px;border: 1px solid;border-radius: 4px;color: #af0404;display: flex;align-items: center;font-size: 12px;gap: 0px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M5.5 10.0714C5.5 6.2881 8.96304 4 12 4C15.037 4 18.5 6.2881 18.5 10.0714C18.5 12.4463 17.3299 14.5887 15.8656 16.3303C14.4439 18.0211 12.8224 19.2405 12 19.8053C11.1776 19.2405 9.55612 18.0211 8.13442 16.3303C6.67006 14.5887 5.5 12.4463 5.5 10.0714ZM4.5 10.0714C4.5 5.57143 8.59091 3 12 3C15.4091 3 19.5 5.57143 19.5 10.0714C19.5 15.4847 14.1819 19.5305 12.5021 20.6734C12.1968 20.8812 11.8032 20.8812 11.4979 20.6734C9.81808 19.5305 4.5 15.4847 4.5 10.0714ZM10 10.5C10 9.39543 10.8954 8.5 12 8.5C13.1046 8.5 14 9.39543 14 10.5C14 11.6046 13.1046 12.5 12 12.5C10.8954 12.5 10 11.6046 10 10.5ZM12 7.5C10.3431 7.5 9 8.84315 9 10.5C9 12.1569 10.3431 13.5 12 13.5C13.6569 13.5 15 12.1569 15 10.5C15 8.84315 13.6569 7.5 12 7.5Z"
+                    fill="#af0404"></path>
+                </svg>
+
+                Get Direction
+              </div>
+
+
+            </ng-container>
+
+
+
+          </div>
+
+          <hr *ngIf="
+              PlaysData !== undefined &&
+              ExtraInfo.length > 0
+            " style="
+              color: #909193;
+              margin-top: 27px;
+              margin-bottom: 22px !important;
+            " />
+          <div *ngIf="
+              PlaysData !== undefined &&
+              ExtraInfo.length > 0
+            " class="d-flex justify-content-between align-items-center" style="
+              margin-top: 0px;
+              padding: 0px 10px;
+              padding-left: 0px;
+              padding-right: 0px;
+            ">
+            <h3 class="css-fnaook">Extra Information</h3>
+          </div>
+          <div class="mt-4" Style="padding: 0px 10px;" *ngIf="
+              PlaysData !== undefined &&
+              ExtraInfo.length > 0
+            " style="
+              border-radius: 0px;
+              border: none;
+              background: #ffffff;
+              padding: 0px 10px;
+              margin-top: 0px !important;
+            ">
+            <div [ngClass]="{ 'clamp-text': !showextra }">
+              <div *ngFor="let extra of ExtraInfo | slice : 0 : (showextra ? ExtraInfo.length : 5);">
+                <p *ngIf="ExtraInfo!==undefined "
+                  style="font-weight: 600 !important;font-size: 17px !important;    margin-bottom: 3px !important;">
+                  {{extra?.TITLE}}</p>
+                <div [innerHTML]="extra?.DESCRIPTION" style="margin-bottom: 20px !important;">
+                </div>
+              </div>
+            </div>
+
+
+            <button *ngIf="ExtraInfo.length > 0" (click)="showextra = !showextra"
+              style="font-size: 14px; font-weight: 600; margin-top: 15px">
+              {{ showextra ? "Show Less" : "Show More" }}
+              <i class="fa-solid" [ngClass]="showextra ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+            </button>
+          </div>
+          <hr style="
+              color: #909193;
+              margin-top: 27px;
+              margin-bottom: 22px !important;
+            " />
+          <div *ngIf="
+              PlaysData !== undefined &&
+              PlaysData.TERMS_CONDITIONS &&
+              cleanedTerms.length > 0
+            " class="d-flex justify-content-between align-items-center" style="
+              margin-top: 0px;
+              padding: 0px 10px;
+              padding-left: 0px;
+              padding-right: 0px;
+            ">
+            <h3 class="css-fnaook">Terms & Conditions</h3>
+          </div>
+          <div class="mt-4" Style="padding: 0px 10px;" *ngIf="
+              PlaysData !== undefined &&
+              PlaysData.TERMS_CONDITIONS &&
+              cleanedTerms.length > 0
+            " style="
+              border-radius: 0px;
+              border: none;
+              background: #ffffff;
+              padding: 0px !important;
+              margin-top: 0px !important;
+            ">
+            <ul style="padding-left: 16px !important; list-style: disc !important">
+              <li *ngFor="
+                  let line of cleanedTerms
+                    | slice : 0 : (showTerms ? cleanedTerms.length : 5)
+                " style="font-size: 13px !important;">
+                <span style="letter-spacing: 0.1px;line-height: 1.6;">{{ line }}</span>
+              </li>
+            </ul>
+
+            <button *ngIf="cleanedTerms.length>5" (click)="toggleTerms()"
+              style="font-size: 14px; font-weight: 600; margin-top: 15px">
+              {{ showTerms ? "Show Less" : "Show More" }}&nbsp;
+              <i class="fa-solid" [ngClass]="showTerms ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+            </button>
+          </div>
+          <div *ngIf="socialFeedData.length > 0">
+            <hr style="
+                color: #909193;
+                margin-top: 22px;
+                margin-bottom: 21px !important;
+                padding: 0px 10px;
+              " />
+            <div class="d-flex justify-content-between align-items-center mb-3"
+              style="margin-top: 0; margin-bottom: 0 !important">
+              <h3 class="css-fnaook" style="margin-bottom: 5px !important">
+                Social Media Details
+              </h3>
+            </div>
+            <!-- <div style="padding-left: 10px">
+              <ul class="social-feed-list">
+                <li style="font-size: 13px" *ngFor="let item of socialFeedData" (click)="openLink(item.URL)">
+                  {{ item.TITLE }}
+                </li>
+              </ul>
+            </div> -->
+
+            <section class="py-3" *ngIf="socialFeedData?.length > 0"
+              style="background: #ffffff; border-radius: 12px;padding-top: 0px !important;">
+              <div class="container px-0">
+                <div class="social-scroll-containers" style="padding-bottom: 0px !important;">
+                  <div class="gallery-thumbs" *ngFor="let item of socialFeedData" (click)="openLink(item.URL)">
+                    <img [src]="
+            item.MIMAGE
+              ? retriveimgUrl + 'socialFeedImage/' + item.MIMAGE
+              : 'assets/images/event-imgs/socialThumbnail.jpg'
+          " alt="{{ item.TITLE }}" class="img-fluid"
+                      style="border: 1.5px solid #aa0303 !important;height: 200px !important;" />
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+          <div>
+            <hr style="
+                color: #909193;
+                margin-top: 22px;
+                margin-bottom: 21px !important;
+                padding: 0px 10px;
+              " />
+
+            <div class="d-flex justify-content-between align-items-center mb-3"
+              style="margin-top: 0px; margin-bottom: 0px !important">
+              <h3 class="css-fnaook" style="margin-bottom: 0px !important">
+                Reviews & Ratings
+              </h3>
+              <button (click)="ratenoww(PlaysData)" type="button" class="btn btn-outline-danger btn-sm reviewbtn">
+                Write Review
+              </button>
+            </div>
+            <div style="padding: 0px 10px; padding-left: 0px; padding-right: 0px">
+              <span style="font-size: 12px; font-weight: 600; align-self: center"
+                *ngIf="averageRating !== undefined && averageRating > 0">
+                <ng-container *ngFor="let star of getStarsMark(averageRating)">
+                  <i *ngIf="star === 'full'" class="bi bi-star-fill" style="color: #ffad21; font-size: 14px"></i>
+                  <i *ngIf="star === 'half'" class="bi bi-star-half" style="color: #ffad21; font-size: 14px"></i>
+                  <i *ngIf="star === 'empty'" class="bi bi-star" style="color: #ffad21; font-size: 14px"></i>
+                </ng-container>
+              </span>
+
+              <span style="font-size: 12px; cursor: pointer" *ngIf="reviewscount > 4" data-bs-toggle="modal"
+                data-bs-target="#reviewLoadModal">&nbsp;&nbsp;View All <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+            <div *ngIf="reviewscount > 0" class="explore-events p-80"
+              style="padding: 0px 10px; padding-left: 0px; padding-right: 0px">
+              <div style="
+                  padding: 5px !important;
+                  overflow-x: auto;
+                  padding-bottom: 10px;
+                  scroll-behavior: smooth;
+                  scrollbar-width: none;
+                  -ms-overflow-style: none;
+                " class="hide-scrollbar">
+                <div class="row flex-nowrap" style="margin-top: 13px" *ngIf="reviewscount > 0; else elsereviewblock">
+                  <div class="col-md-6" style="margin-bottom: 11px"
+                    *ngFor="let review of displayedReviews; let i = index">
+                    <div class="testimonial-card h-100">
+                      <div class="testimonial-content" style="padding: 15px !important">
+                        <div class="testimonial-user-dt d-flex gap-3 align-items-start"
+                          style="margin-top: 0px !important">
+                          <div class="account-holder-avatar">
+                            <img style="
+                                height: 60px;
+                                width: 60px;
+                                border-radius: 50%;
+                                border: 1.5px solid #aa0303 !important;
+                                object-fit: cover;
+                              " [src]="
+                                review.MEMBER_PROFILE_IMAGE
+                                  ? retriveimgUrl +
+                                    'profilePic/' +
+                                    review.MEMBER_PROFILE_IMAGE
+                                  : userImage
+                              " alt="avatar" />
+                          </div>
+                          <div>
+                            <h5 class="mb-1" style="font-size: 14px; font-weight: 600" class="text-truncate">
+                              {{
+                              review.MEMBER_NAME
+                              ? review.MEMBER_NAME
+                              : "Guest User"
+                              }}
+                            </h5>
+                            <ul class="rating-stars m-0 p-0" style="list-style: none; display: flex; gap: 2px">
+                              <li *ngFor="let star of getStars(review.RATING)">
+                                <i class="fa-star" [ngClass]="
+                                    star <= review.RATING
+                                      ? 'fa-solid'
+                                      : 'fa-regular'
+                                  "></i>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                        <!-- <div class="testimonial-text" style="margin-top: 10px">
+<p style="
+                            max-width: 100%;
+                            cursor: pointer;
+                            font-size: 12px;
+                            line-height: 1.5;
+                          ">
+                          {{ review.REVIEW_TEXT }}
+</p>
+</div> -->
+                        <div class="testimonial-text" style="margin-top: 10px">
+                          <span style="
+                              font-size: 9px;
+                              color: #7c5353;
+                              font-weight: 600;
+                            ">
+                            <i class="fa-solid fa-calendar-day"></i>
+
+                            {{
+                            review.CREATED_MODIFIED_DATE
+                            | date : "MMM dd, yyyy hh:mm a"
+                            }}
+                          </span>
+                          <p #textElement [ngClass]="{ 'clamp-text': !expandedReviews[i] }"
+                            (window:resize)="checkOverflow(textElement, i)"
+                            (ngAfterViewInit)="checkOverflow(textElement, i)"
+                            [innerHTML]="formatReviewText(review.REVIEW_TEXT)" [title]="review.REVIEW_TEXT" style="
+                              max-width: 100%;
+                              font-size: 12px;
+                              line-height: 1.4;
+                              overflow-wrap: break-word;
+                              white-space: pre-line;
+                            ">
+                            <!-- {{ review.REVIEW_TEXT }} -->
+                          </p>
+
+                          <a *ngIf="
+                              review != undefined &&
+                              review.REVIEW_TEXT.length > 50
+                            " (click)="toggleReviewExpand(i)" class="show-more-link"
+                            style="cursor: pointer; user-select: none">
+                            {{ expandedReviews[i] ? "Show Less" : "Show More" }}
+                            <i class="bi ms-1" [ngClass]="
+                                expandedReviews[i]
+                                  ? 'bi-chevron-up'
+                                  : 'bi-chevron-down'
+                              "></i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <ng-template #elsereviewblock>
+                  <div style="
+                      width: 100% !important;
+                      height: 143px;
+                      width: 162px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      align-self: center;
+                    ">
+                    <img src="assets/playdetails/noresult.png" alt="No result" />
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+
+
+
+
+          <hr style="color: #909193; margin-top: 13px" />
+
+
+
+
+          <div *ngIf="filteredPlaysData.length > 0" class="d-flex justify-content-between align-items-center"
+            style="margin-top: 25px">
+            <h3 class="css-fnaook" style="margin-bottom: 0px">
+              You May Also Like
+            </h3>
+          </div>
+          <div class="explore-events p-80" style="padding: 0px; margin-bottom: 50px">
+            <div class="container-fluid px-2 scroll-wrapper">
+              <div *ngIf="showLeftRightArrows" class="scroll-arrow-button left" (click)="scrollLeft()">
+                <i class="fa-solid fa-caret-left"></i>
+              </div>
+              <div *ngIf="showLeftRightArrows" class="scroll-arrow-button right" (click)="scrollRight()">
+                <i class="fa-solid fa-caret-right"></i>
+              </div>
+              <div class="row scroll-items" data-ref="event-filter-content" #scrollContainer>
+                <div class="col-6 col-sm-6 col-md-4 col-lg-3 event-card-wrapper" style="margin-bottom: 0px !important"
+                  *ngFor="let event of filteredPlaysData">
+                  <div class="main-card mt-4" style="
+                      margin-top: 14px !important;
+                      background: transparent;
+                      border: none;
+                      cursor: pointer;
+                    ">
+                    <div class="event-thumbnail">
+                      <a (click)=" onEventClick(event)" class="thumbnail-img" style="
+                          border-top-left-radius: 16px;
+                          border-top-right-radius: 16px;
+                        ">
+                        <img *ngIf="event.EVENT_IMAGE" style="
+                            border-bottom-left-radius: 0px !important;
+                            border-bottom-right-radius: 0px !important;
+                          " [src]="
+                            retriveimgUrl + 'eventImages/' + event.EVENT_IMAGE
+                          " alt="{{ event.EVENT_NAME }}" (error)="onImageError($event)" />
+                      </a>
+                      <span class="bookmark-icon" *ngIf="event.IS_PROMOTED">Promoted</span>
+                    </div>
+                    <!-- <div class="event-footer"
+                                            style="background-color: black;border-bottom-right-radius: 5px;border-bottom-left-radius: 5px;padding: 3px 6px;">
+
+                                            <div class="event-timing small"
+                                                style="color: #e8e8e8; font-size: 11px; justify-content: space-around;">
+                                                <span><i
+                                                        class="fa-solid fa-calendar-day me-2"></i>{{event.schedules[0].SHOW_DATE
+                                                    | date:'MMM dd'}}</span><span class="ms-3"><i
+                                                        class="fa-solid fa-clock me-2"></i>{{event.schedules[0]['SHOW_TIME']}}</span>
+                                            </div>
+                                        </div> -->
+                    <div class="event-content single-line-tooltip" style="
+                        padding: 4px 10px 12px;
+                        border: 1px solid rgba(0, 0, 0, 0.0784313725);
+                        border-radius: 0px 0px 16px 16px;
+                        background: #ffffff;
+                        border-top: none;
+                      ">
+                      <!-- <span style="
+                          font-size: 11px;
+                          color: #7c5353;
+                          font-weight: 600;
+                        ">
+                      
+                        <i class="fa-solid fa-calendar-day"></i>
+
+                        {{ this.PlaysData?.schedules[0].SHOW_DATE | date : "dd MMM," }}
+                        {{ event?.schedules[0]["SHOW_TIME"] }}
+                      </span> -->
+
+                      <div class="event-row">
+                        <div class="event-half event-date">
+                          <span class="fontsizee1">
+                            <i class="fa-solid fa-calendar-day"></i>
+                            {{ event?.schedules[0].SHOW_DATE | date : "dd MMM," }}
+                            {{ event?.schedules[0]["SHOW_TIME"] }}
+                          </span>
+                        </div>
+                        <div class="event-half event-genre">
+                          <a style="height: auto !important;" *ngIf="event?.SUB_CATEGORY_NAME"
+                            class="text-dark badgee clamp-text-for-tags fontsizee" [title]="event.SUB_CATEGORY_NAME">
+                            <!-- <span style="height: auto !important;"  *ngIf="event != undefined && event.SUB_CATEGORY_NAME"
+           > -->
+                            {{ getFirstGenre2(event.SUB_CATEGORY_NAME) }}
+                            <!-- </span> -->
+                          </a>
+                          <a style="height: auto !important;" *ngIf="!event.SUB_CATEGORY_NAME && event?.GENRE_NAMES"
+                            [title]="event.GENRE_NAMES" class="text-dark badgee clamp-text-for-tags fontsizee">
+                            <!-- <span style="height: auto !important;"  *ngIf="event != undefined && event.GENRE_NAMES"
+            > -->
+                            {{ getFirstGenre(event.GENRE_NAMES) }}
+                            <!-- </span> -->
+                          </a>
+                        </div>
+                      </div>
+                      <a class="event-title" [title]="event.EVENT_NAME" style="
+                          min-height: 20px;
+                          display: block;
+                          white-space: nowrap;
+                          overflow: hidden;
+                          text-overflow: ellipsis;
+                          cursor: pointer;
+                          line-height: 20px !important;
+                          font-size: 12px !important;
+                          margin-bottom: 0px;
+                          letter-spacing: 1px;
+                          color: #000 !important;
+                        " (click)="onEventClick(event)">
+                        {{ event.EVENT_NAME }}
+                      </a>
+                      <div *ngIf="event.VENUE_NAME"
+                        style="font-size: 11px !important;margin-top: 0px !important;color: #313131 !important;"
+                        class="subnamm" [title]="event.VENUE_NAME">
+                        {{
+                        event.VENUE_NAME
+                        }}
+                      </div>
+                      <!-- vaishnavi -->
+                      <div *ngIf="event.LANGUAGE_NAMES" style="font-size: 10px !important" class="subnamm"
+                        [title]="event.LANGUAGE_NAMES">
+                        {{
+                        event.LANGUAGE_NAMES.split(",").slice(0, 2).join(", ")
+                        }}
+                      </div>
+                      <div *ngIf="!event.LANGUAGE_NAMES && event.TAGS_NAMES" style="font-size: 10px !important"
+                        class="subnamm" [title]="event.TAGS_NAMES">
+                        {{ event.TAGS_NAMES.split(",").slice(0, 2).join(", ") }}
+                      </div>
+                      <!-- <div *ngIf=" event.SUB_CATEGORY_NAME" [title]="event.SUB_CATEGORY_NAME">
+                        <a *ngIf="event != undefined && event.SUB_CATEGORY_NAME">
+                          <span style="font-size: 10px !important" class="text-dark badgee"
+                            [title]="event.SUB_CATEGORY_NAME">
+                            {{ getFirstGenre2(event.SUB_CATEGORY_NAME) }}
+                          </span> </a><span *ngIf="hasMoreGenres(event.SUB_CATEGORY_NAME)"
+                          style="font-size: 10px; color: #9c9ea6 !important">+ More</span>
+                      </div>
+                      <div *ngIf="!event.SUB_CATEGORY_NAME && event.GENRE_NAMES" [title]="event.GENRE_NAMES">
+                        <a *ngIf="event != undefined && event.GENRE_NAMES">
+                          <span style="font-size: 10px !important" class="text-dark badgee" [title]="event.GENRE_NAMES">
+                            {{ getFirstGenre(event.GENRE_NAMES) }}
+                          </span> </a><span *ngIf="hasMoreGenres(event.GENRE_NAMES)"
+                          style="font-size: 10px; color: #9c9ea6 !important">+ More</span>
+                      </div> -->
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-4 col-lg-5 col-md-12 d-none d-md-block">
+        <div class="sticky-sidebar">
+          <div class="main-card event-right-dt" style="border-radius: 16px;">
+            <div class="col-md-12" style="line-height: 30px; padding: 15px; padding-top: 15px">
+              <div class="bp-title" style="border: none">
+                <h4 style="padding: 0px !important">
+                  <h1 class="fw-bold fs-3 fs-md-1 font-ss maint" style="margin-bottom: 12px">
+                    {{ PlaysData.EVENT_NAME }}
+                  </h1>
+                </h4>
+              </div>
+
+              <div class="icon-text-pair" style="margin-top: 9px" *ngIf="
+                  isSingleDate &&
+                  PlaysData != undefined &&
+                  uniqueEvents != undefined &&
+                  uniqueEvents.length > 0
+                ">
+                <i class="fa-regular fa-calendar"></i>
+                <span style="font-size: 13px">{{
+                  singleDate | date : "MMM dd, yyyy"
+                  }}</span>
+              </div>
+
+              <div class="icon-text-pair" style="margin-top: 9px" *ngIf="
+                  !isSingleDate &&
+                  PlaysData != undefined &&
+                  uniqueEvents != undefined &&
+                  uniqueEvents.length > 0
+                ">
+                <i class="fa-regular fa-calendar"></i>
+                <span style="font-size: 13px">{{ minShowDate | date : "MMM dd, yyyy" }} -
+                  {{ maxShowDate | date : "MMM dd, yyyy" }}</span>
+              </div>
+
+              <div class="icon-text-pair" *ngIf="PlaysData != undefined">
+                <i class="fa-regular fa-clock"></i>
+                <span style="font-size: 13px">
+                  {{ismultidate==1?singletime:'Multiple Show Times'}}
+                </span>
+              </div>
+              <div class="icon-text-pair" *ngIf="PlaysData != undefined && PlaysData?.DURATION">
+                <i class="fa-regular fa-hourglass-half"></i>
+                <span style="font-size: 13px">{{ getFormattedDuration(PlaysData.DURATION) }} &nbsp;{{
+                  PlaysData.HAVE_INTERVAL ? "(with Interval)" : ""
+                  }}</span>
+              </div>
+
+              <div class="icon-text-pair" *ngIf="
+                  PlaysData != undefined &&
+                  PlaysData.AGE_GROUP !== undefined &&
+                  PlaysData.AGE_GROUP !== null &&
+                  PlaysData.AGE_GROUP !== '' &&
+                  PlaysData?.AGE_GROUP
+                ">
+                <i class="fa fa-users"></i>
+                <span style="font-size: 12px" *ngIf="PlaysData.AGE_GROUP=='No_Limit'">No Age Limit</span>
+                <span style="font-size: 12px" *ngIf="PlaysData.AGE_GROUP !='No_Limit'">{{ PlaysData.AGE_GROUP }}</span>
+              </div>
+
+              <div class="icon-text-pair scroll-wrappera" *ngIf="
+                  languageList != undefined &&
+                  languageList.length > 0 &&
+                  languageList?.length
+                ">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#0c172f" width="18px" height="20px" viewBox="0 0 24 24"
+                  data-name="Layer 1" class="icon-fixed">
+                  <path
+                    d="M21.05566,12h-2a1,1,0,0,0,0,2v2H17.8714a2.96481,2.96481,0,0,0,.18426-1A2.99955,2.99955,0,0,0,12.458,13.50049a.99992.99992,0,1,0,1.73242.999A1.0009,1.0009,0,0,1,15.05566,14a1,1,0,0,1,0,2,1,1,0,0,0,0,2,1,1,0,1,1,0,2,1.0009,1.0009,0,0,1-.86523-.49951.99992.99992,0,1,0-1.73242.999A2.99955,2.99955,0,0,0,18.05566,19a2.96481,2.96481,0,0,0-.18426-1h1.18426v3a1,1,0,0,0,2,0V14a1,1,0,1,0,0-2ZM9.08594,11.24268a.99963.99963,0,1,0,1.93945-.48536L9.26855,3.72754a2.28044,2.28044,0,0,0-4.4248,0L3.08594,10.75732a.99963.99963,0,1,0,1.93945.48536L5.58618,9H8.52545ZM6.0863,7l.6969-2.78711a.29222.29222,0,0,1,.5459,0L8.02563,7Zm7.96936,0h1a1.001,1.001,0,0,1,1,1V9a1,1,0,0,0,2,0V8a3.00328,3.00328,0,0,0-3-3h-1a1,1,0,0,0,0,2Zm-4,9h-1a1.001,1.001,0,0,1-1-1V14a1,1,0,0,0-2,0v1a3.00328,3.00328,0,0,0,3,3h1a1,1,0,0,0,0-2Z" />
+                </svg>
+                <div class="scroll-itemsa" style="font-size: 13px">
+                  {{ languageList }}
+                </div>
+              </div>
+
+              <div class="icon-text-pair scroll-wrappera" *ngIf="
+                  genreList != undefined &&
+                  genreList.length > 0 &&
+                  genreList?.length
+                ">
+                <i class="fa-solid fa-masks-theater icon-fixed"></i>
+                <div class="scroll-itemsa" style="font-size: 13px">
+                  {{ genreList }}
+                </div>
+              </div>
+
+              <div class="icon-text-pair scroll-wrappera" *ngIf="
+                  TAGS_NAMESList != undefined &&
+                  TAGS_NAMESList.length > 0 &&
+                  TAGS_NAMESList?.length
+                ">
+                <i class="fa-solid fa-tags icon-fixed"></i>
+                <div class="scroll-itemsa" style="font-size: 13px">
+                  {{ TAGS_NAMESList }}
+                </div>
+              </div>
+
+              <div>
+                <button *ngIf="isCommingSoon == true" class="book-btn-grey btn btn-grey mt-3 w-100 w-md-auto">
+                  Coming Soon
+                </button>
+                <button *ngIf="isShowStopped == true" class="book-btn-grey btn btn-grey mt-3 w-100 w-md-auto">
+                  Event Closed
+                </button>
+                <button *ngIf="showBookingButton &&
+                  PlaysData != undefined &&
+                  uniqueEvents != undefined &&
+                  uniqueEvents.length > 0  && (PlaysData.IS_SOLD_OUT == undefined ||  PlaysData.IS_SOLD_OUT== 0)
+                " class="book-btn btn btn-danger mt-3 w-100 w-md-auto" (click)="gotoBookNow()">
+
+                  {{playId=='68d38e3b22fe8251d2e0b4a1'?'Register':'Book Tickets'}} &nbsp;<i
+                    class="fa-solid fa-arrow-right"></i>
+                </button>
+
+                <button *ngIf="showBookingButton &&
+                  PlaysData != undefined &&
+                  uniqueEvents != undefined &&
+                  uniqueEvents.length > 0 && (PlaysData.IS_SOLD_OUT != undefined &&  PlaysData.IS_SOLD_OUT== 1)
+                " class="book-btn-grey btn btn-grey mt-3 w-100 w-md-auto">
+                  Sold Out
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="main-card event-right-dt" style="border-radius: 16px; margin-top: 20px">
+            <div class="col-md-12" style="line-height: 30px; padding: 15px; padding-top: 15px">
+              <div class="bp-title" style="border: none !important">
+                <h4 style="padding: 0px !important; border: none !important">
+                  <h1 class="fw-bold fs-3 fs-md-1 font-ss maint" style="margin-bottom: 12px; border: none !important">
+                    Venue{{
+                    PlaysData != undefined &&
+                    uniqueEvents.length > 1
+                    ? "s"
+                    : ""
+                    }}
+                  </h1>
+                </h4>
+              </div>
+
+              <!-- <div *ngIf="PlaysData && uniqueEvents?.length > 0"> -->
+              <div *ngIf="PlaysData != undefined && uniqueEvents != undefined && uniqueEvents.length > 0">
+                <div *ngFor="let event of uniqueEvents ; let i = index">
+                  <hr *ngIf="i !== 0" style="color: #909193; margin-top: 0px" />
+
+                  <div class="css-49j8g3 flex">
+                    <!-- [class.disabled]="event?.DISPLAY_NAME === 'Multiple Venues' || event?.DISPLAY_NAME === 'Multiple Venue' || event?.DISPLAY_NAME === 'To Be Decided'"
+                  (click)="setLocation(event.DISPLAY_NAME,event['LATITUDE'], event['LONGITUDE'])"> -->
+
+                    <!-- <div>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M5.5 10.0714C5.5 6.2881 8.96304 4 12 4C15.037 4 18.5 6.2881 18.5 10.0714C18.5 12.4463 17.3299 14.5887 15.8656 16.3303C14.4439 18.0211 12.8224 19.2405 12 19.8053C11.1776 19.2405 9.55612 18.0211 8.13442 16.3303C6.67006 14.5887 5.5 12.4463 5.5 10.0714ZM4.5 10.0714C4.5 5.57143 8.59091 3 12 3C15.4091 3 19.5 5.57143 19.5 10.0714C19.5 15.4847 14.1819 19.5305 12.5021 20.6734C12.1968 20.8812 11.8032 20.8812 11.4979 20.6734C9.81808 19.5305 4.5 15.4847 4.5 10.0714ZM10 10.5C10 9.39543 10.8954 8.5 12 8.5C13.1046 8.5 14 9.39543 14 10.5C14 11.6046 13.1046 12.5 12 12.5C10.8954 12.5 10 11.6046 10 10.5ZM12 7.5C10.3431 7.5 9 8.84315 9 10.5C9 12.1569 10.3431 13.5 12 13.5C13.6569 13.5 15 12.1569 15 10.5C15 8.84315 13.6569 7.5 12 7.5Z"
+                        fill="#af0404"></path>
+                    </svg>
+                  </div>
+
+                  &nbsp; -->
+
+                    <p class="css-1osrlwy">
+                      {{ event.DISPLAY_NAME=='To Be Decided' ? 'Venue ' + event.DISPLAY_NAME : event.DISPLAY_NAME }}
+                      <span>-</span>
+                      <span>
+                        {{ event.VENUE_CITY=='To Be Decided' ? 'City ' + event.VENUE_CITY : event.VENUE_CITY }}
+                      </span>
+                    </p>
+
+                  </div>
+                  <div
+                    [class.disabled]="event?.DISPLAY_NAME === 'Multiple Venues' || event?.DISPLAY_NAME === 'Multiple Venue' || event?.DISPLAY_NAME === 'To Be Decided'"
+                    (click)="setLocation(event.DISPLAY_NAME,event['LATITUDE'], event['LONGITUDE'])"
+                    style="cursor: pointer;width: max-content;height: 26px;margin-bottom: 8px;padding: 0px 8px 0px 4px;border: 1px solid;border-radius: 4px;color: #af0404;display: flex;align-items: center;font-size: 12px;gap: 0px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M5.5 10.0714C5.5 6.2881 8.96304 4 12 4C15.037 4 18.5 6.2881 18.5 10.0714C18.5 12.4463 17.3299 14.5887 15.8656 16.3303C14.4439 18.0211 12.8224 19.2405 12 19.8053C11.1776 19.2405 9.55612 18.0211 8.13442 16.3303C6.67006 14.5887 5.5 12.4463 5.5 10.0714ZM4.5 10.0714C4.5 5.57143 8.59091 3 12 3C15.4091 3 19.5 5.57143 19.5 10.0714C19.5 15.4847 14.1819 19.5305 12.5021 20.6734C12.1968 20.8812 11.8032 20.8812 11.4979 20.6734C9.81808 19.5305 4.5 15.4847 4.5 10.0714ZM10 10.5C10 9.39543 10.8954 8.5 12 8.5C13.1046 8.5 14 9.39543 14 10.5C14 11.6046 13.1046 12.5 12 12.5C10.8954 12.5 10 11.6046 10 10.5ZM12 7.5C10.3431 7.5 9 8.84315 9 10.5C9 12.1569 10.3431 13.5 12 13.5C13.6569 13.5 15 12.1569 15 10.5C15 8.84315 13.6569 7.5 12 7.5Z"
+                        fill="#af0404"></path>
+                    </svg>
+
+                    Get Direction
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="isShowStopped">
+
+                <div class="css-49j8g3 flex" *ngIf="isShowStopped">
+
+
+                  <p class="css-1osrlwy">
+                    {{ this.PlaysData?.latestStoppedSchedule?.VENUE_NAME =='To Be Decided' ? 'Venue ' +
+                    this.PlaysData?.latestStoppedSchedule?.VENUE_NAME :
+                    this.PlaysData?.latestStoppedSchedule?.VENUE_NAME }}
+                    <span>-</span>
+                    <span>
+                      {{ this.PlaysData?.latestStoppedSchedule?.VENUE_CITY=='To Be Decided' ? 'City ' +
+                      this.PlaysData?.latestStoppedSchedule?.VENUE_CITY :
+                      this.PlaysData?.latestStoppedSchedule?.VENUE_CITY }}
+                    </span>
+                  </p>
+
+                </div>
+                <div
+                  [class.disabled]="this.PlaysData?.latestStoppedSchedule?.VENUE_NAME === 'Multiple Venues' || this.PlaysData?.latestStoppedSchedule?.VENUE_NAME === 'Multiple Venue' || this.PlaysData?.latestStoppedSchedule?.VENUE_NAME === 'To Be Decided'"
+                  (click)="setLocation(this.PlaysData?.latestStoppedSchedule?.VENUE_NAME, this.PlaysData?.latestStoppedSchedule?.LATITUDE, this.PlaysData?.latestStoppedSchedule?.LONGITUDE)"
+                  style="cursor: pointer;width: max-content;height: 26px;margin-bottom: 8px;padding: 0px 8px 0px 4px;border: 1px solid;border-radius: 4px;color: #af0404;display: flex;align-items: center;font-size: 12px;gap: 0px;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                      d="M5.5 10.0714C5.5 6.2881 8.96304 4 12 4C15.037 4 18.5 6.2881 18.5 10.0714C18.5 12.4463 17.3299 14.5887 15.8656 16.3303C14.4439 18.0211 12.8224 19.2405 12 19.8053C11.1776 19.2405 9.55612 18.0211 8.13442 16.3303C6.67006 14.5887 5.5 12.4463 5.5 10.0714ZM4.5 10.0714C4.5 5.57143 8.59091 3 12 3C15.4091 3 19.5 5.57143 19.5 10.0714C19.5 15.4847 14.1819 19.5305 12.5021 20.6734C12.1968 20.8812 11.8032 20.8812 11.4979 20.6734C9.81808 19.5305 4.5 15.4847 4.5 10.0714ZM10 10.5C10 9.39543 10.8954 8.5 12 8.5C13.1046 8.5 14 9.39543 14 10.5C14 11.6046 13.1046 12.5 12 12.5C10.8954 12.5 10 11.6046 10 10.5ZM12 7.5C10.3431 7.5 9 8.84315 9 10.5C9 12.1569 10.3431 13.5 12 13.5C13.6569 13.5 15 12.1569 15 10.5C15 8.84315 13.6569 7.5 12 7.5Z"
+                      fill="#af0404"></path>
+                  </svg>
+
+                  Get Direction
+                </div>
+              </div>
+              <!-- <div>
+                <span *ngIf="
+                PlaysData != undefined && uniqueEvents.length > 4
+              ">
+                  <p data-bs-toggle="modal" data-bs-target="#venuesModal" *ngIf="
+                  PlaysData != undefined &&
+                  uniqueEvents.length > 0
+                " style="
+                  margin-left: 0px;
+                  font-size: 12px;
+                  margin-bottom: 0px;
+                  font-weight: 600;
+                  color: #ff2c52;
+                  margin-top: 10px;
+                  cursor: pointer;
+                ">
+                    View Other Venues
+                  </p>
+                </span>
+              </div> -->
+              <!-- </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div>
+      <div class="sticky-book-btn d-md-none" style="padding: 0px 7px 7px 7px">
+        <button
+          *ngIf="showBookingButton && PlaysData != undefined &&
+        uniqueEvents != undefined && uniqueEvents.length > 0 && (PlaysData.IS_SOLD_OUT == undefined ||  PlaysData.IS_SOLD_OUT== 0)"
+          class="book-btn btn btn-danger w-100" (click)="gotoBookNow()">
+          {{playId=='68d38e3b22fe8251d2e0b4a1'?'Register':'Book Tickets'}} &nbsp;<i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+        <button *ngIf="showBookingButton && (PlaysData.IS_SOLD_OUT != undefined &&  PlaysData.IS_SOLD_OUT== 1)"
+          class="book-btn-grey btn btn-grey w-100">
+          Sold Out
+        </button>
+
+        <button *ngIf="isCommingSoon == true" class="book-btn-grey btn btn-grey mt-3 w-100 w-md-auto">
+          Coming Soon
+        </button>
+        <button *ngIf="isShowStopped" class="book-btn-grey btn btn-grey mt-3 w-100 w-md-auto">
+          Event Closed
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Share Modal -->
+<div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="width: 300px; margin: auto">
+    <div class="modal-content p-3 rounded-3" style="padding: 0px !important; border: none !important">
+      <div class="modal-body">
+        <div class="popup">
+          <header style="margin: 6px 0px !important">
+            <span>Share Link Via</span>
+            <div class="close" data-bs-dismiss="modal" aria-label="Close">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </header>
+          <div class="content">
+            <ul class="icons">
+              <a [href]="'https://www.facebook.com/sharer/sharer.php?u=' + currentUrl" target="_blank">
+                <i class="fab fa-facebook-f"></i>
+              </a>
+              <a [href]="'https://twitter.com/intent/tweet?url=' + currentUrl" target="_blank">
+                <i class="fab fa-twitter"></i>
+              </a>
+              <a [href]="'https://api.whatsapp.com/send?text=' + currentUrl" target="_blank">
+                <i class="fab fa-whatsapp"></i>
+              </a>
+              <a [href]="'https://www.linkedin.com/sharing/share-offsite/?url=' + currentUrl" target="_blank">
+                <i class="fab fa-linkedin"></i>
+              </a>
+            </ul>
+
+            <div class="field" style="margin-top: 28px; border: 1px solid grey; border-radius: 9px;">
+              <i class="fa-solid fa-link"></i>
+              <input type="text" readonly [value]="currentUrl" />
+              <button
+                style="cursor: pointer !important; border-top-right-radius: 9px; border-bottom-right-radius: 9px; padding: 6px 10px !important;"
+                (click)="copyToClipboard()">
+                Copy
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button style="display: none" id="loginmodaltrack" data-bs-toggle="modal" data-bs-target="#loginmodal">
+  data
+</button>
+<!-- login modal -->
+<div class="modal fade" id="loginmodal" tabindex="-1" aria-labelledby="loginmodalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="width: 300px; margin: auto">
+    <div class="modal-content p-3 rounded-3" style="padding: 0px !important; border: none !important">
+      <div class="modal-body">
+        <div class="popup">
+          <header style="justify-content: end; display: flex; padding: 4px 0px">
+            <div class="close" data-bs-dismiss="modal" #closelogin aria-label="Close" style="display: none">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="close" data-bs-dismiss="modal" aria-label="Close">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </header>
+          <div class="content">
+            <div style="justify-content: center; display: flex">
+              <img src="assets/playdetails/Group.png" alt="login" />
+            </div>
+            <button class="book-btn btn btn-danger mt-3 w-100 w-md-auto reviewbtn1" (click)="openlogin()"
+              style="margin-top:20px !important">
+              Sign In To Continue &nbsp; <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button style="display: none" id="ratenowmodaltrackss" data-bs-toggle="modal" data-bs-target="#ratenowmodaltrack">
+  data
+</button>
+
+<!-- Rating -->
+<div class="modal fade" id="ratenowmodaltrack" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content border-0 shadow-sm rounded-4 p-4" style="background-color: #ffffff">
+      <div class="modal-header border-0 pb-0" style="padding: 0px !important">
+        <h4 class="modal-title fw-bold text-dark w-100 text-center">
+          We value your opinion.
+        </h4>
+        <button type="button" #closereview data-bs-dismiss="modal" aria-label="Close"
+          class="btn-close position-absolute top-0 end-0 m-3" (click)="closeFeedbackModal()"></button>
+      </div>
+
+      <div class="modal-body p-0 pt-4" style="padding-top: 1px !important">
+        <form #feedbackForm="ngForm">
+          <p class="text-center mb-3 text-secondary">
+            Kindly take a moment to tell us what you think.
+          </p>
+
+          <!-- Star Rating -->
+          <div class="d-flex justify-content-center mb-4" style="margin-bottom: 1px !important">
+            <i class="bi mx-1" *ngFor="let star of [1, 2, 3, 4, 5]" [ngClass]="
+                rating >= star
+                  ? 'bi-star-fill text-warning'
+                  : 'bi-star text-muted'
+              " (click)="setRating(star)" style="font-size: 22px; cursor: pointer"></i>
+          </div>
+
+          <!-- tags section -->
+          <div *ngIf="rating > 0" class="mb-3">
+            <p class="fw-medium text-dark mb-2" style="font-size: 13px">
+              Express Yourself With hashtags
+            </p>
+            <div class="row g-2">
+              <div class="col-6 col-sm-4" *ngFor="let tag of getTags(); let i = index">
+                <button type="button" style="font-size: 11px"
+                  class="btn btn-outline-secondary w-100 py-1 px-2 rounded-pill tag-btn"
+                  [class.active]="selectedTags.includes(tag)" (click)="toggleTag(tag)">
+                  {{ tag }}
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="mb-3">
+            <textarea class="form-control rounded-3 border-0 p-3" name="comment" maxlength="512"
+              [(ngModel)]="feedback.comment" placeholder="Your Opinion Matters" rows="3" style="
+                font-size: 12px !important;
+                border: 1px solid #e87c86 !important;
+                padding: 7px 10px !important;
+              "></textarea>
+          </div> -->
+
+          <div class="mb-3">
+            <textarea class="form-control rounded-3 border border-danger" name="comment" maxlength="512"
+              [(ngModel)]="feedback.comment" placeholder="Your Opinion Matters" rows="4" style="
+                font-size: 11px !important;
+                resize: vertical;
+                padding: 7px 5px !important;
+              "></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="text-center">
+            <button></button>
+            <button *ngIf="!ratenowws" type="submit" class="btn px-4 py-2 rounded-pill fw-semibold text-white"
+              style="background-color: #af0404; border-radius: 5px !important" (click)="submitFeedback()">
+              <span> Submit Review</span>
+            </button>
+
+            <button *ngIf="ratenowws" class="btn btn-sm btn-outline-danger rounded-pill"
+              style="border-radius: 5px !important">
+              Submit Review &nbsp;
+              <div class="spinner-border text-danger1" role="status" style="height: 10px; width: 10px">
+                <span class="visually-hidden"></span>
+              </div>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- venues -->
+<div class="modal fade" id="venuesModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content border-0 shadow-sm rounded-4 p-4" style="background-color: #ffffff">
+      <div class="modal-header border-0 pb-0" style="padding: 0px !important">
+        <h4 class="modal-title fw-bold text-dark w-100 text-left">
+          Other Venues
+        </h4>
+        <button type="button" data-bs-dismiss="modal" aria-label="Close"
+          class="btn-close position-absolute top-0 end-0 m-3"></button>
+      </div>
+      <div class="modal-body p-0 pt-4 custom-scrollbar" style="padding-top: 1px !important"
+        *ngIf="PlaysData!=undefined && uniqueEvents != undefined ">
+        <div class="main-event-content mt-3 shadowclass1" *ngFor="let venue of uniqueEvents" style="
+            padding-top: 10px;
+            padding-bottom: 6px;
+            margin-top: 17px !important;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+              rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+          ">
+          <span style="margin-left: 3px; cursor: pointer">
+            <a class="location123" style="font-size: 13px" [href]="
+                'https://www.google.com/maps?q=' +
+                venue['LATITUDE'] +
+                ',' +
+                venue['LONGITUDE']
+              " target="_blank">
+              <span>
+                <i style="color: #0c172f" class="bi bi-geo-alt me-2"></i></span>
+              <span style="font-weight: 700; text-transform: uppercase"> {{ venue["DISPLAY_NAME"] ?
+                venue["DISPLAY_NAME"]:venue["VENUE_NAME"] }}, {{
+                venue["VENUE_CITY"] }}</span><br />
+            </a>
+            <p style="margin-bottom: 0px; font-size: 11px; color: grey">
+              {{ venue.SHOW_DATE | date : "dd MMM," }} | &nbsp;
+              {{ venue["SHOW_TIME"] }}
+            </p>
+            <span style="font-size: 13px">{{ venue["ADDRESS_DETAILS"] }}</span>
+            <a class="location123" [href]="
+                'https://www.google.com/maps?q=' +
+                venue['LATITUDE'] +
+                ',' +
+                venue['LONGITUDE']
+              " target="_blank">
+              <p style="color: #a50000; font-size: 12px; font-weight: 600">
+                View On Map &nbsp; <i class="fa-solid fa-arrow-right"></i>
+              </p>
+            </a>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="reviewLoadModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content border-0 shadow-sm rounded-4 p-4" style="background-color: #ffffff">
+      <div class="modal-header border-0 pb-0" style="padding: 0px !important">
+        <h4 class="modal-title fw-bold text-dark w-100 text-left">
+          Reviews & Ratings
+        </h4>
+        <button type="button" data-bs-dismiss="modal" aria-label="Close"
+          class="btn-close position-absolute top-0 end-0 m-3"></button>
+      </div>
+      <div class="modal-body p-0 pt-4 custom-scrollbar" style="padding-top: 1px !important">
+        <div class="explore-events p-80" style="padding: 0px">
+          <div class="hide-scrollbar" (scroll)="onScrolls($event)" style="
+              height: 50vh;
+              overflow-y: scroll;
+              margin-top: 10px;
+              overflow-x: hidden;
+              scrollbar-width: none;
+              -ms-overflow-style: none;
+            ">
+            <div class="row" style="margin: 0px" *ngIf="reviewscount > 0; else elsereviewblock">
+              <div class="col-12" style="margin-bottom: 11px" *ngFor="let review of displayedReviews; let i = index">
+                <div class="testimonial-card h-100">
+                  <div class="testimonial-content" style="padding: 15px !important">
+                    <div class="testimonial-user-dt d-flex gap-3 align-items-start" style="margin-top: 0px !important">
+                      <div class="account-holder-avatar">
+                        <img style="
+                            height: 60px;
+                            width: 60px;
+                            border-radius: 50%;
+                            object-fit: cover;
+                          " [src]="
+                            review.MEMBER_PROFILE_IMAGE
+                              ? retriveimgUrl +
+                                'profilePic/' +
+                                review.MEMBER_PROFILE_IMAGE
+                              : userImage
+                          " alt="avatar" />
+                      </div>
+                      <div>
+                        <h5 class="mb-1" style="font-size: 14px; font-weight: 600" class="text-truncate">
+                          {{ review.MEMBER_NAME ? review.MEMBER_NAME : "User" }}
+                        </h5>
+                        <ul class="rating-stars m-0 p-0" style="list-style: none; display: flex; gap: 2px">
+                          <li *ngFor="let star of getStars(review.RATING)">
+                            <i class="fa-star" [ngClass]="
+                                star <= review.RATING
+                                  ? 'fa-solid'
+                                  : 'fa-regular'
+                              "></i>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="testimonial-text" style="
+                        margin-top: 10px;
+                        display: flex;
+                        flex-direction: column;
+                      ">
+                      <p #textElement [ngClass]="{ 'clamp-text': !expandedReviews[i] }"
+                        (window:resize)="checkOverflow(textElement, i)"
+                        (ngAfterViewInit)="checkOverflow(textElement, i)"
+                        [innerHTML]="formatReviewText(review.REVIEW_TEXT)" [title]="review.REVIEW_TEXT" style="
+                          max-width: 100%;
+                          font-size: 12px;
+                          line-height: 1.5;
+                          overflow-wrap: break-word;
+                          white-space: pre-line;
+                        ">
+                        <!-- {{ review.REVIEW_TEXT }} -->
+                      </p>
+
+                      <a *ngIf="
+                          review != undefined && review.REVIEW_TEXT.length > 120
+                        " (click)="toggleReviewExpand(i)" class="show-more-link">
+                        {{ expandedReviews[i] ? "Show Less" : "Show More" }}
+                        <i class="bi ms-1" [ngClass]="
+                            expandedReviews[i]
+                              ? 'bi-chevron-up'
+                              : 'bi-chevron-down'
+                          "></i>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="isLoading" class="text-center mt-2">
+                <i class="fa fa-spinner fa-spin"></i> Loading more reviews...
+              </div>
+            </div>
+            <ng-template #elsereviewblock>
+              <div style="
+                  width: 100% !important;
+                  height: 143px;
+                  width: 162px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  align-self: center;
+                ">
+                <img src="assets/playdetails/noresult.png" alt="No result" />
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="modal fade" id="mapModal" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- <div class="modal-header">
+        <h5 class="modal-title" id="mapModalLabel">Open Map{{name}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div> -->
+
+      <div class="modal-body" style="padding: 20px !important;">
+        Would you like to view the location of {{name}} on Google Maps?
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-success" style="background-color: #af0404;
+    border: 1px solid #af0404;" (click)="openMap()" data-bs-dismiss="modal">Open Map</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Show Selection Modal -->
+<div class="modal fade" id="eventinfo22" tabindex="-1" aria-labelledby="showModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg rounded-3 overflow-hidden">
+
+      <!-- Header -->
+      <div class="modal-header bg-dark text-white" style="background-color: #a50000 !important;">
+        <h5 class="modal-title" id="showModalLabel" style=" color: white !important;">
+          Confirm Your Show Selection
+        </h5>
+        <!-- <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button> -->
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+
+        <!-- Event Image -->
+        <h5 style="text-align: center;font-weight: bolder;margin-top: 10px;">🎬 {{ PlaysData.EVENT_NAME }}</h5>
+        <div class="text-center mb-3">
+          <img *ngIf="PlaysData.EVENT_IMAGE" [src]="retriveimgUrl +
+                  'eventImages/' +
+                  PlaysData.EVENT_IMAGE" alt="Event Poster" class="img-fluid rounded shadow-sm" style="max-height: 170px;
+    margin: 8px auto;">
+        </div>
+
+        <p *ngIf="PlaysData.eventScheduleData && PlaysData.eventScheduleData.length > 0" style="text-align: center !important;
+    line-height: 22px !important;padding-left: 10px;padding-right: 10px !important;
+    margin-bottom: 1rem;"><strong style="color: grey;font-size: 14px !important;">📍
+            Venue</strong><br />
+          <strong class="venue-name" style="font-size: 16px !important;">
+            {{ PlaysData.eventScheduleData[0]?.DISPLAY_NAME=='To Be Decided' ? 'Venue ' +
+            PlaysData.eventScheduleData[0]?.DISPLAY_NAME : PlaysData.eventScheduleData[0]?.DISPLAY_NAME }}
+            , {{PlaysData.eventScheduleData[0].VENUE_CITY}}
+          </strong>
+
+        </p>
+        <p *ngIf="PlaysData.eventScheduleData && PlaysData.eventScheduleData.length > 0" style="text-align: center !important;
+    line-height: 22px !important;
+    margin-bottom: 1rem;"><strong style="color: grey;font-size: 14px !important;">📅 Date &
+            Time</strong> <br>
+          <strong>
+
+            <span class="datetime-info">
+              <span class="date" style="font-size: 16px !important;">{{
+                PlaysData.eventScheduleData[0]?.SHOW_DATE | date : "EEE, dd MMM"
+                }}</span>
+              <span class="time" style="font-size: 16px !important;"> | {{ PlaysData.eventScheduleData[0]?.SHOW_TIME
+                }}</span>
+            </span>
+          </strong>
+        </p>
+
+
+
+        <!-- Tags -->
+        <!-- <div class="mt-2">
+          <span class="badge bg-danger me-1" *ngIf="selectedShow?.isFastFilling">Fast Filling</span>
+          <span class="badge bg-info" *ngIf="selectedShow?.isLastShow">Last Show Today</span>
+        </div> -->
+        <!-- Note -->
+        <p class="text-center text-muted small mt-3" style="color: #f14b4b !important;
+    margin: 10px 16px;text-align: center !important;
+    line-height: 16px;font-size: 0.9rem !important;
+    font-weight: 600;
+    letter-spacing: 0.8px;">
+          Please verify your show details before proceeding to seat selection.
+        </p>
+        <!-- <div class="form-group captcha-wrapper" style="margin: 0px auto;width: 100% !important;">
+          <ngx-recaptcha2 #captchaRef2 siteKey="6Ld3I7crAAAAAJTsR1-BAjGoyXwF8JAYuCHf3k8b"
+            (success)="handleCaptchaSuccess($event)" (expired)="handleCaptchaExpire()"
+            (error)="handleCaptchaError($event)">
+          </ngx-recaptcha2>
+        </div> -->
+
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" style="padding-top: 6px; padding-bottom: 6px; font-size: smaller"
+          class="btn btn2 btn-secondary" data-bs-dismiss="modal" (click)="cancelproceed()">Cancel</button>
+        <button style="padding-top: 6px; padding-bottom: 6px; font-size: smaller" class="btn btn2 btn-primary"
+          (click)="proceed()" data-bs-dismiss="modal">Proceed</button>
+      </div>
+
+    </div>
+  </div>
+</div>

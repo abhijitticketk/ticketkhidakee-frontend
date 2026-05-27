@@ -1,0 +1,222 @@
+<div>
+  <div style="display: block;text-align:center;">
+    <!-- <button style="padding-top: 6px; padding-bottom: 6px; font-size: smaller" class="btn btn-primary">
+    🖨️ Print Ticket
+  </button> -->
+    <button class="btn btn-primary"
+      style="padding-top: 6px; padding-bottom: 6px; font-size: smaller;margin-bottom: 10px;"
+      [disabled]="loadingforprint" (click)="downloadTicket()">
+      <ng-container *ngIf="!loadingforprint; else verifyinggggg">
+        Download Ticket
+      </ng-container>
+      <ng-template #verifyinggggg>
+        Downloading... <i class="fas fa-spinner fa-spin ms-2"></i>
+      </ng-template>
+    </button>
+    <div class="text-center text-xs text-gray-500" *ngIf="ticketData" style="margin-top: 0px !important;">
+      <p style="margin-bottom: 0px !important;" class="font-s">🎫 Ticket sent over {{ticketData.email &&
+        ticketData.email!='null'? 'Email ID '+ ticketData.email + ' or ':''
+        }}
+        {{ticketData.mobileno && ticketData.mobileno !='null'?'Mobile No. '+ ticketData.mobileno :''}} used in booking.
+      </p>
+    </div>
+  </div>
+  <div style="overflow-x: hidden; width: 100%;" [ngClass]="{ 'mobile-zoom-enabled': enableMobileZoom }">
+    <div id="print-section" class="ticket-wrapper">
+      <!-- <div class="ticket-wrapper">
+        <div > -->
+      <div class="ticket-container" style="margin-top: 10px">
+        <!-- Header -->
+        <div class="ticket-header" [ngClass]="{ 'membership-header': ticketData?.PLAN_ID }">
+          <p class="header-text">Your Booking is confirmed!</p>
+
+          <div class="qr-box">
+            <img [src]="ticketData.qrCodeDataURL" alt="QR Code" style="height: 100%" />
+          </div>
+          <p class="booking-label">BOOKING CODE</p>
+          <p class="booking-code">{{ ticketData.bookingId }}</p>
+        </div>
+        <div *ngIf="ticketData && ticketData.PLAN_ID" class="membership-strip">
+          <div>
+            <!-- <img src="assets/membersonly.png" alt="" style="width: 190px !important;height: 26px !important;"> -->
+            <h6 style="font-size:2rem !important;">
+              {{ticketData.PLAN_NAME}}
+            </h6>
+          </div>
+        </div>
+        <!-- Body -->
+        <div class="ticket-body">
+          <h2 class="event-title2">{{ ticketData.eventTitle }}</h2>
+          <h2 class="event-subtitle" *ngIf="ticketData.MAIN_EVENT_NAME !='' && ticketData.MAIN_EVENT_NAME != null">({{ ticketData.MAIN_EVENT_NAME }})</h2>
+          <h2 class="event-subtitle" *ngIf="ticketData.MAIN_EVENT_NAME =='' || ticketData.MAIN_EVENT_NAME == null">{{ ticketData.eventTitle }}</h2>
+          <div class="eventDetails">
+            <div class="venue">
+              <!-- <div> -->
+              <!--  [src]="retriveimgUrl +'eventImages/' +ticketData.eventImage" -->
+              <!-- <img [src]="'https://dev.ticketkhidakee.com/auth/static/eventImages/'+ ticketData.eventImage"
+                alt="Loading image"> -->
+              <img *ngIf="ticketData" [src]="avatarUrl" alt="Loading image" />
+              <!-- style="width: 100%; height: 100%; object-fit: cover"</div> -->
+              <div>
+                <p class="venue-name2"> {{
+                  ticketData.eventVenue == "To Be Decided"
+                  ? "Venue " + ticketData.eventVenue
+                  : ticketData.eventVenue
+                  }}</p>
+                <p class="city-age"> {{
+                  ticketData.CITY_NAME == "To Be Decided"
+                  ? "City " + ticketData.CITY_NAME
+                  : ticketData.CITY_NAME
+                  }}</p>
+                <p class="city-age">{{ticketData.EVENT_AGE_GROUP}}</p>
+              </div>
+            </div>
+            <div class="datetime">
+              {{ ticketData.eventDate | date : "EEEE, dd MMM yyyy" |uppercase}}<br>
+              {{ ticketData.eventDate| date:" hh:mm a" }}
+            </div>
+            <ng-container *ngIf="ticketData.hostingType!='C'; else elseBlockkkk">
+              <div class="section-wrapper" *ngFor="let seat of seatsWithSection">
+                <p class="seats">
+                  {{seat.section}}
+                  <span class="total">(Total {{ seat.count}})</span>
+                </p>
+              </div>
+            </ng-container>
+            <ng-template #elseBlockkkk>
+              <span class="section-wrapper ">
+                <ng-container class="seats">
+                  <span class="seat-name" *ngFor="let seat of seatDisplayData.seatsN; let last = last">
+                    {{seat.seatName}}<span *ngIf="seat.isSofa" class="sofacount">({{ seat.count > 1 ? seat.count + '
+                      Persons' :
+                      seat.count + ' Person' }})</span><span *ngIf="!last">, </span>
+                  </span>
+                  <span class="total">(Total {{ seatDisplayData.count }})</span>
+                </ng-container>
+
+              </span>
+            </ng-template>
+
+            <p class="username">{{ ticketData.customerName }} </p>
+          </div>
+          <!-- DETAILS BREAKDOWN -->
+          <h4 style=" font-size: 16px; margin: 1rem 0;font-weight: 600;">Details</h4>
+          <div class="details-section">
+            <!-- hostingType != C -->
+            <ng-container *ngIf="ticketData.hostingType!='C'; else elseBlockkkkk">
+              <div class="pdf-row seat-row" *ngFor="let row of seatsWithSection ">
+                <span class="dot"></span>
+                <div class="seat-info">
+                  <strong>{{ row.section }} X {{ row.count }}</strong>
+                </div>
+                <div class="seat-price">{{row.price| currency:'INR'}}</div>
+              </div>
+            </ng-container>
+            <!-- hostingType == C -->
+            <ng-template #elseBlockkkkk>
+              <div class="pdf-row seat-row" *ngFor="let seat of seatDotData">
+                <span class="dot"></span>
+
+                <div class="seat-info">
+                  <strong>
+                    {{seat.seatNumber}}
+                    <span *ngIf="seat.isSofa">
+                      ({{seat.count}} Persons)
+                    </span>
+                  </strong>
+
+                  <span>{{ seat.sectionNAME }}</span>
+                  <span>&nbsp;{{ seat.sub_section }}</span>
+                </div>
+
+                <div class="seat-price">
+                  {{seat.totalAmount | currency:'INR'}}
+                </div>
+              </div>
+            </ng-template>
+            <div class="pdf-row total-row">
+              <p style="text-align: center;margin: 0 !important;">Total</p>
+              <p style="text-align: right;margin: 0 !important;">{{ticketData.totalPrice | currency:'INR'}}</p>
+            </div>
+          </div>
+          <div class="pdf-row">
+            <h4 style=" font-size: 16px; margin: 1rem 0;font-weight: 600;">Payment Information</h4>
+            <div class="pdf-row payment-section">
+              <div class="labels">
+                <p>Total</p>
+                <p *ngIf="ticketData.bookingFee !=null && ticketData.bookingFee>0">Booking Fee</p>
+                <p *ngIf="ticketData.bookingFee !=null && ticketData.bookingFee>0">Tax</p>
+                <p
+                  *ngIf="ticketData.totalPrice>0 && ticketData.discount>-1 && (ticketData.IS_COUPON_USED || ticketData.IS_PLAN_USED)">
+                  Discount</p>
+                <p *ngIf="ticketData.totalPrice>0 || ticketData.finalAmount >0">Grand Total</p>
+                <p *ngIf="ticketData.finalAmount>0">Payment Method</p>
+                <p *ngIf="ticketData.finalAmount>0">Reference</p>
+              </div>
+              <div class="val">
+                <p>{{ticketData.totalPrice | currency:'INR'}}</p>
+                <p *ngIf="ticketData.bookingFee !=null && ticketData.bookingFee>0">
+                  {{ticketData.bookingFee==null?'0':ticketData.bookingFee| currency:'INR'}}</p>
+                <p *ngIf="ticketData.bookingFee !=null && ticketData.bookingFee>0">
+                  {{ticketData.taxFee==null?'0':ticketData.taxFee| currency:'INR'}}</p>
+                <p
+                  *ngIf="ticketData.totalPrice>0 && ticketData.discount>-1 && (ticketData.IS_COUPON_USED || ticketData.IS_PLAN_USED)">
+                  {{ticketData.discount | currency:'INR'}}</p>
+                <p *ngIf="ticketData.totalPrice>0 || ticketData.finalAmount >0">
+                  {{ticketData.finalAmount|currency:'INR'}}
+                </p>
+                <p *ngIf="ticketData.finalAmount>0">{{ticketData.payMode=='O'?'Online':'Cash'}}</p>
+                <p *ngIf="ticketData.finalAmount>0">{{ticketData.payMode!='O'?'---':ticketData.reference}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pdf-row foot">
+          <div class="footLogo">
+            <img
+              src="https://static.readdy.ai/image/afcc47cb1dc09e4f18793aaad07a3df7/296c6bbc31613159efddba4235006534.png"
+              alt="" />
+          </div>
+        </div>
+      </div>
+      <div class="ticket-contact">
+        Contact <span
+          style="color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1))!important;">bookings@ticketkhidakee.com</span>
+        or +91 7447405844 for assistance.
+      </div>
+      <div *ngIf="ticketData.TERMS_CONDITIONS && ticketData.TERMS_CONDITIONS.length>0" class="flexxxxxx">
+        <div class="terms-and-conditions">
+          <h4 class="terms-title">Terms and Conditions</h4>
+
+          <ul class="terms-list">
+            <li *ngFor="let term of sanitizedTerms" class="term-text">
+              {{ term }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- </div> -->
+    <!-- <div *ngIf="ticketData.TERMS_CONDITIONS" class="flexxxxxx">
+        <div class="terms-and-conditions">
+          <h4>Terms and Conditions</h4>
+          <ul class="terms-list">
+            <li *ngFor="let term of sanitizedTerms">
+              {{ term }}
+            </li>
+          </ul>
+        </div>
+
+      </div> -->
+
+    <!-- </div> -->
+  </div>
+</div>
+
+<!-- <div style="width: 100%;justify-items: center;text-align: center;" *ngIf="loadingticket">
+  <div class="spinner-border text-danger" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <div>Please Wait while generating ticket</div>
+
+</div> -->

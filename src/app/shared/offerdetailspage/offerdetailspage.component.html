@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Special Offers - Broadway Palace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+      rel="stylesheet"
+    />
+    <!-- <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#a50000", secondary: "#333333" },
+            borderRadius: {
+              none: "0px",
+              sm: "4px",
+              DEFAULT: "8px",
+              md: "12px",
+              lg: "16px",
+              xl: "20px",
+              "2xl": "24px",
+              "3xl": "32px",
+              full: "9999px",
+              button: "8px",
+            },
+          },
+        },
+      };
+    </script> -->
+  </head>
+  <!-- <body> -->
+
+  <div class="wrapper">
+    <main class="container py-10">
+      <h4
+        class="page-subtitle mb-1"
+        style="padding-top: 40px !important; margin-top: 30px; font-weight: 600"
+      >
+        Special Offers & Promotions
+      </h4>
+      <p class="page-subtitle mb-4" style="font-size: small !important">
+        Discover exclusive deals and discounts on your favorite Broadway shows
+        and theatrical performances. Book early, save more!
+      </p>
+
+      <!-- <div  (click)="testClick()">Test Click</div> -->
+
+      <div class="filter-tabs">
+        <div
+          class="filter-tab"
+          [class.active]="selectedCategory === 'all'"
+          (click)="filterOffers('all')"
+        >
+          All Offers
+        </div>
+        <!-- <div class="filter-tab" (click)="testClick()">Test Click</div> -->
+
+        <div
+          class="filter-tab"
+          [class.active]="selectedCategory === 'early-bird'"
+          (click)="filterOffers('early-bird')"
+          style="cursor: pointer"
+        >
+          Early Bird
+        </div>
+        <div
+          class="filter-tab"
+          [class.active]="selectedCategory === 'group'"
+          (click)="filterOffers('group')"
+        >
+          Group Bookings
+        </div>
+        <div
+          class="filter-tab"
+          [class.active]="selectedCategory === 'seasonal'"
+          (click)="filterOffers('seasonal')"
+        >
+          Seasonal
+        </div>
+        <div
+          class="filter-tab"
+          [class.active]="selectedCategory === 'member'"
+          (click)="filterOffers('member')"
+        >
+          Member Benefits
+        </div>
+        <div
+          class="filter-tab"
+          [class.active]="selectedCategory === 'last-minute'"
+          (click)="filterOffers('last-minute')"
+        >
+          Last Minute
+        </div>
+      </div>
+
+      <div class="offers-grid">
+        <div
+          class="offer-card"
+          *ngFor="let offer of filteredOffers"
+          [attr.data-category]="offer.category"
+        >
+          <div class="offer-badge">{{ offer.badge }}</div>
+          <div class="offer-save">
+            <i class="ri-heart-line ri-lg"></i>
+          </div>
+          <img
+            [src]="offer.image.src"
+            [alt]="offer.image.alt"
+            [class]="offer.image.className"
+          />
+          <div class="offer-content">
+            <h3 class="offer-title" [title]="offer.title">{{ offer.title }}</h3>
+            <p class="offer-description" [title]="offer.description">{{ offer.description }}</p>
+            <div class="offer-validity">
+              <i class="ri-calendar-line"></i>
+              <span>{{ offer.validity }}</span>
+            </div>
+            <div class="offer-terms" [attr.data-terms]="offer.termsId">
+              <i class="ri-information-line"></i>
+              <span>Terms & Conditions</span>
+            </div>
+            <div class="terms-content" [id]="offer.termsId">
+              {{ offer.termsText }}
+            </div>
+            <button [class]="offer.button.className">
+              <i [class]="offer.button.icon"></i>
+              {{ offer.button.text }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <!-- </body> -->
+</html>

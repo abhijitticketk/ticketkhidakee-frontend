@@ -1,0 +1,273 @@
+<!-- <div *ngIf="isLoading" class="loader-container show">
+  <div class="loader-content text-center">
+    <img src="assets/Animation.gif" alt="Ticket Khidakee Logo" class="animated-logo" />
+  </div>
+</div> -->
+
+<div *ngIf="isLoading" [ngClass]="isMobile ? '' : 'wrapper'">
+  <div class=" p-3" style="width: 100%;">
+    <div class="skeleton-loader" style="width: 100%;">
+      <div class="skeleton skeleton-img" style="width: 100%; height: 300px;"></div>
+    </div>
+  </div>
+
+
+  <div class="" style="width: 100%;    display: flex
+;
+    justify-content: space-evenly;">
+    <div class="skeleton-loader" [ngStyle]="{'width': isMobile ? '100%' : '20%'}">
+      <div class="skeleton skeleton-img" style=" height: 300px;"></div>
+    </div>
+    <div class="skeleton-loader" [ngStyle]="{'width': isMobile ? '100%' : '20%'}">
+      <div class="skeleton skeleton-img" style=" height: 300px;"></div>
+    </div>
+    <div *ngIf="!isMobile" class="skeleton-loader" [ngStyle]="{'width': isMobile ? '100%' : '20%'}">
+      <div class="skeleton skeleton-img" style=" height: 300px;"></div>
+    </div>
+    <div *ngIf="!isMobile" class="skeleton-loader" [ngStyle]="{'width': isMobile ? '100%' : '20%'}">
+      <div class="skeleton skeleton-img" style=" height: 300px;"></div>
+    </div>
+  </div>
+
+  <div class="" style="width: 100%;    display: flex
+;
+    justify-content: space-evenly;">
+    <div class="skeleton-loader" [ngStyle]="{'width': isMobile ? '100%' : '20%'}">
+      <div class="skeleton skeleton-img" style=" height: 300px;"></div>
+    </div>
+    <div class="skeleton-loader" [ngStyle]="{'width': isMobile ? '100%' : '20%'}">
+      <div class="skeleton skeleton-img" style=" height: 300px;"></div>
+    </div>
+    <div *ngIf="!isMobile" class="skeleton-loader" [ngStyle]="{'width': isMobile ? '100%' : '20%'}">
+      <div class="skeleton skeleton-img" style=" height: 300px;"></div>
+    </div>
+    <div *ngIf="!isMobile" class="skeleton-loader" [ngStyle]="{'width': isMobile ? '100%' : '20%'}">
+      <div class="skeleton skeleton-img" style=" height: 300px;"></div>
+    </div>
+  </div>
+
+</div>
+
+<div *ngIf="!isLoading">
+  <!-- <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+    <div *ngIf="!isLoading && mainbannersessiondatadyanamic" class="carousel-inner">
+      <div class="carousel-item" *ngFor="let banner of mainbannersessiondatadyanamic; let i = index"
+        [class.active]="i === 0">
+        <div class="hero-banner" [ngStyle]="{
+            'background-image':
+              'url(' + retriveimgUrl + 'bannerImages/' + banner.IMG_URL + ')'
+          }">
+
+        </div>
+      </div>
+    </div>
+
+
+
+  </div> -->
+
+
+
+
+  <div style="width: 100%" [ngStyle]="{
+      'margin-top': isMobile ? '' : '70px'
+    }">
+    <!-- <owl-carousel-o [options]="customOptions"> -->
+    <ng-container *ngFor="let banner of mainbannersessiondatadyanamic">
+      <!-- <ng-template> -->
+      <div [ngStyle]="{
+              'background-image':
+                'url(' + retriveimgUrl + 'bannerImages/' + banner.IMG_URL + ')',
+               'background-size': '100% 100%',
+  'background-repeat': 'no-repeat',
+  'background-position': 'center',
+              height: isMobile?'150px' :'370px',
+              'border-radius': '10px',
+              margin: '3px'
+            }"></div>
+      <!-- </ng-template> -->
+    </ng-container>
+    <!-- </owl-carousel-o> -->
+  </div>
+  <ng-container *ngIf="!loading">
+    <ng-container *ngIf="sessiondatadyanamic?.length == 0">
+      <div class="text-center m-5" style="
+          padding: 60px 20px;
+          opacity: 0.7;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+        ">
+        <img src="assets/nodata1.png" alt="No data" class="img-fluid nodata-img" />
+        <p class="mt-3 fs-5">No shows data available</p>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="sessiondatadyanamic?.length > 0">
+      <ng-container *ngFor="let section of sessiondatadyanamic; let i = index">
+        <div *ngIf="section['EVENTS'].length" class="explore-events" style="padding: 0px 0px">
+          <div class="container-fluid" style="padding: 0px !important">
+            <div class="row mopadding" [ngStyle]="{
+                'background-color': i % 2 === 0 ? 'transparent' : '#f0f0f0',
+                margin: '0px 0px 16px',
+
+              }">
+              <div class="col-xl-12 col-lg-12 col-md-12 px-4">
+                <div class="section-title">
+                  <span style="text-transform: uppercase; font-size: 16px">{{
+                    section.CATEGORY_NAME
+                    }}</span>
+
+                </div>
+              </div>
+
+              <div [ngClass]="
+                  isMobile
+                    ? 'col-6 col-xl-2 col-lg-3 col-md-3 col-sm-6 px-2'
+                    : ' col-6 col-xl-2 col-lg-3 col-md-3 col-sm-6 px-2 '
+                " *ngFor="let event of section.EVENTS">
+                <div class="main-card mt-3">
+                  <div class="event-thumbnail">
+                    <a class="thumbnail-img" [routerLink]="getEventRouterLink(section.TITLE, event)">
+                      <!-- <img
+                        style="
+                          border-bottom-left-radius: 0px !important;
+                          border-bottom-right-radius: 0px !important;
+                          cursor: pointer;
+                        "
+                        [src]="
+                          retriveimgUrl + 'eventImages/' + event.EVENT_IMAGE
+                        "
+                        [alt]="event.EVENT_NAME"
+                        (error)="onImageError($event)"
+                        class="img-fluid thumbnail-img"
+                      /> -->
+                      <img style="
+                          border-bottom-left-radius: 0px !important;
+                          border-bottom-right-radius: 0px !important;
+                          cursor: pointer;
+                        " [src]="
+                          retriveimgUrl + 'eventImages/' + event.EVENT_IMAGE
+                        " [alt]="event.EVENT_NAME" (error)="onImageError($event)" class="img-fluid thumbnail-img" />
+                    </a>
+
+                    <!-- <span
+                                *ngIf="memberId && !addbookmarkspin"
+                                class="bookmark-icon"
+
+                                title="Bookmark"
+                                [ngClass]="{
+                                  bookmarked: getbookmarked(
+                                    event.EVENT_MASTER._id
+                                  )
+                                }"
+                                (click)="toggleBookmark(event.EVENT_MASTER._id)"
+                              >
+                              </span> -->
+                    <!-- <span *ngIf="memberId" class="bookmark-icon" [title]="addbookmarkspin ? 'Loading...' : 'Bookmark'"
+                      [ngClass]="{
+                        bookmarked: getbookmarked(event.EVENT_ID),
+                        disabled: addbookmarkspin
+                      }" (click)="
+                        !addbookmarkspin && toggleBookmark(event.EVENT_ID)
+                      ">
+                      <ng-container *ngIf="addbookmarkspin; else bookmarkIcon">
+                        <i class="fa fa-spinner fa-spin spinner-icon"></i>
+                      </ng-container>
+                      <ng-template #bookmarkIcon></ng-template>
+                    </span> -->
+                    <span class="bookmark-icon" *ngIf="event.IS_PROMOTED">Promoted</span>
+                  </div>
+                </div>
+                <div class="event-content">
+                  <!-- <span style="font-size: 11px; color: #7c5353; font-weight: 600">
+                    <i class="fa-solid fa-calendar-day"></i>
+
+                    {{ formatShowDates(event?.SHOW_DATES, event?.SHOW_TIME) }}
+                  </span> -->
+
+                  <div class="event-row">
+                    <div class="event-half event-date">
+                      <span class="fontsizee1">
+                        <i class="fa-solid fa-calendar-day"></i>
+                        {{ formatShowDates(event?.SHOW_DATES, event?.SHOW_TIME) }}
+                      </span>
+                    </div>
+                    <div class="event-half event-genre">
+                      <a class="text-dark badgee clamp-text-for-tags fontsizee"
+                        *ngIf="event != undefined && event.SUB_CATEGORY_NAME" [title]="event.SUB_CATEGORY_NAME">
+                        <!-- <span> -->
+                        {{ getFirstGenre(event.SUB_CATEGORY_NAME) }}
+                        <!-- </span> -->
+                      </a>
+                      <a *ngIf="!event.SUB_CATEGORY_NAME && event?.GENRE_NAMES" [title]="event.GENRE_NAMES"
+                        class="text-dark badgee clamp-text-for-tags fontsizee">
+                        <!-- <span  *ngIf="event != undefined && event.GENRE_NAMES"> -->
+                        {{ getFirstGenre(event.GENRE_NAMES) }}
+                        <!-- </span> -->
+                      </a>
+                    </div>
+                  </div>
+                  <a class="event-title" [title]="event.EVENT_NAME" style="
+                      min-height: 20px;
+                      display: block;
+                      font-size: 12px !important;
+                      white-space: nowrap;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                      cursor: pointer;
+                    " [routerLink]="getEventRouterLink(section.TITLE, event)">
+                    {{ event.EVENT_NAME }}
+                  </a>
+                  <div *ngIf="event.VENUE_NAME" style="font-size: 10px !important;color: #2a2a2a !important;"
+                    class="subnamm" [title]="event.VENUE_NAME">
+                    {{
+                    event.VENUE_NAME
+                    }}
+                  </div>
+                  <div *ngIf="event.LANGUAGE_NAMES" style="font-size: 10px !important;" class="subnamm"
+                    [title]="event.LANGUAGE_NAMES">
+                    {{
+                    event.LANGUAGE_NAMES.split(",")
+                    .slice(0, 2)
+                    .join(", ")
+                    }}
+                  </div>
+                  <div *ngIf="!event.LANGUAGE_NAMES && event.TAGS_NAMES" style="font-size: 10px !important;"
+                    class="subnamm" [title]="event.TAGS_NAMES">
+                    {{
+                    event.TAGS_NAMES.split(",")
+                    .slice(0, 2)
+                    .join(", ")
+                    }}
+                  </div>
+                  <!-- <div [title]="event.GENRE_NAMES" *ngIf="event.GENRE_NAMES">
+                    <a *ngIf="event != undefined && event.GENRE_NAMES">
+                      <span class="text-dark badgee" style=" font-size: 10px;" [title]="event.GENRE_NAMES">
+                        {{ getFirstGenre(event.GENRE_NAMES) }}
+                      </span> </a><span *ngIf="hasMoreGenres(event.GENRE_NAMES)" style="
+                                  font-size: 10px;
+                                  color: #9c9ea6 !important;
+                                ">+ More</span>
+                  </div>
+                  <div [title]="event.SUB_CATEGORY_NAME" *ngIf="!event.GENRE_NAMES && event.SUB_CATEGORY_NAME">
+                    <a *ngIf="
+                                  event != undefined && event.SUB_CATEGORY_NAME
+                                ">
+                      <span class="text-dark badgee" style=" font-size: 10px;" [title]="event.SUB_CATEGORY_NAME">
+                        {{ getFirstGenre(event.SUB_CATEGORY_NAME) }}
+                      </span> </a><span *ngIf="hasMoreGenres(event.SUB_CATEGORY_NAME)" style="
+                                  font-size: 10px;
+                                  color: #9c9ea6 !important;
+                                ">+ More</span>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</div>

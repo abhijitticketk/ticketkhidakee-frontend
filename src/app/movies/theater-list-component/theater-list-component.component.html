@@ -1,0 +1,217 @@
+<body class="d-flex flex-column h-100">
+    <!-- <app-navbar></app-navbar> -->
+
+    <!-- Body Start-->
+    <div class="wrapper">
+        <div class="hero-banner">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 col-md-12">-
+                        <div class="hero-banner-content text-center">
+                            <h2 style="color: #d32f2f;">Search Nearby Theaters</h2>
+                            <div class="">
+                                <input class="form-control h_50 w-100" type="text" [(ngModel)]="searchTerm"
+                                    (input)="onSearchChange()" placeholder="Search theaters..." />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="explore-events p-80">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 col-md-12">
+                        <!-- <div class="main-title">
+							<h3 class="all event-box" style="display: block;">All Events</h3>
+							<h3 class="today event-box">Today</h3>
+							<h3 class="tomorrow event-box">Tomorrow</h3>
+							<h3 class="thisWeek event-box">This Week</h3>
+							<h3 class="thisWeekend event-box">This Weekend</h3>
+							<h3 class="nextWeekend event-box">Next Weekend</h3>
+							<h3 class="thisMonth event-box">This Month</h3>
+							<h3 class="nextMonth event-box">Next Month</h3>
+							<h3 class="thisYear event-box">This Year</h3>
+							<h3 class="nextYear event-box">Next Year</h3>
+						</div> -->
+
+
+
+
+                        <div class="event-filter-items">
+                            <div class="featured-controls">
+
+                                <div class="controls d-flex flex-wrap gap-2">
+                                    <button type="button" class="control"
+                                        [class.mixitup-control-active]="isFacilitySelected('Food Court')"
+                                        data-filter="test" (click)="toggleFacility('Food Court')">
+                                        <i class="bi bi-cup-straw"></i> Food Court
+                                    </button>
+
+                                    <button type="button" class="control"
+                                        [class.mixitup-control-active]="isFacilitySelected('Parking Facility')"
+                                        data-filter="test" (click)="toggleFacility('Parking Facility')">
+                                        <i class="bi bi-car-front"></i> Parking
+                                    </button>
+
+                                    <button type="button" class="control"
+                                        [class.mixitup-control-active]="isFacilitySelected('AC')" data-filter="test"
+                                        (click)="toggleFacility('AC')">
+                                        <i class="bi bi-snow"></i> AC
+                                    </button>
+
+                                    <button type="button" class="control"
+                                        [class.mixitup-control-active]="isFacilitySelected('Wi-Fi')" data-filter="test"
+                                        (click)="toggleFacility('Wi-Fi')">
+                                        <i class="bi bi-wifi"></i> Wi-Fi
+                                    </button>
+
+                                    <button type="button" class="control"
+                                        [class.mixitup-control-active]="isFacilitySelected('Charging Spots')"
+                                        data-filter="test" (click)="toggleFacility('Charging Spots')">
+                                        <i class="bi bi-lightning-charge"></i> Charging Spots
+                                    </button>
+
+                                    <button type="button" class="control"
+                                        [class.mixitup-control-active]="isFacilitySelected('Wheel Chair Facility')"
+                                        data-filter="test" (click)="toggleFacility('Wheel Chair Facility')">
+                                        <i class="bi bi-person-wheelchair"></i> Wheel Chair Facility
+                                    </button>
+
+                                    <!-- <button type="button" class="control"
+                                        [class.mixitup-control-active]="isFacilitySelected('Recliner Seats')"
+                                        data-filter="test" (click)="toggleFacility('Recliner Seats')">
+                                        <i class="bi bi-lounge-chair"></i> Recliner
+                                    </button> -->
+
+                                    <button type="button" class="control"
+    [class.mixitup-control-active]="isFacilitySelected('Recliner Seats')"
+    data-filter="test" (click)="toggleFacility('Recliner Seats')">
+    <img style="height: 20px;" src="assets/recliner.png" alt="Recliner Seats" class="facility-icon" />
+    Recliner
+</button>
+
+
+                                    <button type="button" class="control"
+                                        [class.mixitup-control-active]="isFacilitySelected('M-Ticket')"
+                                        data-filter="test" (click)="toggleFacility('M-Ticket')">
+                                        <i class="bi bi-phone"></i> M-Ticket
+                                    </button>
+
+                                    <button type="button" class="control"
+                                        [class.mixitup-control-active]="isFacilitySelected('Ticket Cancellation')"
+                                        data-filter="test" (click)="toggleFacility('Ticket Cancellation')">
+                                        <i class="bi bi-x-circle"></i> Ticket Cancellation
+                                    </button>
+
+                                    <button type="button" class="control" data-filter="test"
+                                        (click)="clearAllFilters()">
+                                        Reset
+                                    </button>
+                                </div>
+
+
+
+
+                                <div class="all event-box" style="display: block;">
+
+                                    <div *ngIf="searchLoading" class="d-flex justify-content-center">
+                                        <div class="loader"></div> <!-- Add your loader CSS here -->
+                                    </div>
+
+                                    <div *ngIf="!searchLoading && theaters.length === 0" class="no-data-container">
+                                        <img src="assets/nodata1.png" alt="No Data Found" class="no-data-img" />
+                                        <p>No theater available for the selected filters.</p>
+                                      </div>
+                                      
+                                    <!-- <div *ngIf="!searchLoading && theaters.length === 0"
+                                        class="d-flex justify-content-center">
+                                        <img src="assets/no-data-image.jpg" alt="No data available" />
+
+                                        
+                                    </div> -->
+
+                                    <div *ngIf="!searchLoading && theaters.length > 0" class="row g-4">
+
+                        
+                                        <!-- <div *ngIf="!searchLoading && theaters.length > 0"> -->
+                                            <div *ngFor="let theater of theaters"
+                                                class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+                                                <div class="main-card mt-4 h-80 d-flex flex-column"
+                                                    style="cursor: pointer;" (click)="goToTheaterDetails(theater)">
+                                                    <div class="event-thumbnail">
+                                                        <a 
+                                                            class="thumbnail-img d-block">
+                                                            <img *ngIf="theater.THEATER_IMAGE"
+                                                                [src]=" theater.THEATER_IMAGE?.[0] ? retriveimgUrl + 'theaterImage/' + theater.THEATER_IMAGE : 'assets/movie_skel.jpg' "
+                                                                alt="{{ theater.NAME }}" class="img-fluid w-100" />
+                                                        </a>
+                                                        <!-- <span *ngIf="memberId" title="Like" class="like-icon"
+                                                            [ngClass]="{ 'liked': theater.liked }"
+                                                            (click)="toggleLike(theater)">
+                                                            <i class="fa"
+                                                                [ngClass]="theater.liked ? 'fa-solid fa-heart liked-heart' : 'fa-regular fa-heart unliked-heart'">
+                                                            </i>
+                                                        </span> -->
+                                                        <span *ngIf="memberId" title="Like" class="like-icon"
+                                                        [ngClass]="{ 'liked': theater.liked }"
+                                                        (click)="toggleLike(theater)">
+                                                    <i class="fa"
+                                                       [ngClass]="theater.liked ? 'fa-solid fa-heart liked-heart' : 'fa-regular fa-heart unliked-heart'">
+                                                    </i>
+                                                  </span>
+                                                  
+
+
+                                                    </div>
+                                                    <div class="event-content flex-grow-1">
+                                                        <a [href]="'/theater/' + theater.ID" class="event-title">{{
+                                                            theater.NAME }}</a>
+                                                        <!-- <div class="duration-price-remaining">
+                                                <span class="duration-price">{{ theater.CITY_NAME }}</span>
+                                              </div> -->
+                                                        <p class="address" [title]="theater.ADDRESS">
+                                                            {{ theater.ADDRESS.split(' ').slice(0, 7).join(' ') }}<span
+                                                                *ngIf="theater.ADDRESS.split(' ').length > 7">...</span>
+
+                                                        </p>
+
+                                                        <div class="event-timing" style="display: block;">
+                                                            <div class="publish-date mb-2">
+                                                                <span><i class="fa-solid fa-phone me-2"></i>{{
+                                                                    theater.VENUE_CONTACT_NO }}</span>
+                                                            </div>
+                                                            <div class="publish-time">
+                                                                <span><i class="fa-solid fa-envelope me-2"></i>{{
+                                                                    theater.VENUR_CONTACT_EMAIL }}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <!-- </div> -->
+                                    </div>
+                                </div>
+
+                                <div class="browse-btn" *ngIf="hasMoreData; else noMore">
+                                    <button class="main-btn btn-hover" (click)="loadMore()">Load More</button>
+                                </div>
+                                <ng-template #noMore>
+                                    <div class="browse-btn">
+                                        <span class="main-btn btn-hover disabled">No More Data</span>
+                                    </div>
+                                </ng-template>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Body End-->
+
+
+
+
+</body>

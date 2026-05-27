@@ -1,0 +1,2439 @@
+<!--
+<div class="w-full h-[500px]" #seatLayoutContainer style="border: 1px solid #ccc;"></div>
+
+<div class="mt-2">
+<button (click)="zoomIn()">+</button>
+<button (click)="zoomOut()">-</button>
+
+</div>
+<div>
+  Selected Seats: {{ selectedSeats | json }}
+</div> -->
+
+<!-- seat-layout.component.html -->
+
+<!-- <div >
+
+</div> -->
+
+<div class="event-dt-block" [ngStyle]="{
+    'margin-top': isMobile ? '' : '4.5%','margin-bottom':'30px'
+  }">
+  <div>
+    <header class="custom-header">
+      <div class="header-container">
+        <div class="header-content">
+          <div style=" z-index: 10;"
+            *ngIf="activeStep != 4 && activeStep != 5 && !loadBookingFlag && is_event_heavy == false">
+            <div class="inline-flex cursor-pointer marginleftt" (click)="goBacks()">
+              <span class="text-[#ff1b31db] font-medium page-title"
+                style="display: flex; align-items: center;margin-top: 4px;">
+                <span style="font-size: 16px;margin-right: 2px;">&lt; </span> Back
+              </span>
+            </div>
+          </div>
+          <h1 style="margin: 0px 50px !important;" class="page-title" *ngIf="eventname">{{ eventname }}</h1>
+          <p class="venue-details" *ngIf="selectedVenue">
+            <span *ngIf="activeStep != 1" class="venue-name">
+              {{ selectedVenue?.name=='To Be Decided' ? 'Venue ' + selectedVenue?.name : selectedVenue?.name }}
+
+            </span>
+            <!-- <span class="venue-city">&nbsp;{{ selectedVenue?.city || 'City' }}</span> -->
+            <ng-container *ngIf="selectedDate && selectedTime && activeStep != 1">
+              <span class="datetime-separator"> | </span>
+              <span class="datetime-info">
+                <span class="date">{{
+                  selectedDate | date : "EEE, dd MMM"
+                  }}</span>
+                <span class="time"> | {{ selectedTime }}</span>
+              </span>
+            </ng-container>
+          </p>
+
+        </div>
+      </div>
+    </header>
+    <!-- <main class="container" *ngIf="!loadBookingFlag"> -->
+    <main [ngClass]="(Hoisting_Type == 'C') && activeStep == 3? 'customcontainer': 'container'">
+      <div class="section-title"
+        *ngIf="is_event_heavy == false && (istugoz != true || (istugoz == true && activeStep < 3)) "
+        style="padding: 20px 10px;" [hidden]="hideTitle">
+        <span class="formobile" style="text-transform: uppercase; font-size: 16px">
+          {{gettitle()}}
+        </span>
+      </div>
+      <!-- <div class="row mopadding"
+        style="margin: 0px; background-color: transparent; margin-top: 5px">
+        <div *ngIf="!loadBookingFlag" class="col-xl-12 col-lg-12 col-md-12 px-4">
+
+        </div>
+      </div> -->
+      <div class="col-12" *ngIf="loadBookingFlag==true" style="
+        display: flex;
+        justify-content: center;
+        margin-top: 80px;
+        margin-bottom: 10px;
+      ">
+        <!-- <div class="loader"></div> -->
+        <img src="assets/TK-Loading-Animation-ver-2.gif" class="img-loader" alt="Loading..." />
+
+      </div>
+      <h6 *ngIf="loadBookingFlag == true" class="text-center m-0" id="currentMonthYear"
+        style="font-size: 13px;margin-bottom: 100px !important">
+        Please wait while we load your booking details, Do not close window!....
+      </h6>
+      <ng-container *ngIf="is_event_heavy == false && activeStep == 1 && !loadBookingFlag">
+        <!-- <h2 class="text-xl font-bold mt-4 mb-2">Select Venue</h2> -->
+
+        <div class="main-content px-3 py-2 mb-3" style="padding: 10px; font-size: 13px" *ngFor="let city of cities">
+          <!-- Venue List by City -->
+          <div>
+            <div class="font-semibold text-lg mb-0 flex justify-between items-center"
+              [style.cursor]="(city == 'Multiple Cities' || city == 'To Be Decided') ? 'default' : 'pointer'"
+              (click)="toggleCity(city)">
+              <!-- (click)="(city != 'Multiple Cities' && city != 'To Be Decided') ? toggleCity(city) : null" -->
+              <span style="font-weight: 700; text-transform: uppercase; font-size: 13px;"
+                class="mb-1 mb-sm-0 fw-bold small label text-primary"
+                *ngIf="city != 'Multiple Cities' && city != 'To Be Decided'">
+
+                {{ city }}
+              </span>
+              <span style="font-weight: 700; text-transform: uppercase; font-size: 13px;"
+                class="mb-1 mb-sm-0 fw-bold small label text-primary" *ngIf="city == 'Multiple Cities'">
+
+                Multiple Cities
+              </span>
+              <span style="font-weight: 700; text-transform: uppercase; font-size: 13px;"
+                class="mb-1 mb-sm-0 fw-bold small label text-primary" *ngIf="city == 'To Be Decided'">
+
+                City To Be Decided
+              </span>
+              <div class="flex justify-between items-center">
+                <span style="font-weight: 600;margin-right: 10px;font-size: 11px;"
+                  class="mb-1 mb-sm-0 small label text-primary"
+                  *ngIf=" (cities.length>1) && filteredVenuesByCity(city)!.length > 1">
+                  <!-- city != 'Multiple Cities' && city != 'To Be Decided' && -->
+                  {{filteredVenuesByCity(city)!.length}} Venues
+                </span>
+                <span style="font-weight: 600;margin-right: 10px;font-size: 11px;"
+                  class="mb-1 mb-sm-0 small label text-primary"
+                  *ngIf="(cities.length>1) && filteredVenuesByCity(city)!.length ==1">
+                  <!-- city != 'Multiple Cities' && city != 'To Be Decided' &&  -->
+                  1 Venue
+                </span>
+                <button style="font-weight: 400" class="text-sm text-primary focus:outline-none"
+                  *ngIf=" (cities.length>1)">
+                  <!-- city != 'Multiple Cities' && city != 'To Be Decided' && -->
+                  <i class="bi" [ngClass]="
+      cityExpanded[city] ? 'bi-caret-up-fill' : 'bi-caret-down-fill'    "></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Keep section always expanded for "Multiple Cities" or "To Be Decided" -->
+            <div *ngIf="cities.length==1 || (cities.length>1 && cityExpanded[city])">
+              <ng-container *ngIf="filteredVenuesByCity(city)!.length > 0; else noVenues">
+                <div class="scroll-container"
+                  style="min-height: 125px; overflow-y: auto; padding: 7px 11px;height: 90%;">
+                  <div class="main-event-content mb-3" *ngFor="let venue of filteredVenuesByCity(city)"
+                    [ngClass]="{'border-red-500': selectedVenue?.id == venue.id}">
+                    <span style="margin-left: 3px; cursor: pointer;display: block;">
+                      <p class="location123" style="font-size: 14px;margin-bottom: 0px !important;">
+                        <span style="font-weight: 600; text-transform: uppercase; font-size: 13px;color:#4b4b4b;">
+                          {{ venue.name=='To Be Decided' ? 'Vanues To Be Decided' : venue.name }}
+                        </span>
+                      </p>
+
+                      <p *ngIf="venue.date && venue.date != 'MULTIPLE DATES'"
+                        style="margin-bottom: 0px;font-size: 11px;color: #939393;font-weight: 600;margin-top: -5px;">
+                        {{ venue.date ? (venue.date | date : "EEE, dd MMM, YYYY") : "" }}
+                        <span *ngIf="venue.date && venue.time && venue.IS_MULTIPLE_DATE_VENUE != true"> | {{ venue.time
+                          }} </span>
+                        <span *ngIf="venue.IS_MULTIPLE_DATE_VENUE == true"> (Onwards) </span>
+                      </p>
+
+                      <div style="font-size: 12px;"
+                        *ngIf="venue.name != 'Multiple Venues' && venue.name != 'To Be Decided'">
+                        <i style="color: #101a30" class="bi bi-geo-alt" [ngClass]="{
+              'text-danger': selectedVenue?.id == venue.id,
+              'text-muted': selectedVenue?.id != venue.id
+            }"></i>
+                        {{ venue.address }}
+                      </div>
+
+                      <div style="margin-top: 10px;">
+                        <button style="font-size: smaller;padding: 5px 8px;" class="btn btn-primary"
+                          (click)="selectVenue(venue)">
+                          Select Venue
+                        </button>
+                        <a *ngIf="venue.name != 'Multiple Venues' && venue.name != 'To Be Decided'" class="location123"
+                          target="_blank" [href]="
+               'http://maps.google.com/maps?q=' + venue.latitude + ',' + venue.longitude
+            " style="color: #a50000 !important; border: 1px solid #a50000; margin-left: 10px !important;
+                     font-size: smaller; font-weight: 600; padding: 5px 8px; border-radius: 4px;">
+                          View On Map
+                        </a>
+                      </div>
+                    </span>
+                  </div>
+                </div>
+              </ng-container>
+
+              <ng-template #noVenues>
+                <div class="text-center text-gray-500 py-4 mt-3 mb-4 border rounded-md bg-white shadow-sm">
+                  No venues available for this city at the moment. Please check back later!
+                </div>
+              </ng-template>
+            </div>
+
+          </div>
+        </div>
+      </ng-container>
+      <!-- && (this.dates.length > 1 || this.times.length > 1) -->
+      <ng-container *ngIf="is_event_heavy == false && activeStep == 2  && !loadBookingFlag ">
+        <div class="main-content" style="padding: 10px; font-size: 13px">
+          <div class="legend" style="
+              display: flex;
+              gap: 12px;
+              margin-bottom: 10px;
+              font-size: 12px;
+            ">
+            <!-- <div
+              class="legend-item"
+              style="display: flex; align-items: center; gap: 6px"
+            >
+              <div
+                class="legend-indicator available-indicator"
+                style="
+                  width: 10px;
+                  height: 10px;
+                  border-radius: 50%;
+                  background-color: #28a745;
+                "
+              ></div>
+              <span>Available</span>
+            </div>
+
+            <div
+              class="legend-item"
+              style="display: flex; align-items: center; gap: 6px"
+            >
+              <div
+                class="legend-indicator soldout-indicator"
+                style="
+                  width: 10px;
+                  height: 10px;
+                  border-radius: 50%;
+                  background-color: #a50000;
+                "
+              ></div>
+              <span>Sold out</span>
+            </div> -->
+          </div>
+
+          <div class="date-selection" style="margin-bottom: 27px">
+            <h2 class="section-title1" style="font-size: 13px; margin-bottom: 8px">
+              Select Date
+            </h2>
+            <div class="date-grid" style="display: flex; flex-wrap: wrap; gap: 8px">
+              <div class="date-card" *ngFor="let d of dates" [class.active]="
+                  selectedDate &&
+                  formatDateToKey(d.fullDate) == formatDateToKey(selectedDate)
+                " (click)="selectDate(d.fullDate)" style="
+                  padding: 6px 10px;
+                  font-size: 13px;
+                  border-radius: 4px;
+                  cursor: pointer;
+                ">
+                <div>{{ d.display }}</div>
+              </div>
+            </div>
+
+
+
+            <!-- <div class="modal fade" id="calendarModal" tabindex="-1" aria-labelledby="calendarModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-lg">
+
+                  <div class="modal-header border-0 px-3 pt-3 pb-2">
+                    <h6 class="modal-title mb-0" id="calendarModalLabel" style="font-size: 13px">
+                      Select a Date
+                    </h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+
+
+                  <div class="container pb-3 px-3">
+                    <div class="card calendar-card">
+                      <div class="card-body p-3">
+                        <div class="d-flex justify-content-start align-items-center mb-2" style="font-size: 12.5px">
+                          <span class="legend-dot available me-2"></span>
+                          <span class="me-3">Available</span>
+
+                          <span class="legend-dot sold-out me-2"></span>
+                          <span>Sold out</span>
+                        </div>
+
+
+
+                        <div class="calendar">
+                          <div class="calendar-header">
+                            <div class="calendar-weekdays row g-0">
+                              <div class="col calendar-weekday-col" *ngFor="let weekday of weekdays">
+                                {{ weekday }}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="d-flex justify-content-between align-items-center my-2">
+                            <button class="btn btn-sm btn-outline-secondary" (click)="changeMonth(-1)">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-chevron-left" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                  d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0" />
+                              </svg>
+                            </button>
+                            <h6 class="text-center m-0" id="currentMonthYear" style="font-size: 13px">
+                              {{ currentMonthName }} {{ currentYear }}
+                            </h6>
+                            <button class="btn btn-sm btn-outline-secondary" (click)="changeMonth(1)">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                  d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708" />
+                              </svg>
+                            </button>
+                          </div>
+
+                          <div class="calendar-dates">
+                            <div class="calendar-date-cell" *ngFor="let day of calendarDays" [class]="day?.cssClass"
+                              [class.selected]="day?.isSelected" [class.clickable]="day?.isClickable"
+                              (click)="selectDate1(day)">
+                              {{ day?.dayOfMonth }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+          </div>
+
+          <div class="time-selection" style="margin-bottom: 12px">
+            <h2 class="section-title1" style="font-size: 13px; margin-bottom: 8px">
+              Select Time
+            </h2>
+            <div class="time-grid" *ngIf="selectedDate" style="display: flex; flex-wrap: wrap; gap: 8px">
+              <!-- border: 1px solid #ccc; -->
+
+              <div class="time-card" *ngFor="let time of times" [class.selected]="selectedTime == time?.SHOW_TIME"
+                [class.disabled]="time?.isDisabled" (click)="!time?.isDisabled && selectTime(time)"
+                [ngClass]="{'tstatus-filling-fast': time.PERCENT_SOLD >= 70 && time.PERCENT_SOLD < 90,'tstatus-almost-sold': time.PERCENT_SOLD >= 90 && time.PERCENT_SOLD < 100,'tstatus-sold-out': (time.PERCENT_SOLD == 100.00 || (time.AVAILABLE_FOR_BOOKING == 0 && time.LOAD_FROM_TUGOZ == false))}"
+                style="
+                  padding: 6px 10px;
+                  font-size: 13px;
+                  border-radius: 4px;
+                  cursor: pointer;
+                ">
+                <div style="margin-bottom: -2px;">{{ time?.SHOW_TIME }} </div>
+                <span style="font-size: 7px;font-weight: 600;LETTER-SPACING: 0.6px;margin-bottom: -3px;"
+                  *ngIf="time.PERCENT_SOLD>=70 || (time.AVAILABLE_FOR_BOOKING == 0 && time.LOAD_FROM_TUGOZ == false)"
+                  [ngClass]="{'tstatus-filling-fast1': time.PERCENT_SOLD >= 70 && time.PERCENT_SOLD < 90,'tstatus-almost-sold1': time.PERCENT_SOLD >= 90 && time.PERCENT_SOLD < 100,'tstatus-sold-out1': (time.PERCENT_SOLD == 100.00 || (time.AVAILABLE_FOR_BOOKING == 0 && time.LOAD_FROM_TUGOZ == false)) }">
+                  {{ (100.00 == time.PERCENT_SOLD || time.AVAILABLE_FOR_BOOKING == 0)? 'Sold Out':(time.PERCENT_SOLD>=
+                  90?
+                  'Almost Sold Out':(time.PERCENT_SOLD>= 70?'Filling Fast':''))}}
+                </span>
+              </div>
+
+
+              <!-- <div class="time-card" *ngFor="let time of times" [class.selected]="selectedTime == time?.SHOW_TIME"
+                [class.disabled]="time?.isDisabled" (click)="!time?.isDisabled && selectTime(time)"
+                [title]="time?.isDisabled ? 'Not available for booking' : ''">
+                <div>{{ time?.SHOW_TIME }}</div>
+              </div> -->
+              <div *ngIf="times.length == 0" class="no-times-available"
+                style="font-size: 12px; margin-top: 6px; color: #999">
+                No showtimes available for this date.
+              </div>
+            </div>
+            <div *ngIf="!selectedDate" class="no-date-selected" style="font-size: 12px; margin-top: 6px; color: #999">
+              Please select a date to see available times.
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="is_event_heavy == false && activeStep == 3  && !loadBookingFlag">
+
+        <!-- <div 
+        *ngIf="istugoz == true" id="c" 
+        style="min-height: 350px;width: 100%;padding: 10px;display: none;" 
+        [ngStyle]="{'margin-top': isMobile ? '70px' : '' }">
+        </div> -->
+
+        <div *ngIf="istugoz != true && Hoisting_Type == 'C' && SCREEN_MASTER?.LAYOUT_JSON != undefined" class="row">
+
+          <div class="col-md-12 loginDIv" style="padding:15px">
+            <!-- <h4 style="font-size: 13px; font-weight: 600; margin-bottom: 8px">
+              
+              
+              *ngIf="USER_RESERVED_TICKET_COUNT==0"
+            </h4> -->
+            <div *ngIf="!memberId"
+              style="padding: 5px 5px 0px;font-weight: 600;font-family: 'Poppins';margin-bottom: 0px;font-weight: 600 !important;">
+              Already a member? <span *ngIf="!memberId"
+                style="font-size: 11px;padding:1px 0px 5px;font-weight: 500;font-family: 'Poppins';">
+                <a style="cursor:pointer;" [routerLink]="['/sign-in']">&nbsp; Log in to enjoy your membership
+                  benefits.</a>
+              </span>
+            </div>
+            <div
+              *ngIf="memberId && !spinmembership && (selectedmembership?.NAME == undefined || selectedmembership?.NAME == null || selectedmembership?.NAME == '')"
+              class="m-0 fw-bold"
+              style="padding-left: 10px;align-items: center;font-size: 12px;margin-bottom: 8px !important;display: flex;gap: 4px;font-weight: 600 !important;">
+              Want to enjoy your membership benefits?
+              <a class="text-danger"
+                style="cursor: pointer;    color: black !important;display: inline-block;width: max-content;    background: #ebcc00;    padding: 3px 8px;    border-radius: 3px;    font-size: 11px;letter-spacing: 0.4px;"
+                (click)="showmembershipModal()"> Select Plan</a>
+            </div>
+            <!-- && USER_RESERVED_TICKET_COUNT==0 -->
+            <div *ngIf="memberId && !spinmembership && selectedmembership?.NAME "
+              class="coupon-box  align-items-center p-3 mx-3 border rounded shadow-sm"
+              style="background: #8b0000;padding: 10px;color: white;">
+              <div class="row">
+                <div class="col-12 col-lg-10">
+                  <h6 *ngIf="selectedmembership?.NAME" class="mb-1  fw-bold" style="font-size: 12px;text-align: left;">
+                    Selected Membership Plan
+
+                  </h6>
+                  <h6 *ngIf="selectedmembership?.NAME" class="fw-bold"
+                    style="font-size: 14px;text-align: left;margin-bottom: 5px !important;">
+
+                    <strong>
+                      {{
+                      selectedmembership?.NAME
+                      ? selectedmembership.NAME
+                      : ""
+                      }}
+                    </strong>
+                  </h6>
+                </div>
+                <div (click)="clearmembershipnew()" *ngIf="memberId && selectedmembership?.ID  && !spinmembership"
+                  class="col-12 col-lg-2">
+
+                  <div
+                    style="text-align: center;padding:5px 5px;font-weight: bold;background-color: orange !important;cursor: pointer;    margin-top: 5px;">
+                    Remove
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex justify-content-center" *ngIf="spinmembership">
+              <div class="spinner-border text-danger" role="status">
+                <span class="sr-only"></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-9 main-card" [ngClass]="{'mobile-card': isMobile, 'desktop-card': !isMobile }"
+            style="user-select: none;margin: 0px 0 21px 0;border-radius: 0px !important;">
+
+            <div class="seat-legend" style="display: flex;gap: 8px;padding: 10px;justify-content: center;"
+              class="seat-status-container">
+
+             
+
+              <div class="seat-status-item">
+                <div class="seat"
+                  [ngStyle]="{'border-radius': SCREEN_MASTER?.LAYOUT_JSON[0]?.D == 'C' ? '50%' : SCREEN_MASTER?.LAYOUT_JSON[0]?.D == 'S' ? '0px' : '10px 10px 0px 0px'}"
+                  style=" color: black;border: none;" [style.background-color]="isDark ? '#f7e002' :'#53db78' "></div>
+                <span
+                  style="font-size: 10px;font-weight: 600;letter-spacing: 0.4px;font-family: 'Poppins';padding-top: 2px;text-align: center;">Selected</span>
+              </div>
+
+              <div class="seat-status-item">
+                <div class="seat"
+                  [ngStyle]="{'border-radius': SCREEN_MASTER?.LAYOUT_JSON[0]?.D == 'C' ? '50%' : SCREEN_MASTER?.LAYOUT_JSON[0]?.D == 'S' ? '0px' : '10px 10px 0px 0px'}"
+                  style="background-color: rgb(227, 227, 227); color: black;border: none;"></div>
+                <span
+                  style="font-size: 10px;font-weight: 600;letter-spacing: 0.4px;font-family: 'Poppins';padding-top: 2px;text-align: center;">Not
+                  Available</span>
+              </div>
+
+
+              <div class="seat-status-item">
+                <div class="seat"
+                  [ngStyle]="{'border-radius': SCREEN_MASTER?.LAYOUT_JSON[0]?.D == 'C' ? '50%' : SCREEN_MASTER?.LAYOUT_JSON[0]?.D == 'S' ? '0px' : '10px 10px 0px 0px'}"
+                  style="border-color: #F39C12; color: rgb(255, 255, 255);background-color: #F39C12;">
+
+                </div>
+                <span
+                  style="font-size: 10px;font-weight: 600;letter-spacing: 0.4px;font-family: 'Poppins';padding-top: 2px;text-align: center;">In-process</span>
+              </div>
+             
+              <div class="seat-status-item">
+                <div class="seat"
+                  [ngStyle]="{'border-radius': SCREEN_MASTER?.LAYOUT_JSON[0]?.D == 'C' ? '50%' : SCREEN_MASTER?.LAYOUT_JSON[0]?.D == 'S' ? '0px' : '10px 10px 0px 0px'}"
+                  style="border-color: black; color: black;"><img src="assets/Resplan.svg" alt="Logo"
+                    style="margin-top: -1px;width: 11px;"></div>
+
+                <span
+                  style="font-size: 10px;font-weight: 600;letter-spacing: 0.4px;font-family: 'Poppins';padding-top: 2px;text-align: center;">Members-Only</span>
+              </div>
+            </div>
+
+            <div class="scrollable-container">
+            
+            </div>
+          </div>
+          <div class="col-md-3 " style="margin: 0px 0 21px 0;text-align: center;">
+
+            <div class="booking-summary">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="summary-title mb-0">Booking Summary</h5>
+
+                <span (click)="openSeatCountModal()" class="d-flex align-items-center gap-1 cursor-pointer">
+                  {{ selectedSeatCount }} Tickets
+                  <button style="font-weight: 400" class="text-sm text-primary border-0 bg-transparent p-0">
+                    <i class="bi bi-caret-down-fill"></i>
+                  </button>
+                </span>
+              </div>
+
+              <div class="seat-types-info row g-1 justify-content-center text-center mb-3">
+                <div class="col-4" style="padding: 2px;" *ngFor="let section of finalSectionList">
+                  <div
+                    style="border: 1px solid #a5000061; padding: 1px; border-radius: 5px; height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+
+                    <div style=" height: 100%; display: flex; flex-direction: column; justify-content: start;">
+
+                      <!-- Section Name Top -->
+                      <div class="seat-type-label" style="font-weight: 600;">
+                        {{ section.sectionName }}
+                      </div>
+
+                      <!-- Seat Types Middle -->
+                      <div>
+                        <ng-container *ngFor="let seatType of section.seatTypes">
+                          <div class="d-flex align-items-center justify-content-left mb-1">
+                            <span
+                              style="display: inline-block; width: 12px; height: 12px; border-radius: 18px; margin-right:5px;margin-left: 2px; border: 1px solid;"
+                              [style.border-color]="seatType.bordercolor" [style.background-color]="seatType.color">
+                            </span>
+                            <div class="seat-price text-muted">{{seatType.subname != null ? seatType.subname:''}}
+                              <br *ngIf="seatType.subname != null">
+                              ₹
+                              {{ seatType.price | number:'1.2-2' }}
+                            </div>
+                            <!-- Optional: show total seats -->
+                            <!-- <div class="seat-price text-muted">₹ {{ seatType.price | number:'1.2-2' }} ({{ seatType.totalSeats }} Seats)</div> -->
+                          </div>
+                        </ng-container>
+                      </div>
+                    </div>
+                    <!-- Available Bottom -->
+                    <div class="seat-availability text-success small" *ngIf="section.availability == 'Available'">
+                      {{section.availability}}
+                    </div>
+                    <div class="seat-availability text-success small" *ngIf="section.availability == 'Filling Fast'"
+                      style="color: #e6c300 !important;letter-spacing: 0.9px;">
+                      {{section.availability}}
+                    </div>
+                    <div class="seat-availability text-success small" *ngIf="section.availability == 'Almost Sold Out'"
+                      style="color: #ff6200 !important;letter-spacing: 0.9px;">
+                      {{section.availability}}
+                    </div>
+                    <div class="seat-availability text-success small" *ngIf="section.availability == 'Sold Out'"
+                      style="color: #a50000 !important;letter-spacing: 0.9px;">
+                      {{section.availability}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="seats-by-section" *ngIf="selectedSeats1.length>0">
+                <p class="section-title123">SEAT INFO</p>
+
+                <div *ngFor="let sectionGroup of groupedSeats2" class="seat-tag">
+                  <h6 style="display:inline; font-size:12px  !important;">
+                    {{ sectionGroup.SN }}:
+                  </h6>
+
+                  <span *ngFor="let level of sectionGroup.levels; let lastLevel = last">
+
+                    <!-- Show SG once -->
+                    <span style="font-weight:normal;" *ngIf="level.SG">
+                      {{ level.SG }} :
+                    </span>
+
+                    <!-- Seats inside that level -->
+                    <span *ngFor="let seat of level.seats; let lastSeat = last">
+
+                      <!-- Regular -->
+                      <ng-container *ngIf="seat.ST != 'F'">
+                        {{ seat.RN }}-{{ seat.N }}
+                      </ng-container>
+
+                      <!-- Sofa -->
+                      <ng-container *ngIf="seat.ST == 'F'">
+                        {{ seat.RN }}-{{ seat.N }}
+                        ({{ seat.capacity > 1 ? seat.capacity + ' Persons' : '1 Person' }})
+                      </ng-container>
+
+                      <span *ngIf="!lastSeat">, </span>
+                    </span>
+
+                    <span *ngIf="!lastLevel">, </span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="section" *ngIf="selectedSeats1.length > 0">
+                <p class="section-title123">PAYMENT DETAILS</p>
+                <div class="price-line">
+                  <span>Sub Total</span>
+                  <span>₹ {{ getTotalAmount() }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
+
+        <div *ngIf="istugoz != true && Hoisting_Type == 'U'" class="main-content11"
+          style="padding: 0px; font-size: 13px">
+          <!-- *ngIf="USER_RESERVED_TICKET_COUNT==0" -->
+          <div>
+            <div *ngIf="!memberId"
+              style="padding: 5px 5px 0px;font-weight: 600;font-family: 'Poppins';margin-bottom: 10px;font-weight: 600 !important;">
+              Already a member? <span *ngIf="!memberId"
+                style="font-size: 11px;padding:1px 0px 5px;font-weight: 500;font-family: 'Poppins';">
+                <a style="cursor:pointer;" [routerLink]="['/sign-in']">&nbsp; Log in to enjoy your membership
+                  benefits.</a>
+              </span>
+            </div>
+
+
+
+
+
+
+            <div style=" padding: 5px 5px 0px;font-weight: 500;font-family: 'Poppins' ;"
+              *ngIf="memberId && !spinmembership && (selectedmembership?.NAME == undefined || selectedmembership?.NAME == null || selectedmembership?.NAME == '')"
+              class="m-0 fw-bold"
+              style="align-items: center;padding-left: 10px;font-size: 12px;margin-bottom: 8px !important;display: flex;gap: 4px;font-weight: 600 !important;">
+              Want to enjoy your membership benefits? <a class="text-danger" style="cursor: pointer;
+    color: black !important;display: inline-block;width: max-content;
+    background: #ebcc00;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    letter-spacing: 0.4px;" (click)="showmembershipModal()"> Select Plan</a>
+            </div>
+            <!-- && USER_RESERVED_TICKET_COUNT==0 -->
+            <div *ngIf="memberId && !spinmembership && selectedmembership?.NAME "
+              class="coupon-box  align-items-center p-3 mx-3 border rounded shadow-sm"
+              style="background: #8b0000;padding: 10px;color: white;">
+              <div class="row">
+                <div class="col-12 col-lg-10">
+                  <h6 *ngIf="selectedmembership?.NAME" class="mb-1  fw-bold" style="font-size: 12px;text-align: left;">
+                    Selected Membership Plan
+
+                  </h6>
+                  <h6 *ngIf="selectedmembership?.NAME" class="fw-bold"
+                    style="font-size: 14px;text-align: left;margin-bottom: 5px !important;">
+
+                    <strong>
+                      {{
+                      selectedmembership?.NAME
+                      ? selectedmembership.NAME
+                      : ""
+                      }}
+                    </strong>
+                  </h6>
+
+                  <!-- <div class=" d-flex" style="justify-content: space-between" *ngIf="selectedmembership?.NAME;">
+                    <p class="text-muted m-0" style="font-size: 12px">
+                      Discount : {{selectedmembership?.DISCOUNT_VALUE}} {{ selectedmembership?.DISCOUNT_TYPE }}
+                    </p>
+
+                  </div> -->
+
+                  <!-- <ng-template #elseBlocbbbbbbbk>
+                    <p class="m-0 text-muted" style="font-size: 12px">
+                      Click to view all membership plans
+                    </p>
+                  </ng-template> -->
+                </div>
+                <div (click)="clearmembershipnew()" *ngIf="memberId && selectedmembership?.ID  && !spinmembership"
+                  class="col-12 col-lg-2">
+
+                  <div
+                    style="text-align: center;padding:5px 5px;font-weight: bold;background-color: orange !important;cursor: pointer;    margin-top: 5px;">
+                    Remove
+                  </div>
+                </div>
+              </div>
+
+
+
+            </div>
+
+            <!-- <div class="p-1" style="text-align: center" *ngIf="memberId && selectedmembership?.ID  && !spinmembership"
+              (click)="clearmembershipnew()">
+              <span style="font-size: 12px; font-weight: 700; cursor: pointer;color: #a50000">Remove Membership</span>
+            </div> -->
+
+            <!-- <data *ngIf="!memberId && !spinmembership" style="
+    padding: 10px;
+    text-align: center;
+    font-size: 13px;
+    width: 100%;
+    display: block;
+    font-weight: 700;
+    color: grey;
+">
+              If you are a member, please log in to access your membership privileges
+            </data> -->
+
+
+            <div class="d-flex justify-content-center" *ngIf="spinmembership">
+              <div class="spinner-border text-danger" role="status">
+                <span class="sr-only"></span>
+              </div>
+            </div>
+          </div>
+
+
+
+          <div style="min-height: 200px; padding: 10px 4px; overflow-y: auto; padding-bottom: 5px;"
+            class="scroll-container">
+            <div style="text-align: start; font-size: 12px;font-weight: 600 ;margin-bottom: 8px"
+              *ngIf="selectedmembership?.ID && selectedmembership?.IS_RESERVED_TICKETS && selectedVenue.RESERVATION_MODE=='V' && selectedVenue.VENUE_RESERVED_SEATS>0 ">
+              Member-Only Seats: {{selectedVenue.VENUE_RESERVED_SEATS}} </div>
+            <div style="border-radius: 12px !important" *ngFor="let ticket of tickets; let i = index;"
+              class="ticket-card row gx-0 gy-2 align-items-center shadow-sm rounded px-3 py-3 mb-3">
+
+              <div class="col-12 col-sm-7 col-md-8">
+                <!-- <h3 class="ticket-category-title" style="font-size: 13px; margin-bottom: 4px;display: flex;justify-content: space-between">
+                  {{ ticket.NAME }} <span ></span>
+                </h3> -->
+                <h3 class="ticket-title ticket-category-title" style="font-size: 13px; margin-bottom: 4px; ">
+                  {{ ticket.NAME }}
+
+                </h3>
+                <!-- <div class="ticket-price" style="font-size: 13px; color: #333; margin-bottom: 6px">
+                  <span style="font-size: 13px; color: #333" class="price-currency" *ngIf="ticket.PRICE >0 ">
+                    ₹ {{ticket.PRICE |number }}</span>
+                  <span style="font-size: 12px; color: #333" class="price-currency" *ngIf="ticket.PRICE == 0 ">
+                    Free Ticket</span>
+                  <span *ngIf="ticket.PERCENT_SOLD>=70" class="ticket-status-badge"
+                    [ngClass]="{'status-filling-fast': ticket.PERCENT_SOLD >= 70 && ticket.PERCENT_SOLD < 90,'status-almost-sold': ticket.PERCENT_SOLD >= 90 && ticket.PERCENT_SOLD < 100,'status-sold-out': ticket.PERCENT_SOLD == 100.00}">
+                    | {{ 100.00 == ticket.PERCENT_SOLD? 'Sold Out':
+                    (ticket.PERCENT_SOLD>= 90?'Almost Sold Out':(ticket.PERCENT_SOLD>= 70?'Filling Fast':''))}}
+
+                  </span>
+                </div> -->
+                <div class="ticket-price" style="font-size: 13px; color: #333; margin-bottom: 6px">
+                  <span style="font-size: 13px; color: #333" class="price-currency" *ngIf="ticket.PRICE > 0">
+                    ₹ {{ ticket.PRICE | number:'1.2-2' }}
+                  </span>
+                  <span style="font-size: 12px; color: #333" class="price-currency" *ngIf="ticket.PRICE == 0">
+                    Free Ticket
+                  </span>
+                  <span *ngIf="(ticket.PERCENT_SOLD >= 70 || ticket.AVAILABLE_SEATS == 0)"
+                    style="margin-left: 3px;">|</span>
+
+                  <span *ngIf="(ticket.PERCENT_SOLD >= 70 || ticket.AVAILABLE_SEATS == 0)" class="badge text-white"
+                    [ngClass]="{
+                      'bg-warning': ticket.PERCENT_SOLD >= 70 && ticket.PERCENT_SOLD < 90,   
+                      'bg-orange': ticket.PERCENT_SOLD >= 90 && ticket.PERCENT_SOLD < 100,
+                      'bg-danger': ticket.PERCENT_SOLD == 100.00 || ticket.AVAILABLE_SEATS == 0                        
+                    }"
+                    style="font-size: 10px; letter-spacing: 0.6px; margin-left: 4px; padding: 3px 6px;border-radius: 2px;margin-top: 1px;">
+
+                    {{ (100.00 == ticket.PERCENT_SOLD || ticket.AVAILABLE_SEATS == 0) ? 'Sold Out' :
+                    (ticket.PERCENT_SOLD >= 90 ? 'Almost Sold Out' :
+                    (ticket.PERCENT_SOLD >= 70 ? 'Filling Fast' : '')) }}
+                  </span>
+                </div>
+                <!-- <div *ngIf="ticket.AVAILABLE_SEATS == ticket.TOTAL_BOOKED" style="font-size: 12px; color: red;">
+                  Not available
+                </div> -->
+                <div *ngIf="ticket.AVAILABLE_SEATS > ticket.TOTAL_BOOKED"
+                  style="font-size: 12px; color: rgb(102 102 102);">
+                  You can add upto {{ticket.MAX_TICKETS}} tickets.
+                </div>
+                <div style="font-size: 12px;
+    color: rgb(0 188 228);
+    font-weight: 500;" *ngIf="ticket.AVAILABLE_SEATS > ticket.TOTAL_BOOKED">
+                  {{ticket.AVAILABLE<=10?'Seats available:'+ticket.AVAILABLE:'Available'}}&nbsp;{{ticket['PLAN_SEATS']>0
+                    ?'('+ticket.REGULAR_SEATS+'
+                    General, '+ticket.PLAN_SEATS+' Member-Only Seats)': '' }}
+
+                </div>
+                <!-- <div style="font-size: 12px; color: rgb(0, 145, 255);" *ngIf="ticket.AVAILABLE_SEATS > ticket.TOTAL_BOOKED && (memberId && selectedmembership?.ID && selectedVenue.RESERVATION_MODE
+                  !='V')">
+                  Seats available: {{ticket.AVAILABLE}} &nbsp; General: {{ticket.REGULAR_SEATS}} &nbsp;
+                  {{ selectedmembership?.ID && selectedmembership?.IS_RESERVED_TICKETS && selectedVenue.RESERVATION_MODE
+                  !='V' && ticket['PLAN_SEATS'] >0 ?
+                  'Reserved: ' + ticket.PLAN_SEATS
+                  : '' }}
+
+                </div> -->
+
+              </div>
+
+              <div class="col-12 col-sm-5 col-md-4 d-flex align-items-center justify-content-md-end mt-1 mt-md-0">
+
+                <!-- If ticket is available -->
+                <ng-container>
+                  <ng-container *ngIf="ticket.QTY == 0">
+                    <button *ngIf="memberId && selectedmembership?.ID && selectedVenue.RESERVATION_MODE
+                  !='V' && ticket.AVAILABLE > 0 && (100.00 < ticket.PERCENT_SOLD || ticket.AVAILABLE_SEATS > 0)"
+                      class="btn btn-add" (click)="addTicket(ticket,i)"
+                      style="padding: 4px 10px; font-size: 12px; cursor: pointer">
+                      Add Ticket(s)
+                    </button>
+                    <button *ngIf="(!memberId || !selectedmembership?.ID || selectedVenue.RESERVATION_MODE
+                  =='V') && ticket.REGULAR_SEATS > 0 && (100.00 < ticket.PERCENT_SOLD || ticket.AVAILABLE_SEATS > 0)"
+                      class="btn btn-add" (click)="addTicket(ticket,i)"
+                      style="padding: 4px 10px; font-size: 12px; cursor: pointer">
+                      Add Ticket(s)
+                    </button>
+                  </ng-container>
+
+                  <ng-container *ngIf="ticket.QTY > 0">
+                    <div class="quantity-selector" style="display: flex; align-items: center; gap: 6px">
+                      <button class="btn btn-quantity-minus" (click)="removeTicket(ticket,i)"
+                        style="font-size: 14px; padding: 4px">
+                        -
+                      </button>
+                      <span class="quantity-display" style="font-size: 13px">{{ ticket.QTY }}</span>
+                      <button class="btn btn-quantity-plus" (click)="addTicket(ticket,i)"
+                        style="font-size: 14px; padding: 4px">
+                        +
+                      </button>
+                      <!-- [disabled]="isAddDisabled(ticket)" -->
+                    </div>
+                  </ng-container>
+                </ng-container>
+
+                <!-- If ticket is not available -->
+                <!-- <ng-container *ngIf="ticket.AVAILABLE == 0">
+                  <button class="btn btn-secondary" disabled style="font-size: 12px; padding: 4px 10px;">
+                    Not available
+                  </button>
+                </ng-container> -->
+
+              </div>
+            </div>
+            <!-- </div> -->
+          </div>
+
+          <div *ngIf="getTotalTickets() > 0" style="font-size: 13px; margin-top: 10px">
+            <strong>Total Tickets:</strong> {{ getTotalTickets() }} |
+            <strong>Total Amount:</strong> ₹{{ getTotalAmount() | number:'1.2-2' }}
+          </div>
+        </div>
+
+        <div class="container-fluid mt-3" *ngIf="istugoz != true && Hoisting_Type == 'S'">
+          <div class="row">
+            <div class="col-md-8 main-card " *ngIf="!isMobile" style="border-radius: 16px;margin: 0px 0 21px 0;">
+              <div class="zoom-controls"
+                style="position: absolute; top: 10px; right: 10px; z-index: 100 !important; background: rgba(255,255,255,0.8); padding: 4px; border-radius: 4px;">
+                <button class="btn btn-sm btn-light me-1" (click)="zoomIn()">➕</button>
+                <button class="btn btn-sm btn-light" (click)="zoomOut()">➖</button>
+              </div>
+              <!-- <div class="konva-stage-wrapper" #stageContainer (wheel)="onWheel($event)"
+                (touchstart)="onTouchStarttttt($event)" (touchmove)="onTouchMove11($event)"
+                > -->
+              <!-- Zoom Buttons (touchend)="onTouchEnd11($event)" -->
+
+              <!-- </div> -->
+            </div>
+
+
+            <div class="col-xl-4 col-lg-5 col-md-12">
+              <div class="sticky-sidebar">
+                <div class="main-card" style="border-radius: 16px">
+                  <div class="col-md-12" style="line-height: 30px; padding: 15px; padding-top: 15px">
+                    <div class="bp-title" style="border: none">
+                      <h4 style="padding: 0px !important">
+                        <h1 class="fw-bold fs-3 fs-md-1 font-ss maint"
+                          style="margin-bottom: 12px;font-size: 18px !important;">
+                          {{eventname}}
+                        </h1>
+                      </h4>
+                    </div>
+
+                    <div class="icon-text-pair" style="margin-top: 9px;">
+                      <i class="fa-regular fa-calendar"></i>
+                      <span style="font-size: 13px;">{{selectedDate | date : "EEE, dd MMM"}}</span>
+                    </div>
+
+
+                    <div class="icon-text-pair">
+                      <i class="fa-regular fa-clock"></i>
+                      <span style="font-size: 13px;"> {{ selectedTime }}</span>
+                    </div>
+
+
+                    <div *ngIf="selectedSeat">
+                      <div *ngFor="let data of selectedSeat, let i = index;" class="main-event-content"
+                        style="border-radius: 16px;margin-top: 10px;padding: 8px;box-shadow: 0px 0px 5px #0000001a;">
+                        <!-- <div class="icon-text-pair d-flex align-items-center">  -->
+                        <div class="icon-text-pair d-flex align-items-center">
+
+                          <h4 style="font-size: 15px;    margin-top: 5px;">{{ data.NAME }}</h4>
+                        </div>
+
+                        <!-- </div> -->
+                        <div style="height: 20px;padding-bottom: 10px;margin-top: 5px;"
+                          class="d-flex align-items-center justify-content-between">
+                          <div class="icon-text-pair d-flex align-items-center">
+                            <i class="fa-solid fa-indian-rupee-sign me-1"></i>
+                            <span style="font-size: 13px;">{{ data.PRICE }}</span>
+                          </div>
+
+                          <!-- Ticket quantity selector -->
+                          <div class="ticket-action d-flex align-items-center ms-auto" style="gap: 6px;">
+                            <button class="btn btn-sm btn-quantity-minus" (click)="removeTicket1(i)"
+                              style="font-size: 14px; padding: 4px 8px;">
+                              −
+                            </button>
+                            <span class="quantity-display" style="font-size: 13px;">{{ data.QTY || 0 }}</span>
+                            <button class="btn btn-sm btn-quantity-plus" (click)="addTicket1(data,i)"
+                              style="font-size: 14px; padding: 4px 8px;">
+                              +
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+
+                    <div class="icon-text-pair">
+                      <h6 *ngIf="!selectedSeat" class="venue-details1">Click on a seat block to view and select
+                        tickets.
+                      </h6>
+
+                    </div>
+
+
+
+                    <div *ngIf="getTotalTickets1() > 0" style="font-size: 13px; margin-top: 10px">
+                      <strong>Total Tickets:</strong> {{ getTotalTickets1() }} |
+                      <strong>Total Amount:</strong> ₹{{ getTotalAmount1() | number:'1.2-2'}}
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-8 main-card " *ngIf="isMobile" style="border-radius: 16px;margin: 0px 0 21px 0;">
+              <div class="zoom-controls"
+                style="position: absolute; top: 10px; right: 10px; z-index: 100 !important; background: rgba(255,255,255,0.8); padding: 4px; border-radius: 4px;">
+                <button class="btn btn-sm btn-light me-1" (click)="zoomIn()">➕</button>
+                <button class="btn btn-sm btn-light" (click)="zoomOut()">➖</button>
+              </div>
+              <!-- <div class="konva-stage-wrapper" #stageContainer (wheel)="onWheel($event)"
+                (touchstart)="onTouchStarttttt($event)" (touchmove)="onTouchMove11($event)"
+                (touchend)="onTouchEnd11($event)"> -->
+              <!-- Zoom Buttons -->
+
+              <!-- </div> -->
+            </div>
+
+
+
+          </div>
+        </div>
+
+
+      </ng-container>
+
+
+      <ng-container>
+        <div *ngIf="loadBookingFlag2" style="width: 360px;margin: auto;position: relative;">
+          <div
+            style="width: 360px;background: rgb(255 255 255);height: max-content;position: absolute;top: 80px;z-index: 1000;left: 0;margin: auto;">
+            <div style="display: flex;justify-content: center;margin-top: 20px;margin-bottom: 20px; ">
+              <img src="assets/TK-Loading-Animation-ver-2.gif" class="img-loader" alt="Loading..." />
+            </div>
+            <h6 class="text-center m-0" id="currentMonthYear" style="font-size: 13px;margin-bottom: 20px !important">
+              Please wait while we load your booking details...
+            </h6>
+          </div>
+        </div>
+        <div id="tugoz-container" style="min-height: 350px;width: 100%;padding: 10px;display: none;"
+          [ngStyle]="{'margin-top': isMobile ? '70px' : '' }">
+        </div>
+
+      </ng-container>
+      <ng-container *ngIf="is_event_heavy == false && activeStep == 4  && loadBookingFlag==false">
+        <!-- Tabs -->
+        <div *ngIf="activeStep == 4 && this.timer" class="text-danger fw-bold"
+          style="font-size: 14px;text-align: end;margin-top: 14px;">
+          Time left : {{ getFormattedCountdown() }}
+        </div>
+
+        <!-- <div *ngIf="countdown > 0" class="countdown-bar">
+          <div class="label">Time left to complete booking: {{ countdown }}s</div>
+          <progress [value]="countdown" max="300"></progress>
+        </div> -->
+        <div class="flex justify-between items-start border-b border-gray-200 mb-3">
+          <!-- Tabs on the left -->
+          <div class="flex gap-2">
+            <button (click)="setActiveTab('orderSummary')"
+              class="py-2 px-4 font-semibold text-sm border-b-2 transition-all duration-200" [ngClass]="{
+                'border-red-500 text-red-600': activeTab == 'orderSummary',
+                'border-transparent text-gray-500 hover:text-red-500':
+                  activeTab != 'orderSummary'
+              }">
+              Order Summary
+            </button>
+            <!-- <button
+              (click)="setActiveTab('billingDetails')"
+              class="py-2 px-4 font-semibold text-sm border-b-2 transition-all duration-200"
+              [ngClass]="{
+                'border-red-500 text-red-600': activeTab == 'billingDetails',
+                'border-transparent text-gray-500 hover:text-red-500':
+                  activeTab != 'billingDetails'
+              }"
+            >
+              Billing Details
+            </button> -->
+          </div>
+
+          <!-- Timer + note on the right -->
+          <!-- <div class="flex flex-col items-end max-w-[120px]">
+            <div *ngIf="activeStep == 4" id="timer" class="flex items-center gap-1 mb-1 justify-end w-full">
+              <div id="minutes" class="bg-red-500 text-white rounded-[4px] p-2 w-[40px] text-center leading-none"
+                style="font-size: 9px; margin: 0">
+                <div class="text-xs font-semibold leading-none">12</div>
+                <div class="text-[8px] uppercase mt-[1px]">Min</div>
+              </div>
+              <div id="seconds" class="bg-red-500 text-white rounded-[4px] p-2 w-[40px] text-center leading-none"
+                style="font-size: 9px; margin: 0">
+                <div class="text-xs font-semibold leading-none">15</div>
+                <div class="text-[8px] uppercase mt-[1px]">Sec</div>
+              </div>
+            </div>
+          </div> -->
+        </div>
+
+        <!-- Accordion Header -->
+        <div *ngIf="activeTab == 'orderSummary'" class="bg-white rounded-md shadow-sm p-2 space-y-6 mb-4">
+          <!-- Tickets Section -->
+          <div>
+            <h4 class="section-title-small" style="font-size: 13px; font-weight: 600; margin-bottom: 8px">
+              <div class="form-check">
+                <input *ngIf="memberId" style="    margin-top: 0px !important;" class="form-check-input" type="checkbox"
+                  value="" [(ngModel)]="checkforadd" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                  {{memberId?'Are you booking this for someone else?':'Contact Details'}}
+                </label>
+              </div>
+            </h4>
+            <div class="ticket-summary-card space-y-2 mx-3" *ngIf="!memberId || checkforadd">
+              <form #userForm="ngForm" *ngIf="!memberId" (ngSubmit)="onSubmit(userForm)">
+                <div class="row">
+                  <!-- Name -->
+                  <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="form-group mt-1">
+                      <label class="me-3 mb-1 fw-bold label" style="font-size: 12px !important;">Name <span
+                          style="color: red">*</span></label>
+                      <input class="form-control form-control-sm small-placeholder" type="text" [(ngModel)]="user.NAME"
+                        [disabled]="otpverifed" name="NAME" required maxlength="128" (keypress)="alphaOnly($event)"
+                        style="font-size: 0.8rem !important;" #name="ngModel" placeholder="Please Enter Name" />
+                      <div *ngIf="name.invalid && name.touched" class="text-danger">
+                        <small *ngIf="name.errors?.['required']">Name is required.</small>
+                        <small *ngIf="name.errors?.['maxlength']">Name cannot exceed 128 characters.</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Email -->
+                  <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="form-group mt-1">
+                      <label class="me-3 mb-1 fw-bold label" style="font-size: 12px !important;">Email <span
+                          style="color: red">*</span></label>
+                      <input class="form-control form-control-sm small-placeholder" type="email" [disabled]="otpverifed"
+                        [(ngModel)]="user.EMAIL" name="EMAIL" required email style="font-size: 0.8rem !important;"
+                        #email="ngModel" placeholder="Please Enter Email"
+                        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$" />
+                      <div *ngIf="email.invalid && email.touched" class="text-danger">
+                        <small *ngIf="email.errors?.['required']">Email is required.</small>
+                        <small *ngIf="email.errors?.['pattern']">Please enter a valid email address (e.g.
+                          name@domain.com).</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Mobile -->
+                  <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="form-group mt-1">
+                      <label class="me-3 mb-1 fw-bold label" style="font-size: 12px !important;">Mobile <span
+                          style="margin-bottom: 0px !important;font-size: 10px;color: #4b4b4b;">(WhatsApp
+                          Registered)</span> <span style="color: red">*</span></label>
+                      <input class="form-control form-control-sm small-placeholder" type="text" [disabled]="otpverifed"
+                        [(ngModel)]="user.MOBILE" name="MOBILE" required pattern="^[0-9]{10}$"
+                        style="font-size: 0.8rem !important;" #mobile="ngModel" maxlength="10"
+                        placeholder="Please Enter Mobile Number" />
+                      <div *ngIf="mobile.invalid && mobile.touched" class="text-danger">
+                        <small *ngIf="mobile.errors?.['required']">Mobile number is required.</small>
+                        <small *ngIf="mobile.errors?.['pattern']">Mobile number must be 10 digits.</small>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <div class="form-group mt-3 captcha-wrapper" *ngIf="!otpverifed">
+                        <ngx-recaptcha2 #captchaRef siteKey="6Ld3I7crAAAAAJTsR1-BAjGoyXwF8JAYuCHf3k8b"
+                          (success)="handleCaptchaSuccess($event)" (expired)="handleCaptchaExpire()"
+                          (error)="handleCaptchaError($event)">
+                        </ngx-recaptcha2>
+                      </div>
+
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 d-flex justify-content-end align-items-center">
+
+
+                      <div class="form-group mt-3 text-end" *ngIf="!otpverifed">
+                        <button type="submit" class="btn btn-primary btn-sm" style="padding: 7px; font-size: 12px"
+                          [disabled]="
+                      name.invalid ||
+                      email.invalid ||
+                      mobile.invalid ||
+                      getotpandverify ||
+                      !captchaToken
+                    ">
+                          <ng-container *ngIf="!getotpandverify; else verifyinggggg">
+                            Get OTP
+                          </ng-container>
+                          <ng-template #verifyinggggg>
+                            Sending OTP... <i class="fas fa-spinner fa-spin ms-2"></i>
+                          </ng-template>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+
+              <form #userFormmmmm="ngForm" *ngIf="memberId" (ngSubmit)="onSubmit222(userFormmmmm)">
+                <div class="row">
+                  <!-- Name -->
+                  <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="form-group mt-1">
+                      <label class="me-3 mb-1 fw-bold label" style="font-size: 12px !important;">Name <span
+                          style="color: red">*</span></label>
+                      <input class="form-control form-control-sm small-placeholder" type="text"
+                        [disabled]="addinaldataaded" [(ngModel)]="addional.NAME" name="NAME" required maxlength="128"
+                        style="font-size: 0.8rem !important;" #nameee="ngModel" placeholder="Please Enter Name" />
+                      <div *ngIf="nameee.invalid && nameee.touched" class="text-danger">
+                        <small *ngIf="nameee.errors?.['required']">Name is required.</small>
+                        <small *ngIf="nameee.errors?.['maxlength']">Name cannot exceed 128 characters.</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Email -->
+                  <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="form-group mt-1">
+                      <label class="me-3 mb-1 fw-bold label" style="font-size: 12px !important;">Email <span
+                          style="color: red">*</span></label>
+                      <input class="form-control form-control-sm small-placeholder" type="email"
+                        [disabled]="addinaldataaded" [(ngModel)]="addional.EMAIL" name="EMAIL" required email
+                        style="font-size: 0.8rem !important;" #emaillll="ngModel" placeholder="Please Enter Email" />
+                      <div *ngIf="emaillll.invalid && emaillll.touched" class="text-danger">
+                        <small *ngIf="emaillll.errors?.['required']">Email is required.</small>
+                        <small *ngIf="emaillll.errors?.['email']">Invalid email format.</small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Mobile -->
+                  <div class="col-lg-4 col-md-4 col-sm-12">
+                    <div class="form-group mt-1">
+                      <label class="me-3 mb-1 fw-bold label" style="font-size: 12px !important;">Mobile<span
+                          style="margin-bottom: 0px !important;font-size: 10px;color: #4b4b4b;">(WhatsApp
+                          Registered)</span> <span style="color: red">*</span></label>
+                      <input class="form-control form-control-sm small-placeholder" type="text" maxlength="10"
+                        [disabled]="addinaldataaded" [(ngModel)]="addional.MOBILE" name="MOBILE" required
+                        pattern="^[0-9]{10}$" style="font-size: 0.8rem !important;" #mobileeee="ngModel"
+                        placeholder="Please Enter Mobile Number" />
+                      <div *ngIf="mobileeee.invalid && mobileeee.touched" class="text-danger">
+                        <small *ngIf="mobileeee.errors?.['required']">Mobile number is required.</small>
+                        <small *ngIf="mobileeee.errors?.['pattern']">Mobile number must be 10 digits.</small>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- Submit Button (full width on mobile) -->
+                <div class="form-group mt-3 text-end" *ngIf="!addinaldataaded">
+                  <button type="submit" class="btn btn-primary btn-sm" style="padding: 7px;font-size: 12px;"
+                    [disabled]="nameee.invalid || emaillll.invalid || mobileeee.invalid || getotpandverify">
+
+
+                    <ng-container *ngIf="!getotpandverify; else verifyinggggg">
+                      Submit
+                    </ng-container>
+                    <ng-template #verifyinggggg>
+                      Submiting... <i class="fas fa-spinner fa-spin ms-2"></i>
+                    </ng-template>
+                  </button>
+                </div>
+              </form>
+
+
+            </div>
+
+          </div>
+          <div>
+            <h4 class="section-title-small" style="font-size: 13px; font-weight: 600; margin-bottom: 8px">
+              Tickets
+            </h4>
+            <div *ngIf="Hoisting_Type != 'C'">
+              <div *ngFor="let ticket of orderSummary.items" class="ticket-summary-card space-y-2 mx-3">
+                <div class="flex justify-between items-start">
+                  <p style="
+                    font-size: 12px;
+                    font-weight: 500;
+                    margin-bottom: 0px;
+                    font-weight: 700;
+                  ">
+                    {{ ticket.event }}
+                  </p>
+                  <!-- <button
+                  class="text-gray-400 w-5 h-5 flex items-center justify-center"
+                  aria-label="Remove ticket"
+                  (click)="removeTicket(ticket)"
+                >
+                  <i class="ri-delete-bin-line" style="font-size: 12px"></i>
+                </button> -->
+                </div>
+                <!-- <div style="font-size: 12px; color: #6b7280 ; margin-top: 0px;">
+                Audience for {{ ticket.quantity }}
+              </div> -->
+                <div class="flex justify-between mt-1" style="font-size: 12px">
+                  <div>
+                    {{ ticket.quantity }} Ticket{{
+                    ticket.quantity > 1 ? "s" : ""
+                    }}
+                  </div>
+                  <div style="font-weight: 500" *ngIf="ticket.price >0">₹{{ ticket.price| number:'1.2-2' }}</div>
+                  <div style="font-weight: 500" *ngIf="ticket.price ==0">Free Ticket</div>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="Hoisting_Type == 'C'">
+              <div class="seats-by-section" *ngIf="selectedSeats1.length > 0">
+                <div>
+                  <div *ngFor="let sectionGroup of groupedSeats2" class="seat-tag">
+                    <h6 style="display:inline; font-size:12px;">
+                      {{ sectionGroup.SN }}:
+                    </h6>
+
+                    <span *ngFor="let level of sectionGroup.levels; let lastLevel = last">
+
+                      <!-- Show SG once -->
+                      <span style="font-weight:normal;" *ngIf="level.SG">
+                        {{ level.SG }} :
+                      </span>
+
+                      <!-- Seats inside that level -->
+                      <span *ngFor="let seat of level.seats; let lastSeat = last">
+
+                        <!-- Regular -->
+                        <ng-container *ngIf="seat.ST != 'F'">
+                          {{ seat.RN }}-{{ seat.N }}
+                        </ng-container>
+
+                        <!-- Sofa -->
+                        <ng-container *ngIf="seat.ST == 'F'">
+                          {{ seat.RN }}-{{ seat.N }}
+                          ({{ seat.capacity > 1 ? seat.capacity + ' Persons' : '1 Person' }})
+                        </ng-container>
+
+                        <span *ngIf="!lastSeat">, </span>
+                      </span>
+
+                      <span *ngIf="!lastLevel">, </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Offers Section -->
+          <!-- *ngIf="!coupanapplies" -->
+          <div *ngIf="selectedmembership?.ID">
+            <h4 class="section-title-small" style="font-size: 13px; font-weight: 600; margin-bottom: 8px">
+              Membership
+            </h4>
+            <div *ngIf="memberId && !spinmembership"
+              class="coupon-box  align-items-center p-3 mx-3 border rounded shadow-sm" style="
+                cursor: pointer;
+                background-color: #fcebea;
+                border-color: #a50000;
+              ">
+              <div class="row">
+                <div class="col-12">
+                  <h6 *ngIf="selectedmembership?.NAME" class="m-0 text-danger fw-bold" style="font-size: 13px">
+                    Selected Plan :
+                    <strong>
+                      {{
+                      selectedmembership?.NAME
+                      ? selectedmembership.NAME
+                      : ""
+                      }}
+                    </strong>
+                  </h6>
+                  <h6
+                    *ngIf="selectedmembership?.NAME == undefined || selectedmembership?.NAME == null || selectedmembership?.NAME == ''"
+                    class="m-0 text-danger fw-bold" style="font-size: 13px">
+                    'No Membership Plan selected'
+                  </h6>
+                  <div class=" d-flex" style="justify-content: space-between"
+                    *ngIf="selectedmembership?.NAME && BENEFIT_APPLY == true; else elseBlocbbbbbbbk">
+                    <p class="text-muted m-0" style="font-size: 12px">
+                      Discount : {{ selectedmembership?.DISCOUNT_TYPE != 'Percentage'
+                      ? 'Flat ₹ ' : '' }} {{selectedmembership?.DISCOUNT_VALUE}}
+
+                      {{ selectedmembership?.DISCOUNT_TYPE == 'Percentage'
+                      ? '%' : '' }}
+                    </p>
+
+                  </div>
+
+                  <ng-template #elseBlocbbbbbbbk>
+                    <p class="m-0 text-muted" style="font-size: 12px">
+                      Looks like you’ve already used your membership discount for this show, or your plan limit for this
+                      event is finished.
+                    </p>
+                  </ng-template>
+                </div>
+                <!-- <div class="col-2 " style="text-align: end;align-self: center;">
+                  <i class="bi bi-arrow-right-circle fs-4 text-danger"></i>
+                </div> -->
+              </div>
+
+
+
+            </div>
+
+            <div class="p-3" style="text-align: end" *ngIf="memberId && selectedmembership?.ID  && !spinmembership"
+              (click)="previous()">
+              <span style="font-size: 12px; font-weight: 700; cursor: pointer;color: #a50000">Remove Membership</span>
+            </div>
+            <data *ngIf="!memberId && !spinmembership" style="
+    padding: 10px;
+    text-align: center;
+    font-size: 13px;
+    width: 100%;
+    display: block;
+    font-weight: 700;
+    color: grey;
+">
+              If you are a member, please log in to access your membership privileges
+            </data>
+
+
+            <div class="d-flex justify-content-center" *ngIf="spinmembership">
+              <div class="spinner-border text-danger" role="status">
+                <span class="sr-only"></span>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="!selectedmembership?.ID && paymentdata?.totalPrice>0">
+            <h4 class="section-title-small" style="font-size: 13px; font-weight: 600; margin-bottom: 8px">
+              Coupons
+            </h4>
+            <div *ngIf="!spincuponopen" class="coupon-box  p-3 mx-3 border rounded shadow-sm" style="
+                cursor: pointer;
+                display: flex;
+                border-color: #a50000;
+              ">
+              <input type="text" [disabled]="coupanapplies" class="form-control form-control-sm fs-6 custom-placeholder"
+                placeholder="Enter Coupon Code" [(ngModel)]="applycode" style="font-size: 13px" />
+
+
+              <button class="btn btn-sm btn-primary ms-2 py-2" *ngIf="!coupanapplies" (click)="applyforcupon()"
+                [disabled]="!applycode" style="font-size: 13px">
+                Apply Coupon
+              </button>
+              <button class="btn btn-sm btn-primary ms-2 py-2" *ngIf="coupanapplies" (click)="clearcupon(true)"
+                [disabled]="!applycode" style="font-size: 13px">
+                Remove Coupon
+              </button>
+              <!-- </div> -->
+
+
+
+
+              <!-- (click)="showcuponModal()" -->
+              <!-- <div>
+                <h6 class="m-0 text-danger fw-bold" style="font-size: 13px">
+                  Coupon:
+                  <strong>
+                    {{
+                    selectedcupon?.NAME && selectedcupon?.CODE
+                    ? selectedcupon.NAME + ' (' + selectedcupon.CODE + ')'
+                    : 'No Coupon selected'
+                    }}
+                  </strong>
+                </h6>
+                <p class="m-0 text-muted" style="font-size: 12px">
+                  {{ selectedcupon?.DESCRIPTION || "Click to view all Coupons" }}
+                </p>
+              </div> -->
+
+
+              <!-- <i class="bi bi-arrow-right-circle fs-4 text-danger"></i> -->
+            </div>
+            <!-- <div class="p-3" style="text-align: end" *ngIf="selectedcupon?.ID || spincuponopen"
+              (click)="clearcupon(true)">
+              <span style="font-size: 12px; font-weight: 700; cursor: pointer;color: #a50000">Remove Coupon</span>
+            </div> -->
+            <div class="d-flex justify-content-center" *ngIf="spincuponopen">
+              <div class="spinner-border text-danger" role="status">
+                <span class="sr-only"></span>
+              </div>
+            </div>
+          </div>
+
+
+
+
+          <!-- Payment Details -->
+          <div *ngIf="paymentdata">
+            <h4 class="section-title-small" style="font-size: 13px; font-weight: 600; margin-bottom: 8px">
+              Payment Details
+            </h4>
+            <div class="space-y-2 px-3">
+              <div class="flex justify-between" style="font-size: 12px">
+                <div>Order Amount</div>
+                <div>₹ {{paymentdata.totalPrice | number:'1.2-2'}}</div>
+
+              </div>
+
+              <div *ngIf="paymentdata?.discount>0" class="flex justify-between" style="font-size: 12px">
+                <div>Coupon Discount </div>
+                <div class="text-right">
+                  <div>- ₹ {{paymentdata.discount |number:'1.2-2'}}</div>
+                </div>
+              </div>
+              <div *ngIf="paymentdata?.membertotalDiscount>-1" class="flex justify-between" style="font-size: 12px">
+                <div>Member Discount </div>
+                <div class="text-right">
+                  <div>- ₹ {{paymentdata.membertotalDiscount |number:'1.2-2'}}</div>
+                </div>
+              </div>
+
+              <div class="flex justify-between" style="font-size: 12px"
+                *ngIf="paymentdata.totalBookingFee>0 && paymentdata.totalBookingFee !='0'">
+                <div>Booking Fee</div>
+                <div class="text-right">
+                  <div>₹ {{paymentdata.totalBookingFee |number:'1.2-2'}}</div>
+                </div>
+              </div>
+              <div *ngIf="paymentdata.totalBookingFee>0 && paymentdata.CGST>0" class="flex justify-between"
+                style="font-size: 12px">
+                <div>CGST @ {{paymentdata.CGST}}% </div>
+                <div class="text-right">
+                  <div>₹ {{paymentdata.CGSTPrice |number:'1.2-2'}}</div>
+                </div>
+              </div>
+              <div *ngIf="paymentdata.totalBookingFee>0 && paymentdata.IGST>0" class="flex justify-between"
+                style="font-size: 12px">
+                <div>IGST @ {{paymentdata.IGST}}%</div>
+                <div class="text-right">
+                  <div>₹ {{paymentdata.IGSTPrice |number:'1.2-2'}}</div>
+                </div>
+              </div>
+              <div *ngIf="paymentdata.totalBookingFee>0 && paymentdata.SGST>0" class="flex justify-between"
+                style="font-size: 12px">
+                <div>SGST @ {{paymentdata.SGST}}%</div>
+                <div class="text-right">
+                  <div>₹ {{paymentdata.SGSTPrice |number:'1.2-2'}}</div>
+                </div>
+              </div>
+
+
+
+              <div class="border-t pt-2 mt-3 flex justify-between" style="font-weight: 600; font-size: 12px">
+                <div>Total</div>
+                <div style="text-align: end !important;">₹ {{paymentdata.finalAmount|number:'1.2-2'}} <br>
+                  <small
+                    *ngIf="paymentdata?.finalAmountwords != null && paymentdata?.finalAmountwords != undefined">{{paymentdata.finalAmountwords}}</small>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div
+            *ngIf="paymentdata?.finalAmount>0 && paymentdata && getwithoutloginandlogin() && !spincuponopen && !spinmembership"
+            style="text-align: center;padding: 5px;color: #a50000;font-weight: 600;font-size: 12px;    margin-bottom: -20px;">
+            Complete your payment in the payment window within 10:00 minutes to confirm your booking.
+          </div>
+          <!-- Continue Button -->
+          <button
+            *ngIf="Hoisting_Type == 'C' && paymentdata && getwithoutloginandlogin() && !spincuponopen && !spinmembership"
+            class="w-full btn-primary text-white py-2 rounded-md uppercase font-medium hover:opacity-90 transition-opacity mt-4"
+            style="font-size: 12px" (click)="proceedToPay1()">
+            {{(paymentdata?.finalAmount>0)?'Proceed to Pay':(eventID =='68d38e3b22fe8251d2e0b4a1'?'Confirm
+            Registration':'Confirm Booking')}}
+          </button>
+          <button
+            *ngIf="Hoisting_Type != 'C' && paymentdata && getwithoutloginandlogin() && !spincuponopen && !spinmembership"
+            class="w-full btn-primary text-white py-2 rounded-md uppercase font-medium hover:opacity-90 transition-opacity mt-4"
+            style="font-size: 12px" (click)="proceedToPay()">
+            {{(paymentdata?.finalAmount>0)?'Proceed to Pay':(eventID =='68d38e3b22fe8251d2e0b4a1'?'Confirm
+            Registration':'Confirm Booking')}}
+          </button>
+          <div style="font-weight: 600; font-size: 13px;text-align: center"
+            *ngIf="IS_MEMBERR && PRSelectedSeatCount > 0 && Hoisting_Type == 'C' && !selectedmembership?.ID">
+            Please select a membership plan to proceed.
+          </div>
+          <div style="font-weight: 600; font-size: 13px;text-align: center"
+            *ngIf="IS_MEMBERR && PRSelectedSeatCount > 0 && Hoisting_Type == 'C' && selectedmembership?.ID && !selectedmembership.IS_RESERVED_TICKETS">
+            Please select a valid membership plan to proceed, or select non-reserved seats.
+          </div>
+        </div>
+
+        <!-- Accordion Content -->
+        <div *ngIf="activeTab == 'billingDetails'" class="bg-white rounded-md shadow-sm p-4 space-y-6 mb-4">
+          <form #billingForm="ngForm" (ngSubmit)="onSubmitBillingForm(billingForm)" novalidate>
+            <div style="font-size: 12px; margin-bottom: 8px; font-weight: 500" [ngStyle]="{
+                color:
+                  billingForm.invalid && billingForm.submitted
+                    ? 'red'
+                    : '#6b7280'
+              }">
+              These details will be shown on your invoice *
+            </div>
+
+            <div class="space-y-4 mb-6 text-[12px]">
+              <!-- Full Name, Email, and Phone in one row -->
+              <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+                <!-- Full Name -->
+                <div class="sm:w-[40%] w-full">
+                  <label for="fullName" class="block font-medium mb-1">
+                    Full Name <span class="text-red-500">*</span>
+                  </label>
+                  <input type="text" id="fullName" name="fullName" [(ngModel)]="billingDetails.fullName" required
+                    #fullName="ngModel"
+                    class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 text-[12px]"
+                    [ngClass]="{
+                      'border-red-500': fullName.invalid && fullName.touched
+                    }" placeholder="Enter your name" />
+                  <div *ngIf="fullName.invalid && fullName.touched" class="text-red-500 text-xs mt-1">
+                    Full name is required.
+                  </div>
+                </div>
+
+                <!-- Email -->
+                <div class="sm:w-[40%] w-full">
+                  <label for="emailAddress" class="block font-medium mb-1">
+                    Email Address <span class="text-red-500">*</span>
+                  </label>
+                  <input type="email" id="emailAddress" name="email" [(ngModel)]="billingDetails.email" required email
+                    #email="ngModel"
+                    class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 text-[12px]"
+                    [ngClass]="{
+                      'border-red-500': email.invalid && email.touched
+                    }" placeholder="Enter your email address" />
+                  <div *ngIf="email.invalid && email.touched" class="text-red-500 text-xs mt-1">
+                    <div *ngIf="email.errors?.['required']">
+                      Email is required.
+                    </div>
+                    <div *ngIf="email.errors?.['email']">
+                      Please enter a valid email.
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Phone -->
+                <div class="sm:w-[20%] w-full">
+                  <label for="phoneNumber" class="block font-medium mb-1">
+                    Phone Number <span class="text-red-500">*</span>
+                  </label>
+                  <input type="tel" id="phoneNumber" name="phone" [(ngModel)]="billingDetails.phone" required
+                    pattern="^[0-9]{10}$" maxlength="10" #phone="ngModel"
+                    class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 text-[12px]"
+                    [ngClass]="{
+                      'border-red-500': phone.invalid && phone.touched
+                    }" placeholder="Enter phone" />
+                  <div *ngIf="phone.invalid && phone.touched" class="text-red-500 text-xs mt-1">
+                    <div *ngIf="phone.errors?.['required']">
+                      Phone number is required.
+                    </div>
+                    <div *ngIf="phone.errors?.['pattern']">
+                      Enter a valid 10-digit phone number.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Billing Address -->
+              <div>
+                <label for="billingAddress" class="block font-medium mb-1">
+                  Billing Address
+                </label>
+                <textarea id="billingAddress" name="address" [(ngModel)]="billingDetails.address" #address="ngModel"
+                  class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 text-[12px]"
+                  [ngClass]="{
+                    'border-red-500': address.invalid && address.touched
+                  }" rows="3" placeholder="Enter your billing address"></textarea>
+                <div *ngIf="address.invalid && address.touched" class="text-red-500 text-xs mt-1">
+                  Billing address is required.
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+
+            <button type="submit"
+              class="w-full btn-primary text-white py-2 rounded-md uppercase font-medium hover:opacity-90 transition-opacity"
+              style="font-size: 12px">
+              Proceed To Pay
+            </button>
+          </form>
+        </div>
+      </ng-container>
+
+
+      <ng-container *ngIf="is_event_heavy == false && activeStep == 5  && !loadBookingFlag">
+
+
+        <div class="min-h-screen flex items-center justify-center p-1">
+          <div class="max-w-md w-full" style="max-width: 1000px">
+
+            <div class="ticket-success-container">
+              <div class="card success-card">
+                <div class="icon-wrapper">
+                  <img [ngStyle]="{ width: isMobile ? '50px' : '50px', margin: '0px auto 10px' }"
+                    src="assets/success-svgrepo-com.svg" alt="Success" class="success-icon" />
+                </div>
+                <h2 [ngStyle]="{
+  'text-align': 'center',
+  'margin-bottom': '10px',
+  'margin-top': '2px',
+  'font-size': isMobile ? '15px' : '20px',
+}" class="title">Tickets Booked
+                  Successfully!</h2>
+                <app-ticketpage [ticketData]="ticketData" [enableMobileZoom]="true"></app-ticketpage>
+
+
+
+                <div>
+                  <p (click)="goback()" style="text-align: center;cursor: pointer;font-weight: 600;margin-top: 10px;">Go
+                    to
+                    Homepage</p>
+                </div>
+
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+      </ng-container>
+
+      <ng-container *ngIf="is_event_heavy == true && !loadBookingFlag">
+        <div style="padding: 10px;text-align: center;" [ngStyle]="{
+    'margin-top': isMobile ? '20%' : '2%'}">
+          <h5 style="text-align: center;font-weight: bolder;margin-top: 10px;">🎬 {{ eventname }}</h5>
+          <div *ngIf="eventImage">
+            <img [src]="retriveimgUrl +
+                  'eventImages/' +
+                  eventImage" alt="Event Poster" class="img-fluid rounded shadow-sm"
+              style="max-height: 170px;margin: 8px auto;">
+          </div>
+          <div style="text-align: center;padding: 10px;font-size: 20px;font-weight: 600;">🚀 We’re experiencing heavy
+            traffic right now.
+          </div>
+
+          <div style="    text-align: center;
+    padding: 4px 32px 8px;
+    font-weight: 600;
+    width: max-content;
+    max-width: 100%;
+    margin: auto;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    border: 1px dotted rgb(255 142 142);
+    font-size: 15px;
+    margin-bottom: 5px;" *ngIf="position == 1">
+            You are at <span style="font-size: 20px !important;">{{position}}<sup>st</sup></span> position. Thanks
+            for your patience!
+          </div>
+          <div style="    text-align: center;
+    padding: 4px 32px 8px;
+    font-weight: 600;
+    width: max-content;
+    max-width: 100%;
+    margin: auto;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    border: 1px dotted rgb(255 142 142);
+    font-size: 15px;
+    margin-bottom: 5px;" *ngIf="position > 1">
+
+            <span style="font-size: 20px !important;">{{position-1}} </span> <span *ngIf="(position-1) == 1"> person
+              is</span> <span *ngIf="(position-1) >1"> people are</span> waiting ⏳ before you. Thanks
+            for your patience!
+          </div>
+          <!-- {{LAST_WAITING_POSITION}} -->
+          <!-- <p style="text-align: center;color: grey;font-weight: 500;margin-bottom: 4px !important;">The queue will
+            automatically update in
+            {{disabledfor5sec}} seconds.</p> -->
+
+          <div
+            style="text-align: center;padding: 0px 10px 6px;font-weight: 600;font-size: 16px;letter-spacing: 0.5px;color: #5a5a5a;">
+            {{BOOKING_PERCENTAGE}}%
+            booking completed. </div>
+          <div class="queue-warning">
+            ⚠️ <strong style="font-size: 13px;">Important:</strong>
+            <ul style="list-style: disc;padding-left: 24px !important;">
+              <li>Do not close this tab, press <b>Back</b>, or move to another page.If you do, you will be removed from
+                the queue and must start again.</li>
+            </ul>
+          </div>
+
+          <div style="text-align: center;margin-top: 8px;">
+            <button class="btn btn-sm btn-primary ms-2 py-2" (click)="backFromQueue()">
+              Back
+            </button>
+          </div>
+          <!-- <div>This Event Is Crowded</div> -->
+          <!-- <button class="btn btn-sm btn-primary ms-2 py-2" (click)="referesh()" [disabled]="disabledfor5sec > 0 "
+            style="font-size: 13px">
+            Refresh <span *ngIf="disabledfor5sec > 0"> in ({{disabledfor5sec}} sec)</span>
+          </button> -->
+        </div>
+      </ng-container>
+    </main>
+
+
+
+
+  </div>
+
+</div>
+<footer class="footer"
+  *ngIf="((activeStep == 3 || activeStep == 4 )&& istugoz != true  && !loadBookingFlag) || activeStep != 1 && activeStep != 5 && !loadBookingFlag && is_event_heavy == false">
+  <div class="container" style="position: relative;">
+    <div class="footer-buttons d-flex justify-content-between">
+      <button *ngIf="showPreviousButton(); else showtemp"
+        style="padding-top: 6px; padding-bottom: 6px; font-size: smaller;color: #a50000;border-color: #a50000"
+        class="btn btn-outline" (click)="previous()">
+        Previous
+      </button>
+
+      <ng-template #showtemp>
+        <span>
+          <div></div>
+        </span>
+      </ng-template>
+
+      <button style="padding-top: 6px; padding-bottom: 6px; font-size: smaller"
+        *ngIf="activeStep != 4 && activeStep != 5 && activeStep != 1 && Hoisting_Type != 'C' && activeStep != 3 && !loadBookingFlag"
+        class="btn btn-primary" (click)="proceed()" [disabled]="returnData()">
+        Next
+      </button>
+
+      <button style="padding-top: 6px; padding-bottom: 6px; font-size: smaller"
+        *ngIf="activeStep != 4 && activeStep != 5 && activeStep != 1 && activeStep != 3 && Hoisting_Type == 'C' && !loadBookingFlag"
+        class="btn btn-primary" (click)="proceed()" [disabled]="returnData()">
+        Next
+      </button>
+      <!-- <div *ngIf="activeStep == 3" [ngStyle]="{'font-size' : isMobile  ? '0.7rem' : '1rem'}"
+        style="text-align: center;width: 40%;padding: 0px 3px;font-weight: 500;color: black;position: absolute;top: 0px;left: 30%;height: 100%;">
+        Complete seat selection in <b style="color: #cb0000;">⏱️{{displayTime}} minutes</b>
+       
+      </div> -->
+
+      <button style="padding-top: 6px; padding-bottom: 6px; font-size: smaller" class="btn btn-primary"
+        *ngIf="!IS_EXTRA_INFO_REQUIRED && activeStep != 4 && activeStep != 5 && activeStep != 1 && activeStep != 2 && Hoisting_Type != 'C' && !loadBookingFlag"
+        (click)="proceed()" [disabled]="returnData()">Proceed</button>
+
+      <button style="padding-top: 6px; padding-bottom: 6px; font-size: smaller" class="btn btn-primary"
+        *ngIf="IS_EXTRA_INFO_REQUIRED && activeStep != 4 && activeStep != 5 && activeStep != 1 && activeStep != 2 && Hoisting_Type != 'C' && !loadBookingFlag"
+        data-bs-toggle="modal" data-bs-target="#dynamicFormModal" [disabled]="returnData()">Proceed</button>
+
+
+      <!-- && selectedSeats1.length == selectedSeatCount -->
+      <button style="padding-top: 6px; padding-bottom: 6px; font-size: smaller" class="btn btn-primary"
+        *ngIf="!IS_EXTRA_INFO_REQUIRED && selectedSeats1.length > 0 && activeStep != 4 && activeStep != 5 && activeStep != 1 && activeStep != 2  && Hoisting_Type == 'C' && !loadBookingFlag"
+        (click)="proceed()" [disabled]="returnData()">Proceed</button>
+      <!-- && selectedSeats1.length == selectedSeatCount -->
+      <button style="padding-top: 6px; padding-bottom: 6px; font-size: smaller" class="btn btn-primary"
+        *ngIf="IS_EXTRA_INFO_REQUIRED && selectedSeats1.length > 0 && activeStep != 4 && activeStep != 5 && activeStep != 1 && activeStep != 2  && Hoisting_Type == 'C' && !loadBookingFlag"
+        data-bs-toggle="modal" data-bs-target="#dynamicFormModal" [disabled]="returnData()">Proceed</button>
+
+    </div>
+  </div>
+</footer>
+
+<button style="display: none" id="loginmodaltrack" data-bs-toggle="modal" data-bs-target="#loginmodal">
+  data
+</button>
+<!-- login modal -->
+<div class="modal fade" id="loginmodal" tabindex="-1" aria-labelledby="loginmodalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="width: 300px;margin:auto;">
+    <div class="modal-content p-3 rounded-3" style="padding: 0px !important; border: none !important">
+      <div class="modal-body">
+        <div class="popup">
+          <header style="justify-content: end; display: flex; padding: 4px 0px">
+            <div class="close" data-bs-dismiss="modal" #closelogin aria-label="Close" style="display: none">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="close" data-bs-dismiss="modal" aria-label="Close">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </header>
+          <div class="content">
+            <div style="justify-content: center; display: flex">
+              <img src="assets/playdetails/Group.png" alt="login" />
+            </div>
+            <button class="book-btn btn btn-danger mt-3 w-100 w-md-auto" (click)="openlogin()">
+              Sign In To Continue &nbsp; <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="selectSeatCountModal" tabindex="-1" aria-labelledby="selectSeatCountModalLabel"
+  aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content rounded-3 shadow-lg border-0">
+      <div class="modal-header rounded-top-3 d-flex justify-content-center position-relative pb-3">
+        <h6 class="modal-title  fw-bold mt-2" id="selectSeatCountModalLabel">Select Number of Seats</h6>
+      </div>
+      <div class="modal-body p-3 text-center">
+        <div class="d-flex flex-wrap justify-content-center gap-2 mt-2 mb-3">
+          <button *ngFor="let count of [1,2,3,4,5,6,7,8,9,10]" type="button" class="seat-count-btn"
+            [style.cursor]="count > this.CHARTED_AVAILABLE_FOR_BOOKING || (selectedmembership?.ID && count>2)?'not-allowed':'pointer'"
+            [style.color]="count > this.CHARTED_AVAILABLE_FOR_BOOKING || (selectedmembership?.ID && count>2)?'darkgrey':'#495057'"
+            [ngClass]="{ 'selected': selectedCount == count }" (click)="selectSeatCount(count)">
+            {{ count }}
+          </button>
+        </div>
+
+        <div class="seat-types-info row g-1 justify-content-center text-center mb-3">
+          <!-- <span>{{getPriceRange(sectionList)}}</span> -->
+
+          <!-- <div class="col-4" *ngFor="let section of sectionList">
+            <div class="seat-type-label fw-bold">{{ section.name }}</div>
+            <div class="seat-price text-muted">₹ {{ section.price }}</div>
+            <div class="seat-availability text-success small">Available</div>
+          </div> -->
+        </div>
+
+        <div class="text-center mt-3">
+          <button class="btn btn-success px-4 py-2 rounded-pill fw-bold confirm-btn" (click)="confirmSeatCount()"
+            [disabled]="!selectedCount">
+            Select Seats
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<div class="modal fade" id="selectSeatCountModalformodelll" tabindex="-1"
+  aria-labelledby="selectSesdsdsdatCountModalLabel" aria-hidden="true" data-bs-backdrop="static"
+  data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content rounded-3 shadow-lg border-0">
+
+      <div class="modal-body p-4 text-center">
+
+        <b style="font-size: 20px;" *ngIf="iscancelled == false">No Tickets Available</b>
+        <b style="font-size: 20px;" *ngIf="iscancelled == true">Booking for this show has been stopped or cancelled.</b>
+
+
+        <div class="text-center mt-3">
+          <button class="btn btn-success px-4 py-2 rounded-pill fw-bold confirm-btn" [routerLink]="['/']">
+            Go back to home Page
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="forverifyotp" tabindex="-1" aria-labelledby="selectSesdsdsdatCountModalLabel"
+  aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content rounded-3 shadow-lg border-0">
+      <div class="modal-header rounded-top-3 d-flex justify-content-center position-relative pb-3">
+        <h6 class="modal-title text-uppercase fw-bold mt-2" id="selectSeatCountModalLabel">Enter Verification Code</h6>
+      </div>
+      <div class="modal-body p-3 text-center">
+        <form (ngSubmit)="VerifyOTP()" class="otp-form">
+
+          <p class="text-center" style="font-size: 13px; margin-top: 10px; color: grey">
+            We've sent a 6-digit verification code via WhatsApp to
+
+
+            <span style="font-weight: bold; display: inline-block;">
+              {{ user.MOBILE }}
+              <i class="bi bi-pencil-square ms-1" style="cursor: pointer;" (click)="changemobile()"></i>
+            </span>
+          </p>
+
+          <!-- type="text" -->
+          <div class="form-group mt-4 d-flex justify-content-center otp-input-group gap-2">
+            <input *ngFor="let i of [0, 1, 2, 3, 4, 5]" class="form-control text-center otp-input"
+              style="width: 40px; height: 40px; padding: 0; font-size: 14px;" type="tel" maxlength="1"
+              [(ngModel)]="otp[i]" [name]="'otp-' + i" (keydown)="moveToNext($event, i)"
+              (keypress)="allowOnlyNumbers($event)" (ngModelChange)="onChange($event, i)" (paste)="handlePaste($event)"
+              required autocomplete="off" />
+          </div>
+
+          <!-- Error -->
+          <div *ngIf="otpInvalid && otpTouched" class="text-danger mt-2 text-center" style="font-size: 11px">
+            OTP is required and must be 6 digits.
+          </div>
+
+          <!-- Timer and Resend -->
+          <!-- <div class="text-center mt-3 timer-section" style="font-size: 11px">
+            <span *ngIf="remainingTime > 0">Resend in {{ remainingTime }}s</span>
+            <p class="resend-text mt-2" style="color: #636363;    font-size: 11px;">
+              Didn't receive the code?
+              <a (click)="remainingTime == 0 ? resendOtp() : null" [ngStyle]="{
+                      cursor: remainingTime > 0 ? 'not-allowed' : 'pointer',
+                      color: remainingTime > 0 ? '#636363' : '#3170de'
+                    }" [class.disabled]="remainingTime > 0">
+                Resend
+              </a>
+            </p>
+          </div> -->
+          <div class="text-center mt-3 timer-section" style="font-size: 11px">
+
+            <p class="resend-text mt-2" style="color: #3170de; font-size: 11px; ">
+              Didn't receive the code?
+              <a *ngIf="remainingTime == 0" (click)="resendOtp()"
+                style="cursor: pointer;font-weight: 600; letter-spacing: 0.5px; text-decoration: none !important; color: rgb(165, 0, 0);"
+                onmouseover="this.style.color='#a50000';" onmouseout="this.style.color='#a50000';">Resend</a>
+              <span *ngIf="remainingTime > 0" style="color:grey !important">Resend in {{ remainingTime }}s</span>
+            </p>
+          </div>
+
+
+          <button type="submit" class="main-btnnnn btn-hover w-100 mt-4" [disabled]="isverifyOTP">
+            <ng-container *ngIf="!isverifyOTP; else verifying">
+              Verify <i class="fas fa-check ms-2"></i>
+            </ng-container>
+            <ng-template #verifying>
+              Verifying... <i class="fas fa-spinner fa-spin ms-2"></i>
+            </ng-template>
+          </button>
+        </form>
+
+
+
+
+        <!-- <div class="text-center mt-3">
+          <button class="btn btn-success px-4 py-2 rounded-pill fw-bold confirm-btn" [routerLink]="['/']">
+            Go back to home Page
+          </button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<div class="modal fade" id="offerModallllll" tabindex="-1" aria-labelledby="offerModallllll" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-2">
+      <div *ngIf="cuponloading">
+
+      </div>
+      <!-- Modal Header -->
+      <div class="modal-header border-0 py-2 px-3" *ngIf="!cuponloading">
+
+        <b style="color: black;font-size: 18px;">Select a Coupon</b>
+        <button type="button" class="btn-close ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="border-0 py-2 px-3"> <input type="text" class="form-control form-control-sm fs-6"
+          placeholder="Search Cupon Code" [(ngModel)]="applycode" style="font-size: 13px" /></div>
+
+      <!-- Modal Body -->
+      <div *ngIf="!cuponloading" class="modal-body text-center p-3 fs-6" style="font-size: 13px">
+        <ng-container *ngIf="cuponslist.length > 0; else noOffersssssss">
+          <div *ngFor="let offer of cuponslist"
+            class="coupon-item d-flex justify-content-between align-items-center p-2 border-bottom"
+            (click)="selectedcupon?.ID == offer.ID ? null : selctdraftcuponselect(offer)"
+            [ngStyle]="selectedcupon?.ID == offer.ID ? {  'opacity': '0.6' } : {}"
+            [class.selected]="draftselectedcupon?.ID == offer.ID  " style="cursor: pointer; font-size: 13px">
+            <div class="text-start">
+              <h6 class="m-0 fw-bold text-dark" style="font-size: 13px">
+                {{ offer.NAME }} ({{ offer.CODE }})
+              </h6>
+              <p class="text-muted m-0" style="font-size: 12px">
+                {{ offer.DESCRIPTION }}
+              </p>
+            </div>
+            <div class="d-flex align-items-center gap-2" *ngIf="selectedcupon?.ID != offer.ID">
+              <i class="bi" [ngClass]="
+                      draftselectedcupon?.ID == offer.ID
+                        ? 'bi-check-circle-fill text-success'
+                        : 'bi-circle'
+                    " style="font-size: 13px"></i>
+            </div>
+            <div *ngIf="selectedcupon?.ID == offer.ID" (click)="clearcupon(false)"
+              style="color: #aa0303; font-size: 10px;font-weight: bold;text-align: end;cursor: pointer;">
+              Remove</div>
+          </div>
+        </ng-container>
+
+        <ng-template #noOffersssssss>
+          <div class="no-coupons text-center" style="font-size: 13px">
+
+            <h6 class="fw-bold" style="font-size: 13px">
+              No Coupons Available
+            </h6>
+            <p class="text-muted small" style="font-size: 12px">
+              No current Coupons available. Please check back later!
+            </p>
+          </div>
+        </ng-template>
+      </div>
+      <div class="d-flex justify-content-center" *ngIf="cuponloading">
+        <div class="spinner-border text-danger" role="status">
+          <span class="sr-only"></span>
+        </div>
+      </div>
+      <div *ngIf="!cuponloading" class="modal-footer border-0 py-2 px-3">
+        <!-- <button class="btn btn-sm btn-primary ms-2 py-2" (click)="clearcupon()"
+          [disabled]="!selectedcupon.ID || draftselectedcupon.ID" style="font-size: 13px">
+          Clear Cupon
+        </button> -->
+        <button class="btn btn-sm btn-primary ms-2 py-2" (click)="applyforcupon()" [disabled]="!draftselectedcupon.ID"
+          style="font-size: 13px">
+          Apply Coupon
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="offerModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-2">
+
+      <div class="modal-header border-0 py-2 px-3" *ngIf="!cuponloading">
+
+        <b style="color: black;font-size: 18px;">Select a Membership Plan</b>
+        <button type="button" class="btn-close ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <!-- <div class="border-0 py-2 px-3"> <input type="text" class="form-control form-control-sm fs-6"
+          placeholder="Search Cupon Code" [(ngModel)]="searchmembersearch" style="font-size: 13px" /></div> -->
+
+      <div *ngIf="!cuponloading" class="modal-body text-center p-1 fs-6" style="font-size: 13px">
+        <ng-container *ngIf="membershiplist.length > 0; else noOfferssssssssssss">
+          <div *ngFor="let offer of membershiplist"
+            class="coupon-item d-flex justify-content-between align-items-center p-2 border-bottom"
+            (click)="selectedmembership?.ID == offer.ID ? null : selctdraftmembershipselect(offer)"
+            [ngStyle]="selectedmembership?.ID == offer.ID ? {  'opacity': '0.6' } : {}"
+            [class.selected]="draftselectedmember?.ID == offer.ID  " style="cursor: pointer;
+    border: 1px solid #21e4ff;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    background: #ddf9ff;">
+            <div class="text-start">
+              <h6 class="m-0 fw-bold text-dark" style="font-size: 14px">
+                {{ offer.NAME }}
+              </h6>
+              <div class="row d-flex" style="justify-content: space-between">
+
+                <!-- TOTAL_TICKET_RESERVED_BY_USER
+                USAGE_COUNT  -->
+                <p class="text-muted m-0" style="font-size: 12px;    line-height: 22px;">
+                  • Discount available on up to {{ offer.TICKET_LIMIT }} Seats
+                </p>
+
+                <p class="text-muted m-0" style="font-size: 12px;    line-height: 22px;">
+                  • Get
+                  {{ offer.DISCOUNT_TYPE == 'BOGO'
+                  ? 'Buy One Get One Free'
+                  : (offer.DISCOUNT_TYPE == 'Percentage'
+                  ? offer.DISCOUNT_VALUE + '% off'
+                  : 'Flat ₹ ' + offer.DISCOUNT_VALUE + ' off')
+                  }}
+                  {{ offer.MAX_TOTAL_DISCOUNT > 0 && offer.DISCOUNT_TYPE == 'Percentage' ? '(up to Rs. ' +
+                  offer.MAX_TOTAL_DISCOUNT + ')' : '' }}
+                </p>
+
+                <p class="text-muted m-0" style="font-size: 12px;    line-height: 22px;">
+                  • Plan Expires on : {{ offer.END_DATE | date: 'dd-MM-yyyy' }}
+                </p>
+                <p class="text-muted m-0" style="font-size: 12px;    line-height: 22px;">
+                  • Reservation Booking Available : {{ offer.IS_RESERVED_TICKETS == 1 ? 'Yes' : 'No' }}
+                </p>
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-2" *ngIf="selectedmembership?.ID != offer.ID">
+              <i class="bi" [ngClass]="
+                      draftselectedmember?.ID == offer.ID
+                        ? 'bi-check-circle-fill text-success'
+                        : 'bi-circle'
+                    " style="font-size: 14px"></i>
+            </div>
+            <div *ngIf="selectedmembership?.ID == offer.ID" (click)="clearmembershipnew()"
+              style="color: #aa0303; font-size: 10px;font-weight: bold;text-align: end;cursor: pointer;">
+              Remove </div>
+          </div>
+        </ng-container>
+
+        <ng-template #noOfferssssssssssss>
+          <div class="no-coupons text-center" style="font-size: 13px">
+            <!-- <img src="assets/img/hand-drawn-no-data-concept.avif" style="width: 60px; height: 40px" alt="No Offers"
+              class="no-coupon-img mb-2" /> -->
+            <h6 class="fw-bold" style="font-size: 13px">
+
+              At this point no membership plans are applicable to your selected show
+            </h6>
+            <!-- <p class="text-muted small" style="font-size: 12px">
+              Please buy a Membership Plan
+            </p> -->
+          </div>
+        </ng-template>
+      </div>
+      <div class="d-flex justify-content-center" *ngIf="cuponloading">
+        <div class="spinner-border text-danger" role="status">
+          <span class="sr-only"></span>
+        </div>
+      </div>
+      <div *ngIf="!cuponloading" class="modal-footer border-0 py-2 px-3">
+        <!-- <button class="btn btn-sm btn-primary ms-2 py-2" (click)="clearcupon()"
+          [disabled]="!selectedcupon.ID || draftselectedcupon.ID" style="font-size: 13px">
+          Clear Cupon
+        </button> -->
+        <button class="btn btn-sm btn-primary ms-2 py-2" (click)="applyformembershipnew()"
+          [disabled]="!draftselectedmember.ID" style="font-size: 13px">
+          Apply Membership
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- <div class="modal fade" id="selectSeatCountModalformodelll" tabindex="-1"
+  aria-labelledby="selectSesdsdsdatCountModalLabel" aria-hidden="true" data-bs-backdrop="static"
+  data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content rounded-3 shadow-lg border-0">
+
+      <div class="modal-body p-3 text-center">
+
+        <b style="font-size: 20px;"></b>
+
+
+        <div class="text-center mt-3">
+          <button class="btn btn-success px-4 py-2 rounded-pill fw-bold confirm-btn" [routerLink]="['/']">
+            Go back to home Page
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+
+<!-- Extra Info Modal -->
+<div class="modal fade" id="dynamicFormModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <form #userForm="ngForm" (ngSubmit)="onSubmit2(userForm)">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalLabel" style="font-weight: bold;">Fill Your Information</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="padding: 20px !important;max-height: 70vh; overflow-y: auto;">
+          <div class="row">
+            <div style="display: flex; flex-wrap: wrap;">
+
+              <div *ngFor="let field of formFields; let i = index" [ngStyle]="{
+                'padding':'5px','flex': '0 0 ' + field.INPUT_WIDTH + '%', 'max-width': field.INPUT_WIDTH + '%' }">
+
+                <!-- Label -->
+                <label [for]="field.name" class="form-label" style="font-size: 12px;">
+                  {{ field.label }} <span *ngIf="field.required" style="color: red">*</span>
+                </label>
+
+                <!-- Email -->
+                <input *ngIf="field.type == 'email'" type="email" class="form-control" [id]="field.name"
+                  [placeholder]="field.placeholder" [(ngModel)]="userExtraInfo[field.model]"
+                  [maxlength]="field.MAX_LENGTH" [required]="field.required" name="{{field.name || ('email_'+i)}}"
+                  [pattern]="field.required ? emailpattern : ''" (blur)="userForm.controls[field.name].markAsTouched()"
+                  (input)="userForm.controls[field.name].markAsUntouched()">
+                <!-- Mobile -->
+                <input (keypress)="commonFunction.onlynumdot($event)" *ngIf="field.type == 'mobile'" type="text"
+                  class="form-control" [id]="field.name" [placeholder]="field.placeholder"
+                  [(ngModel)]="userExtraInfo[field.model]" maxlength="10" [required]="field.required"
+                  name="{{field.name || ('mobile_'+i)}}" [pattern]="field.required ? mobilepattern : ''"
+                  (blur)="userForm.controls[field.name].markAsTouched()"
+                  (input)="userForm.controls[field.name].markAsUntouched()">
+
+                <!-- Text -->
+                <input *ngIf="field.type == 'text'" type="text" class="form-control" [id]="field.name"
+                  [placeholder]="field.placeholder" [(ngModel)]="userExtraInfo[field.model]"
+                  [maxlength]="field.MAX_LENGTH" [required]="field.required" name="{{field.name || ('text_'+i)}}"
+                  [pattern]="field.required ? getSanitizedPattern(field.VALIDATION_PATTERN) : ''"
+                  (blur)="userForm.controls[field.name].markAsTouched()"
+                  (input)=" userForm.controls[field.name].markAsUntouched();  field.VALIDATION_PATTERN == '/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/' ? userExtraInfo[field.model] = userExtraInfo[field.model]?.toUpperCase()  : null ">
+
+                <!-- Number -->
+                <input *ngIf="field.type == 'number'" type="text" class="form-control"
+                  (keypress)="commonFunction.onlynumdot($event)" [id]="field.name" [placeholder]="field.placeholder"
+                  [(ngModel)]="userExtraInfo[field.model]" [maxlength]="field.MAX_LENGTH" [required]="field.required"
+                  name="{{field.name || ('number_'+i)}}"
+                  [pattern]="field.required ? getSanitizedPattern(field.VALIDATION_PATTERN) : ''"
+                  (blur)="userForm.controls[field.name].markAsTouched()"
+                  (input)="userForm.controls[field.name].markAsUntouched()">
+
+                <!-- Textarea -->
+                <textarea *ngIf="field.type == 'textarea'" class="form-control" [id]="field.name"
+                  [maxlength]="field.MAX_LENGTH" [placeholder]="field.placeholder"
+                  [(ngModel)]="userExtraInfo[field.model]" [required]="field.required"
+                  name="{{field.name || ('textarea_'+i)}}"
+                  [pattern]="field.required ? getSanitizedPattern(field.VALIDATION_PATTERN) : ''"
+                  (blur)="userForm.controls[field.name].markAsTouched()"
+                  (input)="userForm.controls[field.name].markAsUntouched()">
+                </textarea>
+
+                <!-- Radio -->
+                <div *ngIf="field.type == 'radio'">
+                  <div class="form-check" *ngFor="let option of field.options">
+                    <input type="radio" class="form-check-input" [id]="field.name + '_' + option.value"
+                      [name]="field.name || ('radio_'+i)" [value]="option.value"
+                      [(ngModel)]="userExtraInfo[field.model]" [required]="field.required"
+                      (blur)="userForm.controls[field.name].markAsTouched()"
+                      (change)="userForm.controls[field.name].markAsUntouched()">
+                    <label class="form-check-label" [for]="field.name + '_' + option.value" style="font-size: 12px;">
+                      {{ option.label }}
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Multi Checkbox -->
+                <div *ngIf="field.type == 'multi-checkbox'">
+                  <div class="form-check" *ngFor="let option of field.options">
+                    <input type="checkbox" class="form-check-input" [id]="field.name + '_' + option.value"
+                      [name]="field.name || ('multiCheckbox_'+i)" [value]="option.value"
+                      [checked]="userExtraInfo[field.model]?.includes(option.value)"
+                      (change)="onMultiCheckboxChange($event, field.model)"
+                      (blur)="userForm.controls[field.name].markAsTouched()"
+                      (change)="userForm.controls[field.name].markAsUntouched()">
+                    <label class="form-check-label" [for]="field.name + '_' + option.value" style="font-size: 12px;">
+                      {{ option.label }}
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Single Select -->
+                <select *ngIf="field.type == 'select'" class="form-select" [id]="field.name"
+                  [(ngModel)]="userExtraInfo[field.model]" [required]="field.required"
+                  (blur)="userForm.controls[field.name].markAsTouched()"
+                  (change)="userForm.controls[field.name].markAsUntouched()" name="{{field.name || ('select_'+i)}}">
+                  <option value="">Select</option>
+                  <option *ngFor="let option of field.options" [value]="option.value">{{ option.label }}</option>
+                </select>
+
+                <!-- Multi Select Dropdown -->
+                <select *ngIf="field.type == 'multi-select'" class="form-select" [id]="field.name" multiple
+                  [(ngModel)]="userExtraInfo[field.model]" name="{{field.name || ('multiSelect_'+i)}}"
+                  [required]="field.required" (blur)="userForm.controls[field.name].markAsTouched()"
+                  (change)="userForm.controls[field.name].markAsUntouched()">
+                  <option *ngFor="let option of field.options" [value]="option.value">{{ option.label }}</option>
+                </select>
+
+                <!-- Date Picker -->
+                <input *ngIf="field.type == 'date'" type="date" class="form-control" [id]="field.name"
+                  [(ngModel)]="userExtraInfo[field.model]" name="{{field.name || ('date_'+i)}}"
+                  [required]="field.required" (blur)="userForm.controls[field.name].markAsTouched()"
+                  (input)="userForm.controls[field.name].markAsUntouched()">
+
+                <!-- Date Range Picker -->
+                <div *ngIf="field.type == 'date-range'" class="d-flex gap-2">
+                  <input type="date" class="form-control" [(ngModel)]="userExtraInfo[field.model + '_start']"
+                    name="{{(field.name || 'dateRange_'+i) + '_start'}}"
+                    (blur)="userForm.controls[field.name].markAsTouched()"
+                    (input)="userForm.controls[field.name].markAsUntouched()">
+
+                  <input type="date" class="form-control" [(ngModel)]="userExtraInfo[field.model + '_end']"
+                    name="{{(field.name || 'dateRange_'+i) + '_end'}}"
+                    (blur)="userForm.controls[field.name].markAsTouched()"
+                    (input)="userForm.controls[field.name].markAsUntouched()">
+                </div>
+
+                <!-- Time Picker -->
+                <input *ngIf="field.type == 'time'" type="time" class="form-control" [id]="field.name"
+                  [(ngModel)]="userExtraInfo[field.model]" name="{{field.name || ('time_'+i)}}"
+                  [required]="field.required" (blur)="userForm.controls[field.name].markAsTouched()"
+                  (input)="userForm.controls[field.name].markAsUntouched()">
+
+                <!-- Switch -->
+                <div *ngIf="field.type == 'switch'" class="form-switch-wrapper">
+                  <label class="switch">
+                    <input type="checkbox" [(ngModel)]="userExtraInfo[field.model]"
+                      name="{{field.name || ('switch_'+i)}}">
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+                <div style="color: red; font-size: 11px;"
+                  *ngIf="field.required  && userForm.controls[field.name]?.errors?.['required']   && userForm.controls[field.name]?.touched">
+                  {{field.LABEL_NAME}} is required
+                </div>
+                <div style="color: red; font-size: 11px;"
+                  *ngIf="field.required  && userForm.controls[field.name]?.errors?.['pattern']  && userForm.controls[field.name]?.touched">
+                  Invalid {{field.LABEL_NAME}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button style="padding-top: 6px; padding-bottom: 6px; font-size: smaller" class="btn btn-primary"
+            type="submit" [disabled]="userForm.invalid">Save & Close</button>
+          <button type="button" style="padding-top: 6px; padding-bottom: 6px; font-size: smaller"
+            class="btn btn-secondary" data-bs-dismiss="modal" (click)="onCancel(userForm)">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Show Selection Modal -->
+<div class="modal fade" id="eventinfo" tabindex="-1" aria-labelledby="showModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg rounded-3 overflow-hidden">
+
+      <!-- Header -->
+      <div class="modal-header bg-dark text-white" style="background-color: #a50000 !important;">
+        <h5 *ngIf="eventname" class="modal-title" id="showModalLabel" style=" color: white !important;">
+          Confirm Your Show Selection
+        </h5>
+        <!-- <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button> -->
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+
+        <!-- Event Image -->
+        <h5 style="text-align: center;font-weight: bolder;margin-top: 10px;">🎬 {{ eventname }}</h5>
+        <div class="text-center mb-3" *ngIf="eventImage">
+          <img [src]="retriveimgUrl +
+                  'eventImages/' +
+                  eventImage" alt="Event Poster" class="img-fluid rounded shadow-sm" style="max-height: 170px;
+    margin: 8px auto;">
+        </div>
+
+        <p style="text-align: center !important;
+    line-height: 22px !important;
+    margin-bottom: 1rem;"><strong style="color: grey;font-size: 14px !important;">📍
+            Venue</strong><br />
+          <strong *ngIf="activeStep != 1" class="venue-name" style="font-size: 16px !important;">
+            {{ selectedVenue?.name=='To Be Decided' ? 'Venue ' + selectedVenue?.name : selectedVenue?.name }}
+            , {{selectedVenue.CITY_NAME}}
+          </strong>
+
+        </p>
+        <p style="text-align: center !important;
+    line-height: 22px !important;
+    margin-bottom: 1rem;"><strong style="color: grey;font-size: 14px !important;">📅 Date &
+            Time</strong> <br>
+          <strong *ngIf="selectedDate && selectedTime && activeStep != 1">
+
+            <span class="datetime-info">
+              <span class="date" style="font-size: 16px !important;">{{
+                selectedDate | date : "EEE, dd MMM"
+                }}</span>
+              <span class="time" style="font-size: 16px !important;"> | {{ selectedTime }}</span>
+            </span>
+          </strong>
+        </p>
+
+
+
+        <!-- Tags -->
+        <!-- <div class="mt-2">
+          <span class="badge bg-danger me-1" *ngIf="selectedShow?.isFastFilling">Fast Filling</span>
+          <span class="badge bg-info" *ngIf="selectedShow?.isLastShow">Last Show Today</span>
+        </div> -->
+        <!-- Note -->
+        <p class="text-center text-muted small mt-3" style="color: #f14b4b !important;
+    margin: 10px 16px;text-align: center !important;
+    line-height: 16px;font-size: 0.9rem !important;
+    font-weight: 600;
+    letter-spacing: 0.8px;">
+          Please verify your show details before proceeding to seat selection.
+        </p>
+
+        <!-- <div *ngIf="IS_QUEUE_ENABLED != undefined && IS_QUEUE_ENABLED == true" class="form-group captcha-wrapper"
+          style="margin: 0px auto;width: 100% !important;">
+          <ngx-recaptcha2 #captchaRef3 siteKey="6Ld3I7crAAAAAJTsR1-BAjGoyXwF8JAYuCHf3k8b"
+            (success)="handleCaptchaSuccess2($event)" (expired)="handleCaptchaExpire2()"
+            (error)="handleCaptchaError2($event)">
+          </ngx-recaptcha2>
+        </div> -->
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button type="button" style="padding-top: 6px; padding-bottom: 6px; font-size: smaller"
+          class="btn btn-secondary" data-bs-dismiss="modal" (click)="cancelproceed()">Cancel</button>
+        <button style="padding-top: 6px; padding-bottom: 6px; font-size: smaller" class="btn btn-primary"
+          (click)="proceedToSeatSelection()" data-bs-dismiss="modal">Proceed</button>
+      </div>
+
+    </div>
+  </div>
+</div>

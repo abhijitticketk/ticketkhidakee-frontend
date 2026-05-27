@@ -1,0 +1,228 @@
+<body class="d-flex flex-column h-100">
+    <!-- <app-navbar></app-navbar> -->
+
+    <div *ngIf="!loadingRecords" class="wrapper">
+
+
+        <div class="container my-4">
+
+
+            <div class="main-card mt-5 mb-3">
+                <div class="dashboard-wrap-content p-4">
+
+                    <div class="event-top-dts">
+                        <div class="event-top-dt mb-2" style="margin-left: 0px !important;">
+                            <h3 class="event-main-title">{{ movieName }}</h3>
+                            <div class="event-top-info-status">
+                                <span class="event-type-name">
+                                    <a [href]="'https://www.google.com/maps?q=' + theaterLatitude + ',' + theaterLongitude"
+                                        target="_blank" rel="noopener noreferrer" title="Open in Google Maps">
+                                        <i class="fa-solid fa-location-dot"
+                                            style="color: #b91c1c; padding-right: 0px;"></i>
+                                    </a>
+                                </span>
+                                <span style="font-size: 13px;" class="ev-event-date">{{ movieAddress }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-3">
+                        <div class="col-xl-12 col-lg-12 col-md-12" style="    padding: 5px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  background-color: #fff;">
+                            <div class="event-filter-items">
+                                <div class="featured-controls" style="font-family: Roboto, sans-serif;">
+                                    <div class="filter-tag">
+                                        <a (click)="selectLanguage('All')"
+                                            [class.active]="selectedLanguage === 'All'">All</a>
+                                        <a *ngFor="let item of LangaugeData" (click)="selectLanguage(item.NAME)"
+                                            [class.active]="selectedLanguage === item.NAME">
+                                            {{item.NAME}}
+                                        </a>
+                                    </div>
+
+                                    <div class="filter-tag">
+                                        <a (click)="selectScreenType('All')"
+                                            [class.active]="selectedScreenType === 'All'">All</a>
+                                        <a (click)="selectScreenType('2D')"
+                                            [class.active]="selectedScreenType === '2D'">2D</a>
+                                        <a (click)="selectScreenType('3D')"
+                                            [class.active]="selectedScreenType === '3D'">3D</a>
+                                        <a (click)="selectScreenType('IMAX 3D')"
+                                            [class.active]="selectedScreenType === 'IMAX 3D'">IMAX 3D</a>
+                                        <a (click)="selectScreenType('4DX 3D')"
+                                            [class.active]="selectedScreenType === '4DX 3D'">4DX 3D</a>
+                                        <a (click)="selectScreenType('MX4D 3D')"
+                                            [class.active]="selectedScreenType === 'MX4D 3D'">MX4D 3D</a>
+                                        <a (click)="selectScreenType('3D SCREEN X')"
+                                            [class.active]="selectedScreenType === '3D SCREEN X'">3D SCREEN
+                                            X</a>
+                                        <a (click)="selectScreenType('IMAX 2D')"
+                                            [class.active]="selectedScreenType === 'IMAX 2D'">IMAX 2D</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Date Selector -->
+                        <div class="col-12 col-md-8 mb-2 mb-md-0">
+
+
+                            <div class="date-selector d-flex flex-wrap">
+                                <div class="date-box" *ngFor="let date of dates; let i = index"
+                                    [ngClass]="{ active: selectedDateIndex === i }"
+                                    (click)="selectDate(i,date.fullDate)">
+                                    {{ date.label }}<br>
+                                    <span>{{ date.day }} {{ date.month }}</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <!-- Search Bar -->
+                        <div class="col-12 col-md-4">
+                            <!-- <div class="position-relative d-flex align-items-center">
+                                <i *ngIf="searchText.length <=0" class="bi bi-search search-icon position-absolute"
+                                    style="margin-left: 1.7rem; cursor: pointer;" (click)="focusSearchInput()"></i>
+                                <input id="search-input" type="text" name="search" placeholder="Search By Movies..."
+                                    [(ngModel)]="searchText" (keyup)="SearchBY()" class="form-control ps-5">
+                            </div> -->
+
+                            <div class="position-relative d-flex align-items-center">
+                                <i class="bi bi-search search-icon position-absolute"
+                                    style="margin-left: 1.7rem; cursor: pointer;" (click)="searchInput.focus()"></i>
+                                <input #searchInput id="search-input" class="form-control ps-5" type="text"
+                                    name="search" [(ngModel)]="searchText" placeholder="Search..."
+                                    (input)="onSearchInputChange()">
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <!-- <div class="date-search-container d-flex align-items-center justify-content-between mt-3 position-relative"> -->
+
+
+
+
+            <div *ngIf="MovieData.length > 0 ">
+
+
+
+                <div *ngIf="searchLoading" class="d-flex justify-content-center">
+                    <div class="loader"></div>
+
+                </div>
+                <div *ngIf="!searchLoading" class="accordion" id="movieAccordion">
+                    <div class="accordion-item custom-card mb-3" *ngFor="let show of MovieData; let i = index">
+                        <h2 class="accordion-header" [id]="'heading' + i">
+                            <button class="accordion-button collapsed custom-header" type="button"
+                                data-bs-toggle="collapse" [attr.data-bs-target]="'#collapse' + i"
+                                [attr.aria-controls]="'collapse' + i">
+                                <div class="d-flex align-items-center w-100">
+                                    <img *ngIf="show.MOVIE_IMAGE"
+                                        [src]="show.MOVIE_IMAGE ? retriveimgUrl + 'movieImages/' + show.MOVIE_IMAGE : 'assets/movie_skel.jpg'"
+                                        alt="Movie" class="img-thumbnail me-3 movie-img">
+                                    <div class="flex-grow-1">
+                                        <strong>
+                                            {{ show.NAME }}
+                                            <sub><small class="text-muted ms-1">{{ show.CENSOR_BOARD_RATING
+                                                    }}</small></sub>
+                                        </strong>
+                                        <div class="mt-1 d-flex flex-wrap gap-2">
+                                            <span
+                                                class="badge bg-primary bg-opacity-10 text-primary border border-primary">
+                                                {{ formatDuration(show.DURATION) }}
+                                            </span>
+                                            <span *ngIf="show.GENRES"
+                                                class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary">
+                                                {{ show.GENRES }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- <div class="pill-badge">{{ show.GROUPED_SHOWS.length }}</div> -->
+                                </div>
+                            </button>
+                        </h2>
+
+                        <div [id]="'collapse' + i" class="accordion-collapse collapse"
+                            [attr.aria-labelledby]="'heading' + i" data-bs-parent="#movieAccordion">
+                            <div class="accordion-body bg-light text-dark">
+                                <div *ngFor="let data of show.GROUPED_SHOWS" class="mb-2 pb-2"
+                                    style="    border-bottom: 1px solid rgb(229, 229, 229);">
+
+                                    <!-- <div class="mb-2">
+                                        <span
+                                            class="badge show-type-badge text-uppercase font-semibold p-2 rounded-md">{{
+                                            data.SHOW_TYPE }}</span>
+                                    </div> -->
+
+                                    <div class="mb-2 d-flex gap-2 flex-wrap">
+                                        <ng-container *ngIf="data.DATA.length > 0">
+                                            <span
+                                                class="badge show-type-badge text-uppercase font-semibold p-2 rounded-md">
+                                                {{ data.DATA[0]?.MOVIE_LANGUAGE }}
+                                            </span>
+                                            <span
+                                                class="badge bg-secondary text-uppercase font-semibold p-2 rounded-md">
+                                                {{ data.DATA[0]?.MOVIE_SCREEN_TYPE }}
+                                            </span>
+
+                                        </ng-container>
+                                    </div>
+
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <!-- <button type="button"
+                                            class="btn btn-outline-dark btn-sm w-auto p-2 rounded-md timing-button"
+                                            *ngFor="let d of data.DATA"
+                                            [ngClass]="{'active btn-dark text-white': (SCREEN_ID === d.SCREEN_ID && START_TIME === d.START_TIME && MOVIE_ID === d.MOVIE_ID)}"
+                                            (click)="selectTiming(d, show)">
+                                            {{d.START_TIME}}
+                                        </button> -->
+
+                                        <button type="button"
+                                            class="btn btn-outline-dark btn-sm w-auto p-2 rounded-md timing-button"
+                                            *ngFor="let d of data.DATA" [ngClass]="{
+    'active btn-dark text-white': (SCREEN_ID === d.SCREEN_ID && START_TIME === d.START_TIME && MOVIE_ID === d.MOVIE_ID)
+  }" [disabled]="isPastTime(d.START_TIME)" (click)="selectTiming(d, show)">
+                                            {{ getTime(d.START_TIME) }}
+                                        </button>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="MovieData.length === 0  " class="text-center mt-5">
+                <p><strong>We’re sorry,</strong><br>No shows available at the moment.</p>
+            </div>
+
+
+
+            <!-- </div> -->
+        </div>
+
+    </div>
+
+    <div class="fullpage-spinner" *ngIf="loadingRecords">
+        <div class="spinner-inner">
+            <div *ngFor="let i of spinnerArray"></div>
+        </div>
+    </div>
+
+</body>

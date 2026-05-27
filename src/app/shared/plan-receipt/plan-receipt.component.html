@@ -1,0 +1,107 @@
+<div class="col-12" *ngIf="loadingg" style="display: flex;justify-content: center;margin-top: 120px;">
+  <div *ngIf="loadingg" class="loader"></div>
+</div>
+<div class="btnDiv" *ngIf="!loadingg">
+  <div class="customBtnDiv">
+    <button class="custom-btn" (click)="share()">
+      <i class="fas fa-copy icon-style"></i>
+      <span>Copy URL</span>
+    </button>
+
+    <button class="custom-btn" [disabled]="loadingforprint" (click)="downloadTicket()">
+      <ng-container *ngIf="!loadingforprint; else loading">
+        <i class="fas fa-download icon-style"></i>
+        <span>Download</span>
+      </ng-container>
+      <ng-template #loading>
+        <i class="fas fa-spinner fa-spin icon-style"></i>
+        <span>Downloading...</span>
+      </ng-template>
+    </button>
+
+    <button class="custom-btn" (click)="printTicket()">
+      <i class="fas fa-print icon-style"></i>
+      <span>Print</span>
+    </button>
+  </div>
+</div>
+
+<div class="justify-content-center align-items-center" *ngIf="!loadingg">
+  <div class="receipt-container shadow" id="print-section">
+
+    <div class="receipt-header d-flex justify-content-between align-items-center">
+      <span>Plan Purchase Receipt</span>
+      <img style="height: 35px; width: 35px;"
+        src="https://static.readdy.ai/image/afcc47cb1dc09e4f18793aaad07a3df7/296c6bbc31613159efddba4235006534.png"
+        alt="Ticket Khidakee" />
+    </div>
+
+    <div class="receipt-body">
+      <div class="row mb-2">
+        <div class="col-4 fw-bold">Name:</div>
+        <div class="col-8">{{subcribedetailsdata.MEMBER_NAME}}</div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-4 fw-bold">Plan Name:</div>
+        <div class="col-8"> {{subcribedetailsdata.PLAN_NAME}}</div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-4 fw-bold">Purchase Date:</div>
+        <div class="col-8">{{ subcribedetailsdata.START_DATE | date : "MMM dd yyyy" }}</div>
+      </div>
+
+      <hr>
+
+      <div class="fw-bold mb-3">Payment Details</div>
+
+      <div class="row mb-1">
+        <div class="col-8">Plan Amount</div>
+        <div class="col-4 text-end">₹ {{subcribedetailsdata.PLAN_AMOUNT}}</div>
+      </div>
+      <div class="row mb-1"
+        *ngIf="subcribedetailsdata.COUPON_DISCOUNT && subcribedetailsdata.COUPON_DISCOUNT !== '0.00'">
+        <div class="col-8">Coupon Discount</div>
+        <div class="col-4 text-end">₹ {{subcribedetailsdata.COUPON_DISCOUNT}}</div>
+      </div>
+      <div class="row mb-1"
+        *ngIf="(+subcribedetailsdata.CONVIENCE_FEE !== 0) || (+subcribedetailsdata.TAX_AMOUNT !== 0)">
+        <div class="col-8">Convenience Fee</div>
+        <div class="col-4 text-end">
+          ₹ {{ (+subcribedetailsdata.CONVIENCE_FEE) + (+subcribedetailsdata.TAX_AMOUNT) | number : '1.2-2' }}
+        </div>
+      </div>
+
+      <!-- <div class="row mb-1">
+        <div class="col-8">CGST @ 9%</div>
+        <div class="col-4 text-end">₹ 0.9</div>
+      </div>
+      <div class="row mb-3">
+        <div class="col-8">SGST @ 9%</div>
+        <div class="col-4 text-end">₹ 0.9</div>
+      </div> -->
+
+      <hr>
+
+      <div class="row fw-bold">
+        <div class="col-8">Total</div>
+        <div class="col-4 text-end">₹ {{subcribedetailsdata.PAID_AMONT}}</div>
+      </div>
+      <div class="text-end fst-italic small">
+        {{commonFunction.amountInWords(subcribedetailsdata.PAID_AMONT) }}
+      </div>
+    </div>
+    <div *ngIf="subcribedetailsdata.TERMS_AND_CONDITIONS" class="flexxxxxx">
+           <div class="terms-and-conditions">
+             <h4>Terms and Conditions</h4>
+             <div class="terms-list">
+               <div  [innerHTML]="getSanitizedHtml(subcribedetailsdata.TERMS_AND_CONDITIONS)">
+                <!-- <span   [innerHTML]="getSanitizedHtml(subcribedetailsdata.DESCRIPTION)"></span> -->
+               </div>
+             </div>
+           </div>
+   
+         </div>
+         
+  </div>
+
+</div>

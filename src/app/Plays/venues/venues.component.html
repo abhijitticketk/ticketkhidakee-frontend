@@ -1,0 +1,192 @@
+<div [ngStyle]="{
+      'margin-top': isMobile ? '' : '5%'
+    }">
+  <div class="hero-banner" style="background-image: url(assets/theaterbanner1.jpg) ; padding: 37px 0 60px;">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-12">
+          <div class="hero-banner-content text-center">
+            <h2 class="search-title" style="color: #fff">Search Nearby Venues</h2>
+            <div class="position-relative">
+              <input class="form-control h_45 w-100 pl-4" type="text" [(ngModel)]="searchTerm"
+                (input)="onSearchChange()" placeholder="Search venues..." style="border-radius: 24px !important ;"
+                maxlength="60" />
+              <i class="bi bi-search position-absolute" [ngStyle]="{
+      left: '10px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      color: '#999',
+      display: searchTerm ? 'none' : 'block'
+    }"></i>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="explore-events p-80">
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12">
+          <div class="event-filter-items">
+            <div class="featured-controls">
+              <div class="controls d-flex flex-wrap gap-2">
+                <div class="filter-tabs-container">
+                  <div class="filter-tabs">
+                    <div class="filter-tab" *ngFor="let amenity of amenities"
+                      [class.active]="isFacilitySelected(amenity.NAME)" (click)="toggleFacility(amenity.NAME)"
+                      style="display: flex; align-items: center; gap: 5px">
+                      <img *ngIf="amenity.ICON" [src]="retriveimgUrl + 'amenityIcons/' + amenity.ICON"
+                        alt="{{ amenity.NAME }}" style="height: 16px; width: 16px; margin-right: 5px" />
+                      {{ amenity.NAME }}
+                    </div>
+
+                    <div class="filter-tab" style="
+                        background-color: #a50000;
+                        border-color: #a50000;
+                        color: #fff;
+                      " (click)="clearAllFilters()">
+                      Reset
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            <div class="all event-box" style="display: block">
+
+  <!-- No Data -->
+  <div *ngIf="!searchLoading && theaters.length === 0" 
+       class="no-data-container"
+       style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+    <img src="assets/nodata1.png" alt="No Data Found" class="no-data-img" />
+    <p>No venue available for the selected filter.</p>
+  </div>
+
+  <!-- Theater List (always rendered, even if loading) -->
+  <div class="row g-4">
+    <div *ngFor="let theater of theaters; trackBy: trackByTheater" 
+         class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+      
+      <div class="main-card show-card mt-4 d-flex flex-column responsive-card-height"
+           (click)="openroutesvenue(theater)" style="cursor: pointer">
+        
+        <!-- Thumbnail -->
+        <div class="event-thumbnail">
+          <a class="thumbnail-img d-block">
+            <img [src]="theater.THEATER_IMAGE" 
+                 [alt]="theater.NAME" 
+                 class="img-fluid w-100"
+                 loading="lazy" />
+          </a>
+
+          <!-- Like icon -->
+          <span title="Like" class="like-icon" 
+                [ngClass]="{ liked: getliked(theater), disabled: addbookmarkspin }"
+                (click)="toggleLike(theater, $event)" 
+                style="cursor: pointer">
+            <i class="fa" 
+               [ngClass]="getliked(theater) ? 'fa-solid fa-heart liked-heart' : 'fa-regular fa-heart unliked-heart'">
+            </i>
+          </span>
+        </div>
+
+        <!-- Content -->
+        <div class="event-content flex-grow-1" style="height: auto">
+          <div>
+            <a class="event-title d-block text-truncate" 
+               style="min-height: 20px; font-size: 16px; margin-bottom: 0px;" 
+               *ngIf="theater?.NAME">
+              {{ theater.NAME }}
+            </a>
+
+            <!-- Stars -->
+            <div class="stars mb-1">
+              <i *ngFor="let star of getFullStars(theater.RATING)" class="bi bi-star-fill" style="color: #f5b50a"></i>
+              <i *ngIf="hasHalfStar(theater.RATING)" class="bi bi-star-half" style="color: #f5b50a"></i>
+              <i *ngFor="let star of getEmptyStars(theater.RATING)" class="bi bi-star" style="color: #f5b50a"></i>
+            </div>
+          </div>
+
+          <!-- Amenities -->
+          <div class="d-flex flex-wrap gap-2 mt-1 mb-1">
+            <span *ngFor="let amenity of theater.amenities | slice:0:4" 
+                  class="badge amenity-badge">
+              {{ amenity }}
+            </span>
+            <span *ngIf="theater.amenities.length > 4" 
+                  class="badge amenity-badge text-muted"
+                  style="background: none; padding: 4px 0px; font-size: 10px; font-weight: 600;">
+              + More
+            </span>
+          </div>
+
+          <!-- Address -->
+          <p *ngIf="theater?.ADDRESS" 
+             class="address two-line-clamp mb-0"
+             style="font-size: 12px; color: #212529 !important" 
+             [title]="theater.ADDRESS">
+            <i class="fa fa-map-marker-alt" 
+               style="color: #a50000; margin-right: 5px"
+               title="Open in Google Maps" 
+               (click)="openGoogleMap(theater.latitude, theater.longitude)">
+            </i>
+            {{ theater.ADDRESS }}
+          </p>
+        </div>
+      </div>
+    </div>
+      <!-- Inline Loader (only when loading more) -->
+  <div *ngIf="searchLoading && theaters.length > 0" class="text-center mt-4">
+    <div class="spinner-border text-danger" role="status"></div>
+  </div>
+
+  <!-- Initial Page Loader (when no data yet) -->
+  <div *ngIf="searchLoading && theaters.length === 0" class="text-center my-5">
+    <div class="spinner-border text-danger" role="status"></div>
+    <p class="mt-2">Loading venues...</p>
+  </div>
+  </div>
+</div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Body End-->
+
+
+<button style="display: none" id="loginmodaltrack" data-bs-toggle="modal" data-bs-target="#loginmodal">
+  data
+</button>
+<!-- login modal -->
+<div class="modal fade" id="loginmodal" tabindex="-1" aria-labelledby="loginmodalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="width: 300px;margin:auto;">
+    <div class="modal-content p-3 rounded-3" style="padding: 0px !important; border: none !important">
+      <div class="modal-body">
+        <div class="popup">
+          <header style="justify-content: end; display: flex; padding: 4px 9px">
+            <div class="close" data-bs-dismiss="modal" #closelogin aria-label="Close" style="display: none">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="close" data-bs-dismiss="modal" aria-label="Close">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </header>
+          <div class="content">
+            <div style="justify-content: center; display: flex">
+              <img src="assets/playdetails/Group.png" alt="login" />
+            </div>
+            <button class="book-btn btn btn-danger mt-3 w-100 w-md-auto reviewbtn1" (click)="openlogin()" style="border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;">
+              Sign In To Continue &nbsp; <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

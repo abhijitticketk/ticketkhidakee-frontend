@@ -1,0 +1,707 @@
+#heroCarousel {
+  position: relative;
+  width: 96%;
+  margin-left: 2%;
+  height: 100%;
+  min-height: 300px;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+}
+a.browse-theater-link:hover {
+  color: black !important;
+}
+
+/* =============================
+     Carousel Items
+  ============================= */
+.carousel-item {
+  opacity: 0;
+  transform: translateX(20%);
+  transition: all 0.5s ease-in-out;
+}
+
+.carousel-item.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* =============================
+     Hero Banner Styling
+  ============================= */
+.hero-banner {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 767px) {
+  .event-card-wrapper {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+    min-width: unset !important;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-bottom: 15px;
+  }
+}
+
+/* Keep the web CSS as it is for larger screens */
+.filter-tag {
+  margin-top: 10px;
+  // margin-left: 35px;
+  // margin-right: 50px;
+}
+
+/* For mobile view, override margins */
+@media (max-width: 767px) {
+  .filter-tag {
+    margin-top: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+.main-title {
+  margin-top: 20px;
+  margin-left: 35px;
+  margin-right: 50px;
+  background-color: white;
+  padding: 10px;
+}
+
+/* For mobile view, override margins */
+@media (max-width: 767px) {
+  .main-title {
+    margin-top: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: white;
+    padding: 10px;
+  }
+}
+
+.hero-banner::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+/* =============================
+     Banner Content Styling
+  ============================= */
+.hero-banner-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  text-align: center;
+  color: #fff;
+}
+
+/* =============================
+     Carousel Controls
+  ============================= */
+.carousel-control-prev,
+.carousel-control-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 20px;
+  height: 20px;
+  background-color: white;
+}
+
+.carousel-control-prev-icon {
+  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M15 18l-6-6 6-6"/></svg>') center/contain no-repeat;
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M15 18l-6-6 6-6"/></svg>') center/contain no-repeat;
+}
+
+.carousel-control-next-icon {
+  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M9 6l6 6-6 6"/></svg>') center/contain no-repeat;
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M9 6l6 6-6 6"/></svg>') center/contain no-repeat;
+}
+
+/* =============================
+     Carousel Indicators
+  ============================= */
+.carousel-indicators li {
+  background-color: #fff;
+}
+
+.carousel-indicators .active {
+  background-color: #007bff;
+}
+
+/* =============================
+     Loading Overlay & Spinner
+  ============================= */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.886);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #333;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* =============================
+     Loading Placeholder
+  ============================= */
+.loading-placeholder-wrapper {
+  background-color: #f0f0f0;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.loading-placeholder-content {
+  text-align: center;
+}
+
+.placeholder-logo {
+  width: 65px;
+  height: 70px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.loading-text {
+  color: #666;
+  font-size: 14px;
+}
+
+/* =============================
+     Filter Tag Section
+  ============================= */
+.filter-tag {
+  display: flex;
+  overflow-x: auto;
+  padding: 0px 0 0;
+  margin-bottom: 10px;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+}
+
+.filter-tag::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Opera */
+}
+
+
+.filter-tag a {
+  flex: 0 0 auto;
+  margin-right: 10px;
+  white-space: nowrap;
+  padding: 7px 10px;
+  background-color: #f0f0f0;
+  border-radius: 3px;
+  text-decoration: none;
+  color: black;
+  font-size: 12px;
+}
+
+
+.filter-tag a.active {
+  background-color: #ff1b31db;
+  color: white !important;
+}
+
+/* =============================
+   Hero Carousel - Main Container
+============================= */
+#heroCarousel {
+  position: relative;
+  width: 96%;
+  margin-left: 2%;
+  height: 100%;
+  min-height: 300px;
+  overflow: hidden;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+}
+
+/* =============================
+     Carousel Items
+  ============================= */
+// .carousel-item {
+//   position: relative;
+//   display: none;
+//   transition: opacity 0.5s ease-in-out;
+//   opacity: 0;
+// }
+
+// .carousel-item.active {
+//   display: block;
+//   opacity: 1;
+// }
+
+.carousel-item {
+  opacity: 0;
+  transform: translateX(20%);
+  transition: all 0.5s ease-in-out;
+}
+
+.carousel-item.active {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* =============================
+     Hero Banner Styling
+  ============================= */
+.hero-banner {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
+.hero-banner::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+/* =============================
+     Banner Content Styling
+  ============================= */
+.hero-banner-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  text-align: center;
+  color: #fff;
+}
+
+/* =============================
+     Carousel Controls
+  ============================= */
+.carousel-control-prev,
+.carousel-control-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background-color: #f0f0f0;
+  border-radius: 50%;
+  padding: 10px;
+  color: #fff;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Semi-transparent black */
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  width: 20px;
+  height: 20px;
+  background-color: white;
+}
+
+
+.carousel-control-prev-icon {
+  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M15 18l-6-6 6-6"/></svg>') center/contain no-repeat;
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M15 18l-6-6 6-6"/></svg>') center/contain no-repeat;
+}
+
+.carousel-control-next-icon {
+  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M9 6l6 6-6 6"/></svg>') center/contain no-repeat;
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M9 6l6 6-6 6"/></svg>') center/contain no-repeat;
+}
+
+/* =============================
+     Carousel Indicators
+  ============================= */
+.carousel-indicators li {
+  background-color: #fff;
+}
+
+.carousel-indicators .active {
+  background-color: #007bff;
+}
+
+/* =============================
+     Loading Overlay & Spinner
+  ============================= */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.886);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top: 4px solid #333;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* =============================
+     Loading Placeholder
+  ============================= */
+.loading-placeholder-wrapper {
+  background-color: #f0f0f0;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.loading-placeholder-content {
+  text-align: center;
+}
+
+.placeholder-logo {
+  width: 65px;
+  height: 70px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.loading-text {
+  color: #666;
+  font-size: 14px;
+}
+
+/* =============================
+     Scrollable Events Section
+  ============================= */
+.event-scroll-wrapper {
+  height: 80vh;
+  overflow-y: auto;
+  padding: 20px;
+  background: #f8f8f8;
+}
+
+.loading-text {
+  text-align: center;
+  padding: 15px;
+  font-size: 1rem;
+  color: #555;
+}
+
+
+.event-scroll-container {
+  overflow: hidden;
+  display: flex;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 1rem;
+  gap: 1rem;
+
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+}
+
+.event-scroll-container {
+  gap: 1rem;
+  padding-bottom: 1rem;
+}
+
+.event-card-wrapper {
+  flex: 0 0 calc(20% - 1rem);
+  min-width: 227px;
+}
+
+.event-thumbnail img {
+  height: 280px;
+  object-fit: cover;
+  width: 100%;
+  border-radius: 8px;
+}
+
+/* =============================
+     Responsive Styles
+  ============================= */
+@media (max-width: 768px) {
+  #heroCarousel {
+    height: 300px;
+  }
+
+  .hero-banner-content h2 {
+    font-size: 24px;
+  }
+
+  .event-card-wrapper {
+    flex: 0 0 40%;
+  }
+}
+
+.bookmark-icon {
+  background-color: rgb(255 44 82);
+  color: #fff;
+  font-size: 20px;
+  position: absolute;
+  z-index: 101;
+  right: 15px;
+  top: 15px;
+  cursor: pointer;
+  display: block;
+  height: 35px;
+  width: 35px;
+  line-height: 37px;
+  border-radius: 30px;
+  transition: all 0.4s;
+}
+
+.bookmark-icon:before,
+.bookmark-icon:after {
+  transition: opacity 0.3s, transform 0.4s cubic-bezier(.0, -.41, .19, 2.5);
+  font-family: "Font Awesome 6 Free";
+  position: absolute;
+  right: 0;
+  left: 0;
+  text-align: center;
+  top: 0px;
+}
+
+.bookmark-icon.bookmarked:after {
+  opacity: 1;
+  transform: scale(0.95);
+}
+
+.bookmark-icon:after {
+  content: "\f02e";
+  opacity: 0;
+  transform: scale(0.3);
+  font-weight: 900;
+}
+
+.bookmark-icon:before {
+  content: "\f02e";
+  transform: scale(0.95);
+}
+
+.duration-price {
+  font-size: 14px;
+  font-weight: 400;
+  color: #636161;
+}
+
+
+// Quickbook style
+.custom-select-style {
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  background-color: white;
+  color: #6c757d;
+  font-weight: 500;
+  height: 35px;
+  padding: 5px 10px;
+  width: 180px;
+}
+
+.custom-select-style:focus {
+  border-color: #ff8686;
+  box-shadow: none;
+  color: #000;
+}
+
+.btn-outline {
+  border: 1px solid #e8f7f7;
+  color: #e8f7f7;
+  transition: background-color 0.3s ease;
+}
+
+.btn-outline:hover {
+  background-color: #dff0f0;
+  color: black;
+}
+
+.btn-check:checked+.btn-outline {
+  background-color: #e8f7f7;
+  border-color: #e8f7f7;
+  color: black;
+}
+
+
+.controls {
+  display: flex;
+  overflow-x: auto;
+  padding: 0px 0;
+  margin-bottom: 15px;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+}
+
+.controls::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Opera */
+}
+
+.controls .control {
+  // flex: 0 0 auto;
+  // margin-right: 4px;
+  // background: #ffffff; /* White box */ 
+  // font-size: 14px;
+  // padding: 8px 16px;
+  // cursor: pointer;
+  // border-radius: 1px; /* Slight rounded corners */ 
+  // border-bottom: 2px solid transparent;
+  // white-space: nowrap;
+  // transition: all 0.3s ease;
+
+  flex: 0 0 auto;
+  margin-right: 4px;
+  background: #ffffff;
+  font-size: 14px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 1px;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  height: 32px;
+  font-weight: 400;
+}
+
+.controls .control.active {
+  border-bottom: 2px solid #000;
+  /* Black bottom border for active */
+  font-weight: bold;
+  color: #000;
+}
+
+.no-data-container {
+  text-align: center;
+  padding: 40px 0;
+
+  .no-data-img {
+    width: 250px;
+    max-width: 100%;
+    margin-bottom: 15px;
+    opacity: 0.7;
+  }
+
+  p {
+    font-size: 16px;
+    color: #777;
+  }
+}
+
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 50px;
+  --b: 8px; 
+  aspect-ratio: 1;
+  border-radius: 50%;
+  padding: 1px;
+  background: conic-gradient(#0000 10%,#f03355) content-box;
+  -webkit-mask:
+    repeating-conic-gradient(#0000 0deg,#000 1deg 20deg,#0000 21deg 36deg),
+    radial-gradient(farthest-side,#0000 calc(100% - var(--b) - 1px),#000 calc(100% - var(--b)));
+  -webkit-mask-composite: destination-in;
+          mask-composite: intersect;
+  animation:l4 1s infinite steps(10);
+}
+@keyframes l4 {to{transform: rotate(1turn)}}

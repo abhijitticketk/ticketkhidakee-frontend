@@ -1,0 +1,543 @@
+<div [ngStyle]="{
+      'margin-top': isMobile ? '5%' : '5%'
+    }">
+  <div class="page-title dark-background"
+    style="background-image: url(assets/blog-page-title-bg.jpg) !important;padding: 40px 0 40px 0;">
+    <div class="heading mt-0">
+      <div class="container">
+        <div style="
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+">
+          <h1 style="
+    color: white !important;
+    font-size: 22px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    line-height:2;
+  " title="Blogs > {{ blogDetails?.TITLE }}">
+            <a href="/blogs" style="color: white !important; text-decoration: none;">
+              Blogs&nbsp;>
+            </a>
+            {{ blogDetails?.TITLE }}
+          </h1>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <main class="main" style="margin-top: 30px">
+    <!-- <div class="page-title" data-aos="fade">
+      <div class="heading mt-0">
+        <div class="container"></div>
+      </div>
+    </div> -->
+    <div *ngIf="loadblogs" style="height: 300px; padding-top: 100px" class="d-flex justify-content-center">
+      <div>
+        <!-- <div class="loader"></div> -->
+        <img src="assets/TK-Loading-Animation-ver-2.gif" class="img-loader" alt="Loading..." style="  width: 70px;
+  height: auto;
+  display: block;" />
+      </div>
+    </div>
+    <div class="container pt-0 mb-2" *ngIf="!loadblogs && recentPosts; else noData">
+      <div class="row">
+        <div class="col-lg-9">
+
+          <ng-container *ngIf="blogDetails && blogDetails.TITLE; else noData">
+
+            <section id="blog-details" class="blog-details section" *ngIf="blogDetails">
+              <div class="container">
+                <article class="article" style="
+                  padding-bottom: 0px !important;
+                  background-color: transparent !important;
+                  box-shadow: none !important;
+                ">
+                  <div class="post-img" *ngIf="blogDetails.DEFAULT_IMAGE">
+                    <img [src]="blogDetails.DEFAULT_IMAGE" (click)="eventredirection(blogDetails)" alt="Blog Image"
+                      class="img-fluid heigghtB" style="
+                      width: 100% !important;
+                      border-radius: 16px;
+                      background-size: 100% 100%;
+                    " />
+                  </div>
+                </article>
+              </div>
+              <div class="container">
+                <article class="article" style="
+                  padding: 0px !important;
+                  background-color: transparent !important;
+                  box-shadow: none;
+                ">
+                  <div style="display: flex; justify-content: space-between">
+                    <h2 class="title" style="margin: 0px 0px 0px 0px !important">
+                      {{ blogDetails.TITLE }}
+                    </h2>
+                  </div>
+                  <p *ngIf="blogDetails != undefined && blogDetails.CATEGORY_NAME" style="margin-bottom: 0px">
+                    <a style="font-size: 12px; color: grey !important">{{
+                      blogDetails.CATEGORY_NAME
+                      }}</a>
+                  </p>
+                  <div class="meta-top" style="margin-top: 0px; display: flex; align-items: center">
+                    <ul>
+                      <li style="display: flex; align-items: center">
+                        <i class="bi bi-clock" style="font-size: 11px !important"></i>
+                        <a style="font-size: 12px; color: grey !important"><time>
+                            {{
+                            blogDetails.CREATED_MODIFIED_DATE
+                            | date : "mediumDate"
+                            }}</time></a>
+                      </li>
+                      <!-- <li><i class="bi bi-chat-dots"></i> <a>4 Comments</a></li> -->
+                    </ul>
+                    &nbsp; &nbsp; &nbsp; &nbsp;
+                    <div style="margin-top: 0px; color: black">
+                      <i *ngIf="
+                        blogDetails != undefined &&
+                        reviewload &&
+                        blogDetails.LIKE_STATUS == 0
+                      " class="fa-regular fa-thumbs-up" style="cursor: pointer; font-size: 16px"></i>
+                      <i *ngIf="
+                        blogDetails != undefined &&
+                        !reviewload &&
+                        blogDetails.LIKE_STATUS == 0
+                      " class="fa-regular fa-thumbs-up" style="cursor: pointer; font-size: 16px"
+                        (click)="ReviewLikes()"></i>
+
+                      <i *ngIf="
+                        blogDetails != undefined &&
+                        reviewload &&
+                        blogDetails.LIKE_STATUS == 1
+                      " class="fa-solid fa-thumbs-up" style="cursor: pointer; font-size: 16px"></i>
+                      <i *ngIf="
+                        blogDetails != undefined &&
+                        !reviewload &&
+                        blogDetails.LIKE_STATUS == 1
+                      " class="fa-solid fa-thumbs-up" style="cursor: pointer; font-size: 16px"
+                        (click)="ReviewLikes()"></i>
+                      <!-- <div class="spinner-border text-danger1" *ngIf="reviewload"
+                                                    role="status" style="height: 10px;width: 10px;">
+                                                    <span class="visually-hidden"></span>
+                                                </div> -->
+                      <ng-container *ngIf="reviewload; else bookmarkIcon">
+                        <i class="fa fa-spinner fa-spin spinner-icon"></i>
+                      </ng-container>
+                      <ng-template #bookmarkIcon></ng-template>
+
+                      <span style="font-size: 12px; color: black" *ngIf="
+                        blogDetails != undefined && blogDetails.LIKE_COUNT > 0
+                      ">{{
+                        formatLikesCount(blogDetails.LIKE_COUNT)
+                        }}
+                        Likes</span>
+                    </div>
+                    &nbsp; &nbsp; &nbsp;
+                    <div style="
+                      background: none;
+                      cursor: pointer;
+                      display: flex;
+                      justify-content: end;
+                      align-items: center;
+                    ">
+                      <div>
+                        <img alt="share" data-bs-toggle="modal" data-bs-target="#shareModal" width="26" height="26"
+                          class="sc-eykeme-1 iVbwwW" style="
+                          border-radius: 0px;
+                          opacity: 1;
+                          transition: 0.5s;
+                          width: 100%;
+                          min-height: 26px;
+                          max-height: 26px;
+                        " src="assets/playdetails/share_v2.png" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="content" style="margin-top: 13px">
+                    <p [innerHTML]="blogDetails.DESCRIPTION"></p>
+
+                    <blockquote style="border-radius: 15px;" *ngIf="blogDetails !== undefined && blogDetails.QUOTE">
+                      <p [innerHTML]="blogDetails.QUOTE"></p>
+                    </blockquote>
+
+                    <!-- Dynamic CTA Button -->
+                    <div class="blog-cta-btn-wrapper" *ngIf="blogDetails?.IS_BUTTON_VISIBLE == 1">
+                      <button class="blog-cta-btn" (click)="onButtonClick(blogDetails.BUTTON_URL)">
+                        {{ blogDetails.BUTTON_TEXT || 'Learn More' }}
+                        <i class="fa-solid fa-arrow-right"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- <div class="meta-bottom" *ngIf="blogDetails.TAGS">
+                  <i class="bi bi-tags"></i>&nbsp;
+                  <ul class="tags">
+                    <li *ngFor="let tag of blogDetails.TAGS.split(',')">
+                      <a href="#">{{ tag.trim() }}</a>
+                    </li>
+                  </ul>
+                </div> -->
+                </article>
+              </div>
+            </section>
+
+            <section id="blog-comments" class="blog-comments section" style="margin-bottom: 20px;">
+              <div class="container">
+                <div style="
+                  display: flex;
+                  justify-content: space-between;
+                  margin-bottom: 10px;
+                ">
+                  <h4 class="comments-count" style="
+                    font-size: 20px !important;
+                    margin-bottom: 0px !important;
+                  ">
+                    <span *ngIf="
+                      blogDetails !== undefined
+                    ">{{ formatLikesCount(blogDetails.COMMENT_COUNT) }}</span>
+                    Comments
+                  </h4>
+                  <button type="button" (click)="ratenoww()" class="btn btn-outline-danger btn-sm">
+                    Add Comment
+                  </button>
+                </div>
+
+                <div [ngStyle]="{
+                  padding: '0px',
+                  'overflow-y': reviewscount > 2 ? 'auto' : 'visible',
+                  'overflow-x': 'hidden',
+                  'max-height': reviewscount > 2 ? '90vh' : 'unset',
+                  'padding-bottom': '0px',
+                  'scroll-behavior': 'smooth'
+                }" style="scrollbar-width: none; -ms-overflow-style: none" class="hide-scrollbar"
+                  (scroll)="onScroll($event)" *ngIf="reviewscount > 0; else elsereviewblock">
+                  <div id="comment-1" class="comment" *ngFor="let coment of displayedReviews" style="
+                    border: 1px solid #e9e7e6;
+                  padding: 13px 18px 10px;
+                    border-radius: 15px;
+                    margin-top: 15px;
+                    background: white;
+                    width: 100%;
+                  ">
+                    <!-- Wrapper for image + name/date -->
+                    <div class="d-flex flex-wrap align-items-center mb-2">
+                      <!-- Profile Image -->
+                      <div class="me-3 mb-2 mb-sm-0" style="margin-bottom: 0px !important">
+                        <img [src]="
+                          coment.PROFILE_IMAGE
+                            ? retriveimgUrl +
+                              'profilePic/' +
+                              coment.PROFILE_IMAGE
+                            : userImage
+                        " alt="img" style="
+                          height: 60px;
+                          width: 60px;
+                          border-radius: 50%;
+                          object-fit: cover;border: 1px solid #a50000 !important;
+                        " />
+                      </div>
+
+                      <!-- Name and Date -->
+                      <div>
+                        <h5 class="mb-1">{{ coment?.MEMBER_NAME || "Guest User" }}</h5>
+                        <time style="font-size: 12px" class="text-muted">
+                          {{
+                          coment?.COMMENT_CREATED_DATETIME |date: 'MMMM d, y, hh:mm a'
+                          }}
+                        </time>
+                      </div>
+                    </div>
+
+                    <!-- Comment Text -->
+                    <!-- <p style="font-size: 13px; margin-bottom: 0">
+                    {{ coment?.COMMENT_TEXT }}
+                  </p> -->
+                    <p style="font-size: 13px; margin-bottom: 0" [innerHTML]="formatComment(coment?.COMMENT_TEXT)">
+                    </p>
+
+                  </div>
+
+                  <div *ngIf="isLoading1" class="text-center mt-2">
+                    <i class="fa fa-spinner fa-spin"></i> Loading more comments...
+                  </div>
+                </div>
+                <ng-template #elsereviewblock>
+                  <div style="
+                    width: 100% !important;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    align-self: center;
+                    margin-top: 20px;
+                    margin-bottom: 20px;
+                  ">
+                    <img src="assets/nodata1.png" style="height: 140px" alt="No result" />
+                  </div>
+                </ng-template>
+              </div>
+            </section>
+          </ng-container>
+
+          <ng-template #noData>
+            <div
+              style="width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; margin-top:40px; margin-bottom:20px;">
+              <img src="assets/nodata1.png" style="height:170px;" alt="No blog found" />
+              <h1 style="font-size:16px; text-align:center;">
+                The blog you are looking for is not available.
+              </h1>
+              <p style="font-size:14px; color:grey; text-align:center; max-width:300px; margin-top:10px;">
+                It might have been removed or the link is incorrect. Please check other blogs.
+              </p>
+            </div>
+          </ng-template>
+
+
+        </div>
+
+        <div class="col-lg-3 sidebar ps-lg-2" style="padding-top: 0;">
+          <div class="widgets-container position-sticky" style="margin-top: 0 !important; margin-bottom: 20px; padding-top: 0;">
+
+            <div class="mb-2" *ngIf="blogDetails?.EVENT_DETAILS && (blogDetails.EVENT_DETAILS | keyvalue).length > 0">
+              <a class="thumbnail-img" (click)="getEventRouterLink(blogDetails.EVENT_DETAILS)
+                                ">
+                <div class="recent-posts-widget widget-item bg-white rounded" style="border-radius: 16px !important">
+
+                  <div class="event mb-1" *ngIf="blogDetails.EVENT_DETAILS['BANNER_IMAGE']">
+                    <a class="thumbnail-img" (click)="getEventRouterLink(blogDetails.EVENT_DETAILS)
+                                ">
+
+                      <img [src]="
+                    blogDetails.EVENT_DETAILS.BANNER_IMAGE
+                      ? retriveimgUrl + 'eventImages/' + blogDetails.EVENT_DETAILS.BANNER_IMAGE
+                      : 'assets/default.png'
+                  " alt="blogDetails" style="border-radius: 12px; cursor: pointer;" class="flex-shrink-0" />
+                    </a>
+                  </div>
+                  <div class="event-content">
+                    <span style="
+                                font-size: 9px;
+                                color: #7c5353;
+                                font-weight: 600;
+                                 margin-bottom: 0px;
+                              ">
+                      <!-- <img src="assets/icons/Calendar.png" alt="Calendar" style="width: 14px; margin-right: 6px; background-color: white;" /> -->
+
+
+                      {{blogDetails.EVENT_DETAILS['CATEGORY_NAME'] }}
+                    </span>
+
+                    <span class="event-title" [title]="blogDetails.EVENT_DETAILS['EVENT_NAME']" style="cursor: pointer;
+                              ">
+                      {{ blogDetails.EVENT_DETAILS['EVENT_NAME'] }}
+                    </span>
+
+                    <div style="color: #6A6A6A !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;" *ngIf=" blogDetails.EVENT_DETAILS['LANGUAGE_NAMES']">
+                      {{
+                      blogDetails.EVENT_DETAILS['LANGUAGE_NAMES'].split(",")
+
+                      }}
+                    </div>
+
+
+
+                    <!-- <div [title]="blogDetails.EVENT_DETAILS['GENRE_NAMES']"
+                      *ngIf="blogDetails.EVENT_DETAILS['GENRE_NAMES']">
+                      <a>
+                        <span class="text-dark badgee" [title]="blogDetails.EVENT_DETAILS['GENRE_NAMES']">
+                          {{ blogDetails.EVENT_DETAILS['GENRE_NAMES']}}
+                        </span> </a>
+                    </div> -->
+
+
+                    <div [title]="blogDetails.EVENT_DETAILS['GENRE_NAMES']" style="cursor: pointer;"
+                      *ngIf="blogDetails.EVENT_DETAILS['GENRE_NAMES']">
+                      <a>
+                        <span class="text-dark badgee" [title]="blogDetails.EVENT_DETAILS['GENRE_NAMES']">
+                          {{ getFirstGenre(blogDetails.EVENT_DETAILS['GENRE_NAMES']) }}
+                        </span> </a><span *ngIf="hasMoreGenres(blogDetails.EVENT_DETAILS['GENRE_NAMES'])" style="
+                                  font-size: 11px;
+                                  color: #9c9ea6 !important;
+                                ">+ More</span>
+                    </div>
+
+                  </div>
+
+                </div>
+              </a>
+            </div>
+            <div>
+              <div class="recent-posts-widget widget-item bg-white rounded" style="border-radius: 16px !important">
+                <h3 class="widget-title">Recent Blog Posts</h3>
+
+                <div class="post-item" *ngFor="let recent of recentPosts.slice(0,5)">
+                  <img [src]="
+                    recent.IMAGE
+                      ? retriveimgUrl + 'blog/' + recent.IMAGE
+                      : 'assets/default.png'
+                  " (click)="blogClick(recent)" alt="recent" style="    border-radius: 12px;" class="flex-shrink-0" />
+                  <div>
+                    <h4>
+                      <a (click)="blogClick(recent)">{{ recent.TITLE }}</a>
+                    </h4>
+                    <time style="font-style: normal;">{{
+                      blogDetails?.CREATED_MODIFIED_DATE | date : "mediumDate"
+                      }}</time>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noData>
+      <div
+        style="width:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; margin-top:20px; margin-bottom:20px;">
+        <img src="assets/nodata1.png" style="height:170px;" alt="No result" />
+        <h1 style="font-size:16px;">Results Not Found</h1>
+      </div>
+    </ng-template>
+  </main>
+</div>
+
+<div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="width: 300px;margin:auto;">
+    <div class="modal-content p-3 rounded-3" style="padding: 0px !important; border: none !important">
+      <div class="modal-body">
+        <div class="popup">
+          <header>
+            <span>Share Link Via</span>
+            <div class="close" data-bs-dismiss="modal" aria-label="Close">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </header>
+          <div class="content">
+            <ul class="icons">
+              <a [href]="
+                  'https://www.facebook.com/sharer/sharer.php?u=' + currentUrl
+                " target="_blank"><i class="fab fa-facebook-f"></i></a>
+              <a [href]="'https://twitter.com/intent/tweet?url=' + currentUrl" target="_blank"><i
+                  class="fab fa-twitter"></i></a>
+              <a [href]="'https://api.whatsapp.com/send?text=' + currentUrl"><i class="fab fa-whatsapp"></i></a>
+              <a [href]="
+                  'https://www.linkedin.com/sharing/share-offsite/?url=' +
+                  currentUrl
+                " target="_blank"><i class="fab fa-linkedin"></i></a>
+            </ul>
+            <div class="field" style="
+                margin-top: 28px;
+                border: 1px solid grey;
+                border-radius: 9px;
+              ">
+              <i class="fa-solid fa-link"></i>
+              <input type="text" readonly [value]="currentUrl" />
+              <button style="
+                  cursor: pointer !important;
+                  border-top-right-radius: 9px;
+                  border-bottom-right-radius: 9px;
+                  padding: 6px 10px !important;
+                " (click)="copyToClipboard()">
+                Copy
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button style="display: none" id="loginmodaltrack" data-bs-toggle="modal" data-bs-target="#loginmodal">
+  data
+</button>
+<!-- login modal -->
+<div class="modal fade" id="loginmodal" tabindex="-1" aria-labelledby="loginmodalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="width: 300px;margin:auto;">
+    <div class="modal-content p-3 rounded-3" style="padding: 0px !important; border: none !important">
+      <div class="modal-body">
+        <div class="popup">
+          <header style="justify-content: end; display: flex; padding: 4px 0px">
+            <div class="close" data-bs-dismiss="modal" #closelogin aria-label="Close" style="display: none">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="close" data-bs-dismiss="modal" aria-label="Close">
+              <i class="fa-solid fa-xmark"></i>
+            </div>
+          </header>
+          <div class="content">
+            <div style="justify-content: center; display: flex">
+              <img src="assets/playdetails/Group.png" alt="login" />
+            </div>
+            <button class="book-btn btn btn-danger mt-3 w-100 w-md-auto reviewbtn1" (click)="openlogin()">
+              Sign In To Continue &nbsp; <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button style="display: none" id="ratenowmodaltrackss" data-bs-toggle="modal" data-bs-target="#ratenowmodaltrack">
+  data
+</button>
+
+<!-- Rating -->
+<div class="modal fade" id="ratenowmodaltrack" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content border-0 shadow-sm rounded-4 p-4" style="background-color: #ffffff">
+      <div class="modal-header border-0 pb-0" style="padding: 0px !important">
+        <h4 class="modal-title fw-bold text-dark w-100 text-center">
+          Leave a Comment
+        </h4>
+        <button type="button" #closereview data-bs-dismiss="modal" aria-label="Close"
+          class="btn-close position-absolute top-0 end-0 m-3"></button>
+      </div>
+
+      <div class="modal-body p-0 pt-4" style="padding-top: 1px !important">
+        <form #feedbackForm="ngForm">
+          <p class="text-center mb-3 text-secondary" style="font-size: 12px">
+            Share your feedback, thoughts about this post. We value your
+            opinion!
+          </p>
+
+          <div class="mb-3">
+            <textarea class="form-control rounded-3 border-0 p-3" name="comment" maxlength="1000" [(ngModel)]="comment"
+              placeholder="Write your comment here..." rows="3" style="
+                font-size: 12px !important;
+                border: 1px solid #e87c86 !important;
+                padding: 7px 10px !important;
+              "></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="text-center">
+            <button></button>
+            <button *ngIf="!ratenowws" type="submit" class="btn px-4 py-2 rounded-pill fw-semibold text-white"
+              style="background-color: #af0404; border-radius: 5px !important" (click)="submitFeedback()">
+              <span> Submit </span>
+            </button>
+
+            <button *ngIf="ratenowws" class="btn btn-sm btn-outline-danger rounded-pill"
+              style="border-radius: 5px !important">
+              Submit &nbsp;
+              <div class="spinner-border text-danger1" role="status" style="height: 10px; width: 10px">
+                <span class="visually-hidden"></span>
+              </div>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

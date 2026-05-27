@@ -1,0 +1,251 @@
+<div class="form-wrapper" style="overflow: hidden">
+  <div class="app-form">
+    <div class="app-form-sidebar" style="justify-content: center; align-items: center; width: auto">
+      <div class="sidebar-sign-logo">
+        <!-- <img src="assets/images/sign-logo.svg" alt="" /> -->
+        <a routerLink="/">
+          <img style="height: 70px" src="assets/images/icons/logo.png" alt="" />
+          <img class="logo-inverse" src="assets/images/icons/logo.png" alt="" />
+        </a>
+      </div>
+      <div class="sign_sidebar_text">
+        <h1 style="margin-top: 40px; text-align: center; font-size: 25px">
+          Book your happieness right away!
+        </h1>
+      </div>
+    </div>
+
+    <div class="auth-container flex flex-col items-center" style="width: 100%">
+      <div class="w-full px-4 pt-8 pb-4 flex-1 flex flex-col items-center" style="max-width: 100%">
+        <div class="relative w-full max-w-[1000px]">
+          <div class="inline-flex items-center space-x-1 cursor-pointer" (click)="goBack()">
+            <button type="button"
+              class="w-10 h-10 flex items-center justify-center rounded-full transition-colors hover:bg-gray-100 relative"
+              aria-label="Go back">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#a50000" stroke-width="2"
+                class="w-6 h-6" aria-hidden="true" focusable="false">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <span class="text-[#a50000] font-medium select-none">Back</span>
+          </div>
+        </div>
+
+        <div class="flex-1 flex items-center justify-center w-full">
+          <div class="bg-white rounded-lg shadow-sm p-8 w-full max-w-[400px]" style="border-radius: 16px !important">
+            <form #authForm="ngForm" (ngSubmit)="sendOTP(authForm)" *ngIf="step === 'enter'">
+              <div class="app-top-items">
+                <a routerLink="/" class="displaynone1">
+                  <div class="sign-logo" id="logo" style="
+                      text-align: center;
+                      justify-content: center;
+                      display: flex;
+                      margin-bottom: 20px;
+                    ">
+                    <img src="assets/images/icons/new--logo3.png" alt="" />
+                  </div>
+                </a>
+                <div class="app-top-right-link"></div>
+              </div>
+
+              <div class="mb-8 relative">
+                <h1 class="text-center text-3xl" style="font-weight: bold">
+                  Sign In
+                </h1>
+              </div>
+
+              <div class="form-group" style="margin-top: 10px">
+                <label class="form-label">Mobile No. / Email ID</label>
+                <div class="input-group">
+                  <!-- Show country code only if it's a phone number -->
+                  <ng-container *ngIf="isPhone">
+                    <select [(ngModel)]="countryCode" name="countryCode" class="form-control form-control-sm" required
+                      disabled style="
+                        font-size: 14px !important;
+                        max-width: 100px;
+                        border-top-right-radius: 0px !important;
+                        border-bottom-right-radius: 0px !important;
+                      ">
+                      <option *ngFor="let code of countryCodes" [value]="code.value">
+                        {{ code.label }}
+                      </option>
+                    </select>
+                  </ng-container>
+
+                  <!-- Input field -->
+                  <input name="typeValue11" class="form-control h_50 form-control-sm small-placeholder"
+                    [(ngModel)]="typeValue" (ngModelChange)="onTypeValueChange($event)" required
+                    placeholder="Enter Mobile No. / Email ID" autocomplete="off" autocorrect="off" autocapitalize="off"
+                    spellcheck="false" [pattern]="
+                      isPhone
+                        ? '^[6-9][0-9]{9}$'
+                        : '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$'
+                    " #typeValueField="ngModel" style="flex: 1; font-size: 14px !important" [ngClass]="{
+                      'is-invalid':
+                        typeValueField.invalid &&
+                        (typeValueField.touched || typeValueField.dirty),
+                      phoneclass: isPhone
+                    }" [maxlength]="isPhone ? 10 : 128" />
+                </div>
+
+                <!-- Error messages -->
+                <div *ngIf="typeValueField.touched && typeValueField.invalid" class="text-danger mt-1">
+                  <div *ngIf="typeValueField.errors?.['required']">
+                    This field is required.
+                  </div>
+                  <div *ngIf="typeValueField.errors?.['pattern']">
+                    Invalid mobile number or email format.
+                  </div>
+                </div>
+              </div>
+              <!-- CAPTCHA -->
+              <div class="form-group mt-3" style="display: flex; justify-content: flex-start">
+                <div class="captcha-wrapper">
+                  <ngx-recaptcha2 #captchaRef siteKey="6Ld3I7crAAAAAJTsR1-BAjGoyXwF8JAYuCHf3k8b"
+                    (success)="handleCaptchaSuccess($event)" (expired)="handleCaptchaExpire()"
+                    (error)="handleCaptchaError($event)">
+                  </ngx-recaptcha2>
+                </div>
+              </div>
+              <p style="font-size: 10px !important;margin-bottom: 0px;color: rgb(222, 0, 0);"><em>Note: Enter the mobile
+                  number registered with WhatsApp.</em></p>
+
+              <!-- CAPTCHA (Invisible v2) — hidden inside form -->
+              <!-- <div style="overflow: hidden; height: 0; width: 0; position: absolute;">
+                <ngx-invisible-recaptcha #captchaRef siteKey="6Lfq8bEsAAAAAJ67cgSZs-ilYx_C-Hw8E3MjNBrW"
+                  (success)="handleCaptchaSuccess($event)" (expired)="handleCaptchaExpire()"
+                  (error)="handleCaptchaError($event)" [(ngModel)]="captchaToken" name="captcha">
+                </ngx-invisible-recaptcha>
+              </div> -->
+
+              <button class="main-btn btn-hover w-100 mt-1" type="submit" [disabled]="isSendingOtp">
+                <ng-container *ngIf="!isSendingOtp; else loading">
+                  Send OTP <i class="fas fa-sign-in-alt ms-2"></i>
+                </ng-container>
+                <ng-template #loading>
+                  Sending... <i class="fas fa-spinner fa-spin ms-2"></i>
+                </ng-template>
+              </button>
+            </form>
+
+            <form *ngIf="step === 'otp'" (ngSubmit)="VerifyOTP()" class="otp-form">
+              <h2 class="registration-title text-center" style="font-size: 20px">
+                Enter Verification Code
+              </h2>
+              <p class="text-center" style="font-size: 13px; margin-top: 10px; color: grey">
+                We've sent a 6-digit verification code to
+
+                <span style="font-weight: bold; display: inline-block">
+                  {{ typeValue }}
+                  <i class="bi bi-pencil-square ms-1" style="cursor: pointer" (click)="openLoginModal()"></i>
+                </span>
+              </p>
+
+              <div class="form-group mt-4 d-flex justify-content-center otp-input-group gap-2">
+                <input *ngFor="let i of [0, 1, 2, 3, 4, 5]" class="form-control text-center otp-input"
+                  style="padding: 0 6px !important" type="tel" maxlength="1" [(ngModel)]="otp[i]" [name]="'otp-' + i"
+                  (keydown)="moveToNext($event, i)" (keypress)="allowOnlyNumbers($event)"
+                  (ngModelChange)="onChange($event, i)" (paste)="handlePaste($event)" required autocomplete="off" />
+              </div>
+
+              <!-- Error -->
+              <div *ngIf="otpInvalid && otpTouched" class="text-danger mt-2 text-center" style="font-size: 11px">
+                OTP is required and must be 6 digits.
+              </div>
+
+              <!-- Timer and Resend -->
+              <div class="text-center mt-3 timer-section" style="font-size: 11px">
+                <p class="resend-text mt-2" style="font-size: 11px; color: #3170de">
+                  Didn't receive the code?
+                  <a *ngIf="remainingTime === 0" (click)="resendOtp()" style="
+                      font-weight: 600;
+                      letter-spacing: 0.5px;
+                      text-decoration: none !important;
+                      color: rgb(165, 0, 0);
+                    " onmouseover="this.style.color='#a50000';" onmouseout="this.style.color='#a50000';">
+                    Resend
+                  </a>
+                  <span *ngIf="remainingTime > 0" style="color: grey !important">Resend in {{ remainingTime }}s</span>
+                </p>
+              </div>
+
+              <div class="form-group" style="margin-top: 10px" *ngIf="IS_NEW_MEMBER">
+                <label class="form-label">Name <span style="color: red">*</span></label>
+                <input name="userName" class="form-control h_50 form-control-sm small-placeholder"
+                  [(ngModel)]="userName" placeholder="Enter your name" required #nameField="ngModel"
+                  style="font-size: 14px !important" (keypress)="alphaOnly($event)" [ngClass]="{
+                    'is-invalid':
+                      nameField.invalid &&
+                      (nameField.touched || nameField.dirty)
+                  }" maxlength="128" />
+
+                <!-- Error message for name -->
+                <div *ngIf="nameField.touched && nameField.invalid" class="text-danger mt-1">
+                  <div *ngIf="nameField.errors?.['required']">
+                    Name is required.
+                  </div>
+                </div>
+              </div>
+              <div class="form-group" style="margin-top: 18px" *ngIf="IS_MULTIPLE_EMAIL == true">
+                <label class="form-label" style="font-size:12px !important">Mobile number linked to your account<span
+                    style="color: red">*</span></label>
+                <input name="mobile" class="form-control h_50 form-control-sm small-placeholder" [(ngModel)]="mobile"
+                  placeholder="Enter your mobile no" required #mobileField="ngModel" style="font-size: 14px !important"
+                  [maxlength]="10" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                  [pattern]="'^[6-9][0-9]{9}$'" [ngClass]="{
+                    'is-invalid':
+                      mobileField.invalid &&
+                      (mobileField.touched || mobileField.dirty)
+                  }" />
+
+                <!-- Error message for name -->
+                <div *ngIf="mobileField.touched && mobileField.invalid" class="text-danger mt-1">
+                  <div *ngIf="mobileField.errors?.['required']">
+                    Mobile no. is required.
+                  </div>
+                </div>
+              </div>
+              <p style="font-size: 12px !important;line-height: 15px;margin-top: 8px;margin-bottom: 0px;color: rgb(255 48 48);"
+                *ngIf="IS_MULTIPLE_EMAIL == true"><em>
+                  Multiple accounts found with this email. Please verify using your mobile number to
+                  continue.</em></p>
+              <button type="submit" class="main-btn btn-hover w-100 mt-4" [disabled]="isverifyOTP">
+                <ng-container *ngIf="!isverifyOTP; else verifying">
+                  Verify <i class="fas fa-check ms-2"></i>
+                </ng-container>
+                <ng-template #verifying>
+                  Verifying... <i class="fas fa-spinner fa-spin ms-2"></i>
+                </ng-template>
+              </button>
+            </form>
+
+            <form *ngIf="step === 'password'">
+              <h2 class="registration-title">Enter Password</h2>
+              <div class="form-group mt-5">
+                <label class="form-label">Password*</label>
+                <input name="password" class="form-control h_50" [(ngModel)]="password" required
+                  placeholder="Enter your password" type="password" #passwordField="ngModel" />
+                <div *ngIf="passwordField.touched && passwordField.invalid" class="text-danger mt-1">
+                  Password is required.
+                </div>
+              </div>
+              <button class="main-btn btn-hover w-100 mt-4" type="button" (click)="loginWithPassword()">
+                Login
+              </button>
+            </form>
+
+            <!-- <div *ngIf="step === 'enter'" class="divider">
+                <span>or</span>
+              </div> -->
+
+            <div *ngIf="step === 'enter'" class="social-btns-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="py-6 text-center text-secondary text-sm">
+        © {{ currentYear }}, Ticket Khidakee. All rights reserved.
+      </footer>
+    </div>
+  </div>
+</div>

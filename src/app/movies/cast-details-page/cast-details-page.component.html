@@ -1,0 +1,168 @@
+<div class="wrapper">
+  <div class="profile-container mx-auto">
+    <div class="profile-body">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="position-relative">
+              <img *ngIf="castdetails?.PROFILE_IMAGE" [src]="
+                  retriveimgUrl + 'castImages/' + castdetails?.PROFILE_IMAGE
+                " alt="Actor" class="profile-image" />
+            </div>
+          </div>
+          <div class="col-md-9">
+            <div>
+              <h2 class="title-main">{{ castdetails?.NAME }}</h2>
+              <div class="d-flex gap-2 align-items-center flex-wrap" style="margin-bottom: 10px">
+                <span class="badgee">
+                  {{ castdetails?.ROLES }}
+                </span>
+              </div>
+              <!-- <p class="subtitle-main">
+                {{ castdetails?.ROLES }}
+              </p> -->
+
+              <p style="color: #fff; margin-bottom: 0px !important">
+                Date of Birth :
+                <span class="info-label">
+                  {{ castdetails?.DOB | date : "longDate" }}</span>
+              </p>
+              <p style="color: #fff; margin-bottom: 0px !important">
+                Birthplace :
+                <span class="info-label"> {{ castdetails?.BIRTHPLACE }}</span>
+              </p>
+              <p style="color: #fff; margin-bottom: 0px !important">
+                Nickname :
+                <span class="info-label"> {{ castdetails?.NICKNAME }}</span>
+              </p>
+            </div>
+            <div class="text-start" style="margin-top: 20px">
+              <h6 style="color: #fff; font-weight: 600">Follow On</h6>
+              <div class="mt-2">
+                <a *ngIf="castdetails?.FACEBOOK_URL" [href]="castdetails.FACEBOOK_URL" target="_blank"
+                  class="social-icon">
+                  <i class="fab fa-facebook"></i>
+                </a>
+                <a *ngIf="castdetails?.INSTA_URL" [href]="castdetails.INSTA_URL" target="_blank" class="social-icon">
+                  <i class="fab fa-instagram"></i>
+                </a>
+                <a *ngIf="castdetails?.TWITTER_URL" [href]="castdetails.TWITTER_URL" target="_blank"
+                  class="social-icon">
+                  <i class="fab fa-twitter"></i>
+                </a>
+                <a *ngIf="castdetails?.YOUTUBE_URL" [href]="castdetails.YOUTUBE_URL" target="_blank"
+                  class="social-icon">
+                  <i class="fab fa-youtube"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12">
+          <section *ngIf="castdetails != undefined && castdetails.DESCRIPTION" class="py-5">
+            <div class="container">
+              <div class="section-title">
+                <span style="text-transform: uppercase; font-size: 16px">About</span>
+              </div>
+
+              <div *ngIf="castdetails != undefined" class="bio-container" [innerHTML]="castdetails?.DESCRIPTION"></div>
+            </div>
+          </section>
+          <!-- <hr style="margin: 0px" /> -->
+          <!-- Cast Section -->
+          <section class="py-5" *ngIf="
+              castdetails != undefined && castdetails.FAMILY_DETAILS?.length
+            ">
+            <div class="container">
+              <div class="section-title">
+                <span style="text-transform: uppercase; font-size: 16px">Family</span>
+              </div>
+              <div class="scroll-container mt-3">
+                <div style="cursor: pointer" *ngFor="let cast of castdetails.FAMILY_DETAILS"
+                  class="cast-item text-center me-3" (click)="goToCastProfile(cast)">
+                  <img [src]="
+                      cast.IMAGE
+                        ? retriveimgUrl + 'castImages/' + cast.IMAGE
+                        : 'assets/user.png'
+                    " alt="{{ cast.NAME }}" class="cast-img rounded-circle" />
+                  <h6 class="mt-2" style="margin-bottom: 0px; font-weight: bold">
+                    {{ cast.NAME }}
+                  </h6>
+                  <span class="relation-type">{{ cast.RELATION }}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Modal -->
+  <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content p-3 rounded-3">
+        <div class="modal-header border-0" style="padding: 0px; margin-bottom: 5px">
+          <h5 class="modal-title" id="shareModalLabel">Share</h5>
+          <button type="button" class="close-model-btn" data-bs-dismiss="modal" aria-label="Close">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ul class="list-unstyled mb-0">
+            <li class="py-2">
+              <a [href]="
+                  'https://www.facebook.com/sharer/sharer.php?u=' + currentUrl
+                " target="_blank" class="see-all-link text-decoration-none d-flex justify-content-between">
+                <span>Facebook</span>
+                <i class="fab fa-facebook text-primary"></i>
+              </a>
+            </li>
+            <li class="py-2">
+              <a [href]="'https://twitter.com/intent/tweet?url=' + currentUrl" target="_blank"
+                class="see-all-link text-decoration-none d-flex justify-content-between">
+                <span>X (Formerly Twitter)</span>
+                <i class="fab fa-x-twitter"></i>
+              </a>
+            </li>
+            <li class="py-2">
+              <a [href]="'https://api.whatsapp.com/send?text=' + currentUrl" target="_blank"
+                class="see-all-link text-decoration-none d-flex justify-content-between">
+                <span>WhatsApp</span>
+                <i class="fab fa-whatsapp text-success"></i>
+              </a>
+            </li>
+            <li class="py-2">
+              <a [href]="
+                  'https://www.linkedin.com/sharing/share-offsite/?url=' +
+                  currentUrl
+                " target="_blank" class="see-all-link text-decoration-none d-flex justify-content-between">
+                <span>LinkedIn</span>
+                <i class="fab fa-linkedin text-primary"></i>
+              </a>
+            </li>
+            <li class="py-2">
+              <a [href]="'mailto:?subject=Check this out&body=' + currentUrl" target="_blank"
+                class="see-all-link text-decoration-none d-flex justify-content-between">
+                <span>Email</span>
+                <i class="fas fa-envelope text-danger"></i>
+              </a>
+            </li>
+            <li class="py-2">
+              <a href="javascript:void(0)" (click)="copyToClipboard()"
+                class="see-all-link text-decoration-none d-flex justify-content-between">
+                <span>Copy Link</span>
+                <i class="fas fa-link"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

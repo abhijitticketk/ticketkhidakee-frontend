@@ -1,0 +1,18 @@
+# Allow all search engines to crawl main pages
+User-agent: *
+Disallow: /admin/
+Disallow: /login/
+Disallow: /signup/
+Disallow: /user-profile/
+Disallow: /checkout/
+Disallow: /api/
+Disallow: /*?*
+
+# Allow crawling for assets (CSS, JS, images)
+Allow: /assets/
+Allow: /images/
+Allow: /eventImages/
+
+# Sitemap location
+Sitemap: https://ticketkhidakee.com/sitemap.xml
+Host: https://ticketkhidakee.com

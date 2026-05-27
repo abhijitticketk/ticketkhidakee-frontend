@@ -1,0 +1,363 @@
+<!-- <body class="d-flex flex-column h-100">
+
+  <div class="wrapper">
+    <div class="event-dt-block p-80">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="tab-content pt-0 p-2 mt-5 mt-lg-0">
+              <div
+                class="tab-pane fade show active"
+                id="sellers"
+                role="tabpanel"
+              >
+                <div class="privacy-main-title">
+                  <h4>Report Bug</h4>
+                </div>
+                <div class="privacy-content">
+                  <p>
+                    Help us improve Ticket Khidakee by reporting any bugs you
+                    encounter. Please use the contact information below.
+                  </p>
+                  <h5>Contact Information:</h5>
+                  <ul>
+                    <li>
+                      <strong>Email:</strong>
+                      <a href="mailto:contact@ticketkhidakee.com"
+                        >contact@ticketkhidakee.com</a
+                      >
+                    </li>
+                    <li>
+                      <strong>Website:</strong>
+                      <a href="https://ticketkhidakee.com" target="_blank"
+                        >ticketkhidakee.com</a
+                      >
+                    </li>
+                  </ul>
+                  <h5>Wide Wings (Address):</h5>
+                  <p>
+                    Shriniketan Apartments, First Floor, Sheelavihar Colony,
+                    Erandwane, Pune - 411038, Maharashtra, India.
+                  </p>
+                  <h5>
+                    Globillete Entertainment Solutions Pvt. Ltd. (Address):
+                  </h5>
+                  <p>
+                    Plot No. 57, Flat No. 6, United Western Society, Karvenagar,
+                    Pune - 411052, Maharashtra, India.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body> -->
+
+<!-- <div class="container">
+  <h1 class="title">Report Bug</h1>
+  <p class="subtitle">
+    Help us improve <span class="highlight">Ticket Khidakee</span> by reporting
+    any bugs you encounter. Please use the contact information below.
+  </p>
+
+  <div class="contact-info">
+    <div>
+      <p>
+        <strong>Email:</strong>
+        <span class="link">contact&#64;ticketkhidakee.com</span>
+      </p>
+      <p>
+        <strong>Website:</strong> <span class="link">ticketkhidakee.com</span>
+      </p>
+      <p>
+        <strong>Wide Wings</strong><br />
+        900/Radha Apartments, First Floor,<br />
+        Shivajinagar Colony, Bhamburda, Pune - 411038,<br />
+        Maharashtra, India
+      </p>
+    </div>
+    <div>
+      <p>
+        <strong>Globillite Entertainment Solutions Pvt. Ltd.</strong><br />
+        Plot No. 47, Flat No. 6, United Western Society,<br />
+        Karvenagar, Pune - 411052,<br />
+        Maharashtra, India
+      </p>
+    </div>
+  </div>
+
+  <form class="bug-form">
+    <h2 class="form-title">Report Bug Form</h2>
+    <div class="form-row">
+      <input type="text" placeholder="Name *" required />
+      <input type="email" placeholder="Email *" required />
+    </div>
+    <div class="form-row">
+      <input type="text" placeholder="Phone" />
+      <input type="text" placeholder="Company/Website, Mob. No. *" required />
+    </div>
+    <div class="form-row">
+      <textarea rows="3" placeholder="Steps to Reproduce *" required></textarea>
+      <textarea rows="3" placeholder="Description *" required></textarea>
+    </div>
+    <div class="form-row">
+      <label class="file-upload">
+        <input type="file" />
+        <span class="choose-btn">📁 Choose a file</span>
+      </label>
+    </div>
+    <button type="submit" class="submit-btn">Submit Bug Report</button>
+  </form>
+</div> -->
+<div class="parent">
+  <div class="container bg-white">
+    <h2 class="title">Report a Bug</h2>
+    <div class="subtitle">
+      Help us improve <span class="highlight">Ticket Khidakee</span> by
+      reporting any bugs you encounter. Please use the contact information
+      below.
+    </div>
+
+    <div class="contact-section">
+      <div class="top-row contact-info d-flex flex-wrap align-items-left gap-2">
+        <div class="info-item" (click)="openEmail()" style="cursor: pointer">
+          <i class="bi bi-envelope-fill" style="color: #af0404"></i>
+          <span style="color: #af0404">contact&#64;ticketkhidakee.com</span>
+        </div>
+
+        <div class="info-item" (click)="openWebsite()" style="cursor: pointer">
+          <i class="bi bi-globe" style="color: #af0404"></i>
+          <span style="color: #af0404">ticketkhidakee.com</span>
+        </div>
+      </div>
+
+      <div class="bottom-row">
+        <!-- <div class="left" (click)="openWideWingsLocation()" style="cursor: pointer">
+          <p>
+            <i class="bi bi-geo-alt-fill" style="color: #af0404"></i>&nbsp;
+            <strong style="color: #af0404">Wide Wings</strong><br />
+            Shriniketan Apartments, First Floor, Sheelavihar Colony, Erandwane,
+            <br />
+            Pune - 411038, Maharashtra, India.
+          </p>
+        </div> -->
+
+        <!-- <div class="left" (click)="openGlobilleteLocation()" style="cursor: pointer">
+          <p>
+            <i class="bi bi-geo-alt-fill" style="color: #af0404"></i>&nbsp;
+            <strong style="color: #af0404">Globillete Entertainment Solutions Pvt. Ltd.</strong><br />
+            Plot No. 57, Flat No. 6, United Western Society, Karvenagar, <br />
+            Pune - 411052, Maharashtra, India.
+          </p>
+        </div> -->
+      </div>
+    </div>
+
+    <div class="form-container">
+      <h3 class="form-title">Found a Problem? Let Us Know</h3>
+      <!-- <form (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <input type="text" placeholder="Name *" required />
+        <input type="email" placeholder="Email *" required />
+      </div>
+      <div class="form-row">
+        <input type="text" placeholder="Phone" />
+        <input type="text" placeholder="Company/Website, Mob. No. *" required />
+      </div>
+      <div class="form-row">
+        <textarea placeholder="Steps to Reproduce *" required></textarea>
+        <textarea placeholder="Description *" required></textarea>
+      </div>
+      <div class="form-row file-row">
+        <label class="file-upload">
+          <input type="file" />
+          <span>Choose a file</span>
+        </label>
+      </div>
+      <button class="submit-btn" type="submit">Submit</button>
+    </form> -->
+
+      <form #bugForm="ngForm" (ngSubmit)="onSubmit(bugForm)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" [(ngModel)]="formData.NAME" [disabled]="!!userdata?.NAME"
+              class="form-control" maxlength="158" placeholder="Enter Name" />
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input class="form-control input-sm" type="email" name="EMAIL_ID" [disabled]="!!userdata?.EMAIL_ID"
+              [(ngModel)]="formData.EMAIL_ID" placeholder="Enter Email ID" maxlength="64" #EMAIL_ID="ngModel" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="phone">Phone <span class="required">*</span></label>
+            <input class="form-control input-sm" type="tel" name="CONTACT_NO" [disabled]="!!userdata?.MOBILE_NO"
+              [(ngModel)]="formData.PHONE" required pattern="^[0-9]{10}$" placeholder="Enter your Phone No."
+              (keypress)="commonfunction.omit($event)" maxlength="10" minlength="10" #CONTACT_NO="ngModel" />
+            <small class="text-danger text-sm-danger" *ngIf="CONTACT_NO.invalid && CONTACT_NO.touched">
+              <span *ngIf="CONTACT_NO.errors?.['required']">Phone number is required.</span>
+              <span *ngIf="CONTACT_NO.errors?.['pattern']">Enter a valid 10-digit Indian Phone number.</span>
+            </small>
+          </div>
+          <div class="form-group">
+            <label for="company">Environment(Windows, macOS, iOS, Android)<span class="required">*</span></label>
+            <input type="text" id="company" name="company" [(ngModel)]="formData.ENVIRONMENT" class="form-control"
+              required maxlength="128" placeholder="Enter Environment Details" #ENVIRONMENT="ngModel" />
+            <small class="text-danger text-sm-danger" *ngIf="ENVIRONMENT.invalid && ENVIRONMENT.touched">
+              <span *ngIf="ENVIRONMENT.errors?.['required']">Please fill the Environment(Windows, macOS, iOS, Android)
+                details.</span>
+            </small>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="steps">Steps to Reproduce <span class="required">*</span></label>
+            <!-- <textarea
+            id="steps"
+            name="steps"
+            [(ngModel)]="formData.STEPS"
+            class="form-control"
+            required
+            maxlength="558"
+          ></textarea> -->
+
+            <textarea class="form-textarea input-sm" name="MESSAGE" [(ngModel)]="formData.STEPS" required
+              maxlength="1024" placeholder="Enter Steps to Reproduce" #MESSAGE="ngModel"></textarea>
+            <small class="text-danger text-sm-danger" *ngIf="MESSAGE.invalid && MESSAGE.touched">Please Enter Steps to
+              Reproduce</small>
+          </div>
+          <div class="form-group">
+            <label for="description">Description <span class="required">*</span></label>
+            <!-- <textarea
+            id="description"
+            name="description"
+            [(ngModel)]="formData.DESCRIPTION"
+            class="form-control"
+            required
+            maxlength="558"
+          ></textarea> -->
+
+            <textarea class="form-textarea input-sm" name="DESCRIPTION" [(ngModel)]="formData.DESCRIPTION" required
+              maxlength="1024" placeholder="Enter Description" #DESCRIPTION="ngModel"></textarea>
+            <small class="text-danger text-sm-danger" *ngIf="DESCRIPTION.invalid && DESCRIPTION.touched">Please Enter
+              Description.</small>
+          </div>
+        </div>
+        <div class="form-row file-row">
+          <!-- <label
+          class="file-upload"
+          *ngIf="
+            formData.DOCUMENT == ' ' ||
+            formData.DOCUMENT == null ||
+            formData.DOCUMENT == ''
+          "
+        >
+          <input
+            #image1
+            name="image1"
+            type="file"
+            accept=".png, .jpg, .jpeg, .pdf"
+            (change)="onFileSelected($event)"
+            style="display: none"
+          />
+
+          <span>
+            <i class="bi bi-upload" style="margin-right: 6px"></i>
+            Choose a file</span
+          >
+        </label> -->
+
+          <div>
+            <label for="image1" class="upload-label">
+              Attachment
+              <i class="bi bi-info-circle info-icon" tabindex="0" (click)="toggleTooltip()"
+                (mouseover)="showTooltip = true" (mouseleave)="showTooltip = false"></i>
+              <div class="tooltip-note" *ngIf="showTooltip" role="tooltip">
+                Upload an attachment (JPG, PNG, or PDF only). File size must not
+                exceed 1MB. This helps us understand and resolve the issue
+                clearly.
+              </div>
+            </label>
+
+            <label class="file-upload" *ngIf="
+                formData.DOCUMENT == ' ' ||
+                formData.DOCUMENT == null ||
+                formData.DOCUMENT == ''
+              ">
+              <input #image1 name="image1" type="file" accept=".png, .jpg, .jpeg, .pdf"
+                (change)="onFileSelected($event)" style="display: none" />
+
+              <span>
+                <i class="bi bi-upload" style="margin-right: 6px"></i>
+                Choose a file
+              </span>
+            </label>
+            <div *ngIf="
+                formData.DOCUMENT != null &&
+                formData.DOCUMENT != undefined &&
+                formData.DOCUMENT != ' ' &&
+                formData.DOCUMENT != ''
+              ">
+              <span class="view-link" style="color: #af0404; margin-right: 9px" (click)="viewImage(formData.DOCUMENT)">
+                {{ formData.DOCUMENT }}
+              </span>
+
+              <span style="color: #af0404; margin-right: 9px; cursor: pointer" (click)="viewImage(formData.DOCUMENT)"
+                data-bs-toggle="tooltip" data-bs-placement="top" class="view-link"
+                title="Click Here To View Uploaded Image">
+                <i class="bi bi-eye"></i>
+              </span>
+
+              <span style="cursor: pointer" (click)="ondelete()" title="Delete">
+                <i class="bi bi-trash-fill text-danger"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+        <button class="submit-btn" type="submit" [disabled]="isSubmitting">
+          <span *ngIf="!isSubmitting">Submit</span>
+          <span *ngIf="isSubmitting" class="spinner">
+            <span class="spinner-icon"></span>
+            Submit
+          </span>
+        </button>
+      </form>
+    </div>
+  </div>
+  <!-- Delete Confirmation Modal -->
+  <div class="custom-modal-backdrop" *ngIf="showConfirmModal">
+    <div class="custom-modal">
+      <h3 style="font-size: 16px">Confirm Delete</h3>
+      <p style="font-size: 13px">
+        Are you sure you want to delete this document?
+      </p>
+      <div class="modal-actions">
+        <button (click)="confirmDelete()">Yes</button>
+        <button (click)="onDeleteCancelled()">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Modal -->
+  <div class="custom-modal-backdrop" *ngIf="ImageModalVisible">
+    <div class="custom-modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">View Document</h3>
+        <button class="close-button" (click)="ImageModalCancel()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <div *ngIf="isSpinning" class="spinner">Loading...</div>
+
+        <div *ngIf="!isSpinning && imageshow" class="iframe-container">
+          <iframe [src]="imageshow" frameborder="0" width="100%" height="100%"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

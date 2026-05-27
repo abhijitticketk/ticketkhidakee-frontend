@@ -1,0 +1,107 @@
+.like-icon {
+    font-size: 20px;
+    position: absolute;
+    z-index: 101;
+    right: 20px;
+    top: 20px;
+    cursor: pointer;
+    background-color: #ff1b31db; /* Red background */
+    display: block;
+    height: 45px;
+    width: 45px;
+    line-height: 46px;
+    border-radius: 30px;
+    transition: all 0.4s;
+    text-align: center;
+}
+
+.like-icon i {
+    font-size: 20px; /* Adjust font size as needed */
+    color: #fff; /* Default icon color (white) */
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; /* Smooth transition for both opacity and scale */
+}
+
+.like-icon:hover,
+.like-icon.liked {
+    background-color: #ff1b31db; /* Keep the background red when liked or on hover */
+    color: #fff; /* Ensure the icon stays white when liked */
+}
+
+.like-icon.liked i {
+    opacity: 1; /* Fully visible when liked */
+    transform: scale(1.1); /* Slightly increase the size when liked for emphasis */
+}
+
+.like-icon i {
+    opacity: 1; /* Make sure the icon is visible initially */
+    transform: scale(1); /* Default size */
+}
+
+.like-icon.liked i.fa-heart {
+    color: #fff; /* White icon when liked */
+}
+
+.like-icon i.fa-regular.fa-heart {
+    color: #fff; /* White outline heart icon when unliked */
+}
+
+
+.liked-heart {
+    color: #fff !important; /* force white icon on like */
+  }
+
+  .unliked-heart {
+    color: #fff !important; /* white outline for unliked too */
+  }
+
+
+  .main-card {
+    height: 100%;               /* Let flex-column decide height distribution */
+    max-height: 420px;          /* Set your desired fixed height */
+    min-height: 380px; 
+
+  }
+
+
+
+
+  
+
+/* HTML: <div class="loader"></div> */
+.loader {
+    width: 50px;
+    --b: 8px; 
+    aspect-ratio: 1;
+    border-radius: 50%;
+    padding: 1px;
+    background: conic-gradient(#0000 10%,#f03355) content-box;
+    -webkit-mask:
+      repeating-conic-gradient(#0000 0deg,#000 1deg 20deg,#0000 21deg 36deg),
+      radial-gradient(farthest-side,#0000 calc(100% - var(--b) - 1px),#000 calc(100% - var(--b)));
+    -webkit-mask-composite: destination-in;
+            mask-composite: intersect;
+    animation:l4 1s infinite steps(10);
+  }
+  @keyframes l4 {to{transform: rotate(1turn)}}
+
+
+
+  
+  .no-data-container {
+    text-align: center;
+    padding: 40px 0;
+
+    .no-data-img {
+      width: 250px;
+      max-width: 100%;
+      margin-bottom: 15px;
+      opacity: 0.7;
+    }
+
+    p {
+      font-size: 16px;
+      color: #777;
+    }
+  }
+
+  

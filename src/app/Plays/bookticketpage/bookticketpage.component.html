@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Tickets - Broadway Palace Theater</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script> -->
+    <!-- <script>tailwind.config={theme:{extend:{colors:{primary:'#D10000',secondary:'#333333'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script> -->
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com"> -->
+    <!-- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet"> -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+    />
+    <style>
+      :where([class^="ri-"])::before {
+        content: "\f3c2";
+      }
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+      .custom-checkbox {
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        cursor: pointer;
+        position: relative;
+      }
+      .custom-checkbox:checked {
+        background-color: #d10000;
+        border-color: #d10000;
+      }
+      .custom-checkbox:checked::after {
+        content: "";
+        position: absolute;
+        left: 6px;
+        top: 2px;
+        width: 6px;
+        height: 12px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+      .date-selector::-webkit-calendar-picker-indicator {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23D10000' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z'/%3E%3C/svg%3E");
+        cursor: pointer;
+      }
+
+      .show-banner {
+        position: relative;
+        height: 400px;
+        background: linear-gradient(45deg, var(--primary) 0%, #ff4d6d 100%);
+        margin-bottom: 3rem;
+        overflow: hidden;
+      }
+      /* .banner-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("https://readdy.ai/api/search-image?query=theater%20stage%20with%20red%20curtains%2C%20dramatic%20lighting%2C%20empty%20seats%20in%20a%20grand%20theater%2C%20cinematic%20atmosphere%2C%20professional%20photography&width=1920&height=1080&seq=1&orientation=landscape")
+          center/cover;
+        opacity: 0.6;
+      } */
+       .banner-overlay {
+  background-image: url("https://readdy.ai/api/search-image?query=theater%20stage%20with%20red%20curtains%2C%20dramatic%20lighting%2C%20empty%20seats%20in%20a%20grand%20theater%2C%20cinematic%20atmosphere%2C%20professional%20photography&width=1920&height=1080&seq=1&orientation=landscape");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.85; /* Increased from 0.6 */
+}
+
+      .banner-content {
+        position: relative;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        padding-top: 2rem;
+      }
+      .show-info {
+        color: var(--white);
+        max-width: 800px;
+      }
+      .show-tag {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50px;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+      .banner-title {
+        font-family: "Playfair Display", serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      }
+      .show-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+      }
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.1rem;
+      }
+      .meta-item i {
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+  <!-- <body class="bg-gray-50 min-h-screen"> -->
+    <!-- Main Content -->
+   <div class="wrapper">
+       <div class="show-banner relative h-[500px] mb-5 bg-gradient-to-br from-primary to-[#ff4d6d] overflow-hidden">
+  <div class="banner-overlay absolute inset-0 bg-cover bg-center opacity-60"></div>
+  <div class="container banner-content relative h-full flex items-center justify-center px-4">
+    <div class="flex flex-col md:flex-row items-center gap-6 w-full max-w-6xl">
+      <!-- Poster Image -->
+      <div class="w-full md:w-1/4 flex justify-center">
+        <img
+          src="https://readdy.ai/api/search-image?query=theater%20show%20poster%20for%20The%20Phantoms%20Encore%2C%20dramatic%20lighting%2C%20red%20curtains%2C%20elegant%20design%2C%20professional%20theater%20production%20poster&width=300&height=400&seq=123&orientation=portrait"
+          alt="The Phantom's Encore"
+          class="rounded-lg shadow-lg w-72 object-cover object-top"
+        />
+      </div>
+
+      <!-- Show Details -->
+      <div class="w-full md:w-3/4 text-white">
+        <h1 class="text-4xl md:text-5xl font-bold mb-3 drop-shadow-lg">The Phantom's Encore</h1>
+        
+        <div class="flex items-center mb-4">
+          <div class="text-yellow-400 text-lg flex space-x-1">
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-fill"></i>
+            <i class="ri-star-half-fill"></i>
+          </div>
+          <span class="ml-3 text-gray-200">(392 reviews)</span>
+        </div>
+
+        <div class="flex flex-wrap gap-4 text-sm md:text-base mb-4 text-gray-200">
+          <div class="flex items-center">
+            <i class="ri-map-pin-line mr-2 text-xl text-white"></i> Broadway Palace Theater
+          </div>
+          <div class="flex items-center">
+            <i class="ri-time-line mr-2 text-xl text-white"></i> 2h 30min (with intermission)
+          </div>
+          <div class="flex items-center">
+            <i class="ri-calendar-line mr-2 text-xl text-white"></i> May 21 - Jun 30, 2025
+          </div>
+        </div>
+
+        <p class="text-white text-base md:text-lg leading-relaxed">
+          Experience the magic of this iconic musical reimagined for a modern audience. <strong>The Phantom's Encore</strong> brings all the drama, romance, and unforgettable melodies that have captivated audiences worldwide for decades.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <main class="container py-10">
+      
+      <div class="max-w-5xl mx-auto">
+      
+
+        <!-- Booking Steps -->
+        <!-- <div class="mb-8">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold">Book Your Tickets</h2>
+            <div class="flex items-center text-sm text-gray-600">
+              <span
+                class="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center"
+                >1</span
+              >
+              <span class="mx-2">Select Tickets</span>
+              <span class="border-t-2 w-8 border-gray-300"></span>
+              <span
+                class="bg-gray-200 text-gray-600 w-6 h-6 rounded-full flex items-center justify-center mx-2"
+                >2</span
+              >
+              <span class="mx-2">Review</span>
+              <span class="border-t-2 w-8 border-gray-300"></span>
+              <span
+                class="bg-gray-200 text-gray-600 w-6 h-6 rounded-full flex items-center justify-center mx-2"
+                >3</span
+              >
+              <span class="mx-2">Payment</span>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- Ticket Type Selection -->
+        <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div
+            class="bg-white rounded shadow-md p-6 border border-gray-200 hover:border-primary transition-all"
+          >
+            <div class="flex items-start mb-4">
+              <div
+                class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full mr-4"
+              >
+                <i class="ri-reserved-line text-primary ri-xl"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold">Chartered Seats</h3>
+                <p class="text-gray-600">
+                  Reserved seating with premium benefits
+                </p>
+              </div>
+            </div>
+
+            <ul class="mb-6 space-y-2">
+              <li class="flex items-start">
+                <div
+                  class="w-5 h-5 flex items-center justify-center mr-2 mt-0.5"
+                >
+                  <i class="ri-check-line text-primary"></i>
+                </div>
+                <span>Guaranteed specific seat location</span>
+              </li>
+              <li class="flex items-start">
+                <div
+                  class="w-5 h-5 flex items-center justify-center mr-2 mt-0.5"
+                >
+                  <i class="ri-check-line text-primary"></i>
+                </div>
+                <span>Priority entry 30 minutes before showtime</span>
+              </li>
+              <li class="flex items-start">
+                <div
+                  class="w-5 h-5 flex items-center justify-center mr-2 mt-0.5"
+                >
+                  <i class="ri-check-line text-primary"></i>
+                </div>
+                <span>Complimentary program</span>
+              </li>
+              <li class="flex items-start">
+                <div
+                  class="w-5 h-5 flex items-center justify-center mr-2 mt-0.5"
+                >
+                  <i class="ri-check-line text-primary"></i>
+                </div>
+                <span>Access to exclusive lounge area</span>
+              </li>
+            </ul>
+
+            <div class="flex justify-between items-center mb-4">
+              <div>
+                <span class="text-2xl font-bold">₹89.99</span>
+                <span class="text-gray-600 text-sm">per ticket</span>
+              </div>
+              <span
+                class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded"
+                >Best Value</span
+              >
+            </div>
+
+            <button
+              class="w-full bg-primary text-white py-3 font-medium !rounded-button hover:bg-primary/90 transition-colors whitespace-nowrap"
+            >
+              Select Chartered
+            </button>
+          </div>
+
+          <div
+            class="bg-white rounded shadow-md p-6 border border-gray-200 hover:border-primary transition-all"
+          >
+            <div class="flex items-start mb-4">
+              <div
+                class="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-full mr-4"
+              >
+                <i class="ri-ticket-line text-gray-600 ri-xl"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold">Unchartered Seats</h3>
+                <p class="text-gray-600">General admission seating</p>
+              </div>
+            </div>
+
+            <ul class="mb-6 space-y-2">
+              <li class="flex items-start">
+                <div
+                  class="w-5 h-5 flex items-center justify-center mr-2 mt-0.5"
+                >
+                  <i class="ri-check-line text-gray-600"></i>
+                </div>
+                <span>First-come, first-served seating</span>
+              </li>
+              <li class="flex items-start">
+                <div
+                  class="w-5 h-5 flex items-center justify-center mr-2 mt-0.5"
+                >
+                  <i class="ri-check-line text-gray-600"></i>
+                </div>
+                <span>Standard entry 15 minutes before showtime</span>
+              </li>
+              <li class="flex items-start">
+                <div
+                  class="w-5 h-5 flex items-center justify-center mr-2 mt-0.5"
+                >
+                  <i class="ri-check-line text-gray-600"></i>
+                </div>
+                <span>Digital program available</span>
+              </li>
+              <li class="flex items-start opacity-50">
+                <div
+                  class="w-5 h-5 flex items-center justify-center mr-2 mt-0.5"
+                >
+                  <i class="ri-close-line text-gray-600"></i>
+                </div>
+                <span class="line-through"
+                  >Access to exclusive lounge area</span
+                >
+              </li>
+            </ul>
+
+            <div class="flex justify-between items-center mb-4">
+              <div>
+                <span class="text-2xl font-bold">₹59.99</span>
+                <span class="text-gray-600 text-sm">per ticket</span>
+              </div>
+              <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded"
+                >Budget Friendly</span
+              >
+            </div>
+
+            <button
+              class="w-full bg-white text-primary border border-primary py-3 font-medium !rounded-button hover:bg-gray-50 transition-colors whitespace-nowrap"
+            >
+              Select Unchartered
+            </button>
+          </div>
+        </div> -->
+
+        <!-- Booking Details -->
+        <div class="bg-white rounded shadow-md p-6 border border-gray-200 mb-8">
+          <h3 class="text-xl font-bold mb-6">Booking Details</h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- Date Selection -->
+            <div>
+              <label class="block text-gray-700 font-medium mb-2"
+                >Select Date</label
+              >
+              <input
+                type="date"
+                class="date-selector w-full border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                [min]="'2025-05-21'"
+                [max]="'2025-06-30'"
+                [(ngModel)]="selectedDate"
+                name="selectedDate"
+              />
+            </div>
+
+            <!-- Time Selection -->
+            <!-- <div>
+              <label class="block text-gray-700 font-medium mb-2"
+                >Select Time</label
+              >
+              <div class="relative">
+                <select
+                  class="w-full appearance-none border border-gray-300 rounded py-3 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white"
+                  [(ngModel)]="selectedTime"
+                  name="selectedTime"
+                >
+                  <option *ngFor="let slot of timeSlots" [value]="slot.value">
+                    {{ slot.label }}
+                  </option>
+                </select>
+                <div
+                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+                >
+                  <div class="w-5 h-5 flex items-center justify-center">
+                    <i class="ri-arrow-down-s-line"></i>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+        
+            <div>
+  <label class="block text-gray-700 font-medium mb-2">Select Time</label>
+  <input
+    type="time"
+    class="w-full border border-gray-300 rounded py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white text-gray-700"
+    [(ngModel)]="selectedTime"
+    name="selectedTime"
+  />
+</div>
+
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <!-- Number of Tickets -->
+            <div>
+              <label class="block text-gray-700 font-medium mb-2"
+                >Number of Tickets</label
+              >
+              <div class="flex">
+                <button
+                  (click)="decrementTicket()"
+                  class="bg-gray-200 text-gray-600 px-4 py-3 rounded-l-md hover:bg-gray-300 focus:outline-none"
+                >
+                  -
+                </button>
+                <input
+                  [value]="ticketCount"
+                  type="number"
+                  min="1"
+                  max="10"
+                  value="2"
+                  class="w-full border-y border-gray-300 py-3 px-4 text-center focus:outline-none border-none"
+                  readonly
+                />
+                <button
+                  (click)="incrementTicket()"
+                  class="bg-gray-200 text-gray-600 px-4 py-3 rounded-r-md hover:bg-gray-300 focus:outline-none"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <!-- Seat Section (for Chartered) -->
+            <div>
+              <label class="block text-gray-700 font-medium mb-2"
+                >Seat Section</label
+              >
+              <div class="relative">
+                <select
+                  [(ngModel)]="seatSection"
+                  name="seatSection"
+                  class="w-full appearance-none border border-gray-300 rounded py-3 px-4 pr-8 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white"
+                >
+                  <option
+                    *ngFor="let section of seatSections"
+                    [value]="section"
+                  >
+                    {{ section | titlecase }}
+                  </option>
+                </select>
+                <div
+                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+                >
+                  <div class="w-5 h-5 flex items-center justify-center">
+                    <i class="ri-arrow-down-s-line"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Seat Availability -->
+            <div>
+              <label class="block text-gray-700 font-medium mb-2"
+                >Seat Availability</label
+              >
+              <div
+                class="border border-gray-300 rounded py-3 px-4 bg-green-50 text-green-800 flex items-center"
+              >
+                <div class="w-5 h-5 flex items-center justify-center mr-2">
+                  <i class="ri-check-line"></i>
+                </div>
+                <span>78 seats available</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Options -->
+          <div class="mb-6">
+            <h4 class="font-medium mb-3">Additional Options</h4>
+            <div class="space-y-3">
+              <div class="flex items-center">
+                <input
+                  type="checkbox"
+                  id="programOption"
+                  class="custom-checkbox mr-3"
+                />
+                <label for="programOption" class="flex-1">
+                  <span class="font-medium">Digital Program</span>
+                  <span class="text-gray-600 block text-sm"
+                    >Receive a digital copy of the show program</span
+                  >
+                </label>
+                <span class="text-gray-700">₹4.99</span>
+              </div>
+              <div class="flex items-center">
+                <input
+                  type="checkbox"
+                  id="parkingOption"
+                  class="custom-checkbox mr-3"
+                />
+                <label for="parkingOption" class="flex-1">
+                  <span class="font-medium">Parking Pass</span>
+                  <span class="text-gray-600 block text-sm"
+                    >Reserved parking at the theater garage</span
+                  >
+                </label>
+                <span class="text-gray-700">₹15.00</span>
+              </div>
+              <div class="flex items-center">
+                <input
+                  type="checkbox"
+                  id="donationOption"
+                  class="custom-checkbox mr-3"
+                />
+                <label for="donationOption" class="flex-1">
+                  <span class="font-medium">Donation</span>
+                  <span class="text-gray-600 block text-sm"
+                    >Support the Broadway Palace Theater Foundation</span
+                  >
+                </label>
+                <span class="text-gray-700">₹5.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seat Map Preview -->
+          <!-- <div class="mb-6">
+            <div class="flex justify-between items-center mb-3">
+              <h4 class="font-medium">Seat Map Preview</h4>
+              <button class="text-primary hover:underline flex items-center">
+                <span>View Full Map</span>
+                <div class="w-5 h-5 flex items-center justify-center ml-1">
+                  <i class="ri-external-link-line"></i>
+                </div>
+              </button>
+            </div>
+            <div class="bg-gray-100 rounded p-4 flex justify-center">
+              <img
+                src="https://readdy.ai/api/search-image?query=theater%20seating%20chart%20layout%2C%20simple%20diagram%20showing%20orchestra%2C%20mezzanine%20and%20balcony%20sections%2C%20clean%20design%20with%20labeled%20sections%2C%20professional%20theater%20seating%20map&width=600&height=300&seq=456&orientation=landscape"
+                alt="Seat Map"
+                class="max-w-full h-auto object-cover object-top"
+              />
+            </div>
+          </div> -->
+        </div>
+
+        <!-- Price Summary -->
+        <div class="bg-white rounded shadow-md p-6 border border-gray-200 mb-8">
+          <h3 class="text-xl font-bold mb-6">Price Summary</h3>
+
+          <div class="space-y-3 mb-6">
+            <div
+              *ngFor="let item of priceSummaryItems"
+              class="flex justify-between"
+            >
+              <span class="text-gray-600">{{ item.label }}</span>
+              <span>{{ item.amount | currency }}</span>
+            </div>
+          </div>
+
+          <div class="border-t border-gray-200 pt-4 mb-6">
+            <div class="flex justify-between font-bold text-lg">
+              <span>Total</span>
+              <span>{{ getTotal() | currency }}</span>
+            </div>
+          </div>
+
+          <div class="bg-gray-100 p-4 rounded text-sm text-gray-600 mb-6">
+            <div class="flex items-start">
+              <div class="w-5 h-5 flex items-center justify-center mr-2 mt-0.5">
+                <i class="ri-information-line"></i>
+              </div>
+              <p>
+                All sales are final. No refunds or exchanges except in case of
+                event cancellation. A 15% rescheduling fee applies for date
+                changes requested at least 48 hours before the show.
+              </p>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-4">
+            <button
+              class="flex-1 bg-primary text-white py-3 font-medium !rounded-button hover:bg-primary/90 transition-colors whitespace-nowrap"
+            >
+              Continue to Payment
+            </button>
+            <button
+            [routerLink]="'/menu/venues-details'"   class="flex-1 bg-white text-gray-700 border border-gray-300 py-3 font-medium !rounded-button hover:bg-gray-50 transition-colors whitespace-nowrap"
+            >
+              Back to Theater Details
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    </div>
+
+    <!-- <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Number of tickets counter
+        const minusBtn = document.querySelector("button:first-of-type");
+        const plusBtn = document.querySelector("button:last-of-type");
+        const ticketInput = document.querySelector('input[type="number"]');
+
+        minusBtn.addEventListener("click", function () {
+          if (parseInt(ticketInput.value) > 1) {
+            ticketInput.value = parseInt(ticketInput.value) - 1;
+          }
+        });
+
+        plusBtn.addEventListener("click", function () {
+          if (parseInt(ticketInput.value) < 10) {
+            ticketInput.value = parseInt(ticketInput.value) + 1;
+          }
+        });
+      });
+    </script> -->
+  <!-- </body> -->
+</html>

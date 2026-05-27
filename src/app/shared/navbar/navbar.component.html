@@ -1,0 +1,1164 @@
+<header class="header">
+  <div class="header-inner">
+    <nav class="navbar navbar-expand-lg bg-barren barren-head navbar fixed-top justify-content-sm-start pt-0 pb-0">
+      <div class="container">
+        <!-- <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+          aria-controls="offcanvasNavbar" style="
+            padding: 0px !important;
+            font-size: 26px;
+            border: none !important;
+            margin: 0px 8px;
+          ">
+
+          <span style="padding: auto !important">
+            <i class="fa-solid fa-bars"></i>
+          </span>
+        </button> -->
+
+        <a class="navbar-brand order-1 order-lg-0 ml-lg-0 ml-2 me-auto" (click)="selectCategory('')"
+          [routerLink]="'/home'">
+          <div class="res-main-logo" *ngIf="isMobile" style="display: ruby !important">
+            <img style="height: 54px; margin-top: 4px" src="assets/images/icons/logo-1.png" alt="" />
+            <a *ngIf="isMobile && taglabel" class="nav-link" role="button" style="
+                background: #e9e9e9;
+                padding: 3px 8px;
+                border-radius: 4px;
+                font-size: 9px;
+                color: #a50000 !important;
+              ">
+              <span>
+                {{ taglabel }}
+              </span>
+            </a>
+          </div>
+
+          <div class="main-logo" id="logo" style="margin-right: 5px">
+            <img style="height: 54px; margin-top: 4px" class="" src="assets/images/icons/new--logo3.png" alt="" />
+
+            <img class="logo-inverse" src="assets/images/icons/logo-1.png" alt="" />
+          </div>
+        </a>
+        <a *ngIf="!isMobile && taglabel" class="nav-link" role="button" style="
+            background: #e9e9e9;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #a50000 !important;
+          ">
+          <span>
+            {{ taglabel }}
+          </span>
+        </a>
+
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar"
+          aria-labelledby="offcanvasNavbarLabel">
+          <div class="offcanvas-header">
+            <div class="offcanvas-logo" id="offcanvasNavbarLabel">
+              <img src="assets/images/icons/logo-1.png" alt="" />
+            </div>
+            <button type="button" class="close-btn" data-bs-dismiss="offcanvas" aria-label="Close">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div class="offcanvas-body">
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe_1">
+              <li class="search position-relative dropdown-responsive">
+                <div class="search-box1" [class.active]="isSearchActive">
+                  <!-- <button class="btn-search" (click)="toggleSearch()">
+                    <i class="fas fa-search"></i>
+                  </button> -->
+                  <button class="btn-search" (click)="toggleSearch1()">
+                    <i class="fas fa-search" style="font-size: 12px !important"></i>
+                  </button>
+                  <!-- <input type="text" class="input-search search-focus" placeholder="Search here..."
+                    [ngClass]="{ expanded: isSearchActive }" [(ngModel)]="searchQuery"
+                    (input)="onSearchChange(searchQuery)" data-bs-toggle="dropdown" /> -->
+
+                  <!-- <ul *ngIf="isSearchActive && filteredItems.length > 0" class="dropdown-menu dropdown-submenu shadow"
+                    style="max-width: 300px; width: 400px;" [ngClass]="{ 'show': isSearchActive }">
+                    <li class="dropdown-item d-flex align-items-center gap-2 p-2 border-bottom"
+                      *ngFor="let item of filteredItems" (click)="onSelectResult(item)" style="cursor: pointer;">
+
+                      <img *ngIf="item.IMAGE_URL" [src]="item.IMAGE_URL" alt="Preview"
+                        style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;" />
+
+                      <div>
+                        <div class="fw-bold">{{ item.NAME }}</div>
+                        <small class="text-muted text-uppercase">{{ item.GLOBAL_TYPE }}</small>
+                      </div>
+                    </li>
+                  </ul> -->
+                </div>
+              </li>
+
+              <!-- <li class="nav-item" *ngFor="let category of categories">
+                <a class="nav-link" href="#" [routerLink]="['/explore',cities?.NAME, category.TYPE]"
+                  (click)="selectCategory(category)" [ngClass]="{
+                    'active-link': getSelectedCategory() == category.ID
+                  }" data-bs-dismiss="offcanvas">
+                  {{ category.TYPE }}
+                </a>
+              </li> -->
+
+              <!-- <li class="nav-item" *ngFor="let category of categories">
+                <a class="nav-link" [routerLink]="['/explore',cities?.NAME || 'all' , category.TYPE]"
+                  (click)="selectCategory(category)" [ngClass]="{ 'active-link': getSelectedCategory() == category.ID }"
+                  style="cursor: pointer;">
+                  {{ category.TYPE }}
+                </a>
+              </li> -->
+              <!-- <li class="nav-item">
+                <a class="nav-link" [routerLink]="'/membership'" (click)="selectCategory({ ID: 'Member' })" [ngClass]="{
+                    'active-link':
+                      getSelectedCategory() === 'Member' ||
+                      getSelectedCategory() === 'member'
+                  }" data-bs-dismiss="offcanvas" aria-current="page">Membership</a>
+              </li> -->
+              <li class="nav-item" *ngFor="let category of categories.slice(0, 4)">
+                <a class="nav-link" [routerLink]="[
+                    '/explore',
+                    cities?.NAME || 'all',
+                    category.TYPE
+                  ]" (click)="selectCategory(category)" [ngClass]="{
+                    'active-link': getSelectedCategory() == category.ID
+                  }">
+                  {{ category.TYPE }}
+                </a>
+              </li>
+
+              <li class="category-more-wrapper" *ngIf="categories.length > 4" #moreDropdown>
+                <div class="category-more-toggle" (click)="toggleMoreDropdown()">
+                  More <i class="fa fa-chevron-down ms-1"></i>
+                </div>
+
+                <ul class="category-dropdown" *ngIf="showMoreDropdown">
+                  <li *ngFor="let category of categories.slice(4)">
+                    <a class="category-dropdown-item" [routerLink]="[
+                        '/explore',
+                        cities?.NAME || 'all',
+                        category.TYPE
+                      ]" (click)="
+                        selectCategory(category); showMoreDropdown = false
+                      " [ngClass]="{
+                        'active-link': getSelectedCategory() == category.ID
+                      }">
+                      {{ category.TYPE }}
+                    </a>
+                  </li>
+                </ul>
+              </li>
+
+              <!-- <li class="nav-item">
+                <a class="nav-link" [routerLink]="'/menu/plays/'" routerLinkActive="active-link"
+                  [routerLinkActiveOptions]="{ exact: true }" data-bs-dismiss="offcanvas" aria-current="page">Plays</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" [routerLink]="'/menu/event-details/'" routerLinkActive="active-link"
+                  [routerLinkActiveOptions]="{ exact: true }" data-bs-dismiss="offcanvas" aria-current="page">Events</a>
+              </li>
+
+              <li class="nav-item">
+
+                <a class="nav-link" [routerLink]="'/menu/movie-play-details/'" routerLinkActive="active-link"
+                  [routerLinkActiveOptions]="{ exact: true }" data-bs-dismiss="offcanvas"
+                  aria-current="page">Movie</a>
+              </li> -->
+
+              <!-- <li class="nav-item">
+                <a
+                  class="nav-link"
+                  [routerLink]="'/menu/plays/'"
+                  routerLinkActive="active-link"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  data-bs-dismiss="offcanvas"
+                  aria-current="page"
+                  >Plays</a
+                >
+              </li>
+
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  [routerLink]="'/menu/events/'"
+                  routerLinkActive="active-link"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  data-bs-dismiss="offcanvas"
+                  aria-current="page"
+                  >Events</a
+                >
+              </li>
+
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  [routerLink]="'/menu/activities/'"
+                  routerLinkActive="active-link"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  data-bs-dismiss="offcanvas"
+                  aria-current="page"
+                  >Activities</a
+                >
+              </li> -->
+              <li class="nav-item">
+                <a class="nav-link" href="#" [routerLink]="'/blogs'" (click)="selectCategory({ ID: 'blog' })" [ngClass]="{
+                    'active-link':
+                      getSelectedCategory() === 'blog' ||
+                      getSelectedCategory() === 'blog'
+                  }" data-bs-dismiss="offcanvas" aria-current="page">Blogs</a>
+              </li>
+
+              <!-- <li class="nav-item">
+                <a class="nav-link" [routerLink]="'/offer'" routerLinkActive="active-link"
+                  [routerLinkActiveOptions]="{ exact: true }" data-bs-dismiss="offcanvas" aria-current="page">Offer</a>
+              </li> -->
+            </ul>
+          </div>
+          <div class="offcanvas-footer">
+            <div class="offcanvas-social">
+              <h5>Follow Us</h5>
+              <ul class="social-links">
+                <li>
+                  <a href="https://www.facebook.com/ticketkhidakee/" class="social-link" target="_blank">
+                    <i class="fab fa-facebook-square"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.instagram.com/ticketkhidakee/" class="social-link" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://twitter.com/TicketKhidakee" class="social-link" target="_blank">
+                    <i class="fab fa-twitter"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.linkedin.com/company/ticket-khidakee/" class="social-link" target="_blank">
+                    <i class="fab fa-linkedin-in"></i>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.youtube.com/@ticketkhidakee" class="social-link" target="_blank">
+                    <i class="fab fa-youtube"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="right-header order-2">
+          <ul class="align-self-stretch" style="display: flex; align-items: center">
+            <!-- <li class="nav-item mobile-dropdown-responsive">
+              <button class="search" (click)="toggleSearch1()">
+                <i class="fas fa-search"></i> </button>
+            </li> -->
+
+            <li class="nav-item mobile-dropdown-responsive">
+              <button class="search btn rounded-circle" (click)="toggleSearch1()" title="Search">
+                <i class="fas fa-search fs-5"></i>
+              </button>
+            </li>
+            <!-- <li
+              *ngIf="isMobile"
+              class="nav-item dropdown"
+              style="margin-right: 5px !important"
+            >
+              <a
+                class="nav-link dropdown-toggle mobile-location-link mobile"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                (click)="openLocationModal($event)"
+                style="
+                  background: #e0e0e0;
+                  padding: 4px 8px;
+                  border-radius: 4px;
+                  margin-right: 8px;
+                  font-size: 12px;
+                  color: #a50000 !important;
+                "
+              >
+                <i
+                  style="
+                    color: #a50000; /* or a contrasting color like #ffc107 (yellow) */
+
+                    vertical-align: middle;
+                  "
+                  class="bi bi-geo-alt-fill location-icon"
+                ></i>
+
+                {{
+                  cities?.NAME?.length > 7
+                    ? cities?.NAME.slice(0, 4) + "..."
+                    : cities?.NAME || "City"
+                }}
+              </a>
+
+              <a
+                class="nav-link dropdown-toggle mobile-location-link desktop"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                (click)="openLocationModal($event)"
+                style="
+                  background: #e9e9e9;
+                  padding: 3px 8px;
+                  border-radius: 4px;
+                  font-size: 12px;
+                  color: #a50000 !important;
+                "
+              >
+                <i
+                  class="bi bi-geo-alt-fill location-icon"
+                  style="color: #a50000; vertical-align: middle"
+                ></i>
+                <span>
+                  {{ cities?.NAME || "City" }}
+                </span>
+              </a>
+              <div class="custom-backdrop"></div>
+              <ul
+                class="dropdown-menu dropdown-submenu custom-dropdown show"
+                style="overflow: hidden"
+              >
+               
+                <h6 style="font-weight: 600; font-weight: 600; margin: 10px">
+                  Select Location
+                  <span
+                    (click)="clearCity()"
+                    style="
+                      cursor: pointer;
+                      color: #a50000;
+                      border-radius: 28px;
+                      padding: 3px 4px 2px;
+
+                      font-size: 10px;
+                      margin-top: -6px;
+                      margin-left: 5px;
+                      border: 1px solid #a50000;
+                    "
+                  >
+                    Clear City
+                  </span>
+                  <span
+                    (click)="closeDropdown2()"
+                    style="
+                      cursor: pointer;
+                      color: #a50000;
+                      border-radius: 28px;
+                      padding: 3px 4px 2px;
+                      float: right;
+                      font-size: 12px;
+                      margin-top: -6px;
+                      border: 1px solid #a50000;
+                    "
+                    ><i class="bi bi-x-lg"></i
+                  ></span>
+                </h6>
+                <li
+                  class="sticky-top bg-white p-2"
+                  style="z-index: 10; margin-right: 0px; border-radius: 24px"
+                >
+                  <input
+                    type="text"
+                    class="form-control"
+                    style="
+                      border-radius: 24px !important;
+                      padding: 0px 10px 0px 30px !important;
+                    "
+                    [(ngModel)]="searchText"
+                    (ngModelChange)="getCities2($event)"
+                    placeholder="Search city..."
+                  />
+                  <i
+                    class="fa fa-search position-absolute top-50 start-0 translate-middle-y text-muted"
+                    style="padding-left: 1.2rem"
+                  ></i>
+                </li>
+
+        
+                <div style="max-height: 80vh; overflow-y: auto">
+            
+                  <ng-container>
+                    <li>
+                      <h6
+                        class="dropdown-header"
+                        style="
+                          padding: 8px !important;
+                          font-weight: 600 !important;
+                        "
+                      >
+                        Popular Cities
+                      </h6>
+                    </li>
+                    <li class="px-2">
+                      <div class="row gx-2 gy-2" style="margin: 0px 8px 8px">
+                        <div
+                          class="col-6 col-sm-6 col-md-4 col-lg-4"
+                          *ngFor="let city of popularCities"
+                          [ngClass]="{
+                            'selected-city': cities?.ID === city.ID
+                          }"
+                        >
+                          <div
+                            class="city-card text-center"
+                            (click)="selectModalCity(city)"
+                          >
+            
+                            <div
+                              class="city-name"
+                              style="font-size: 11px !important"
+                            >
+                              {{ city.NAME }}
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          style="text-align: center"
+                          *ngIf="popularCities.length == 0"
+                        >
+                          No Popular Cities Found
+                        </div>
+                      </div>
+                    </li>
+
+                    <li>
+                      <hr class="dropdown-divider" />
+                    </li>
+
+                   
+                    <li>
+                      <h6
+                        class="dropdown-header"
+                        style="
+                          padding: 8px !important;
+                          font-weight: 600 !important;
+                        "
+                      >
+                        All Cities
+                      </h6>
+                    </li>
+                    
+
+                    <li style="margin-left: 7px !important">
+                      <div class="row gx-2 gy-2" style="margin: 0px 8px 8px">
+                        <div
+                          class="col-6 col-sm-4 col-md-3 col-lg-3"
+                          *ngFor="let city of otherCities"
+                          [ngClass]="{
+                            'selected-city': cities?.ID === city.ID
+                          }"
+                        >
+                          <div
+                            class="city-card text-center"
+                            (click)="selectModalCity(city)"
+                          >
+                            <div
+                              class="city-name"
+                              style="
+                                text-align: center;
+                                font-size: 11px !important;
+                              "
+                            >
+                              {{ city.NAME }}
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          style="text-align: center"
+                          *ngIf="otherCities.length == 0"
+                        >
+                          No Cities Found
+                        </div>
+                      </div>
+                    </li>
+
+                   
+                  </ng-container>
+
+   
+                </div>
+              </ul>
+            </li> -->
+            <div class="search_input" id="search_input_box" *ngIf="isSearchVisible">
+              <div class="search-colse-btn">
+                <span (click)="toggleSearch1()" style="cursor: pointer"><i class="bi bi-x-lg"></i></span>
+              </div>
+
+              <div class="container">
+                <div class="search-container">
+                  <div class="carousel-wrapper">
+                    <button class="chip-arrow chip-arrow-left" (click)="scrollChips(chipScroll, -200)">
+                      <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <div class="carousel-container" #chipScroll>
+                      <div class="category-buttons-wrapper">
+                        <button class="button1" [class.active]="'' == selectedCategory1"
+                          (click)="selectCategory1({ TYPE: '' })">
+                          All
+                        </button>
+                        <button class="button1" *ngFor="let category of categories1"
+                          [class.active]="category.TYPE == selectedCategory1" (click)="selectCategory1(category)">
+                          {{ category.TYPE }}
+                        </button>
+
+                        <!-- Static Buttons -->
+                        <button class="button1" [class.active]="'CASTS' == selectedCategory1"
+                          (click)="selectCategory1({ TYPE: 'CASTS' })">
+                          Casts
+                        </button>
+                        <button class="button1" [class.active]="'VENUES' == selectedCategory1"
+                          (click)="selectCategory1({ TYPE: 'VENUES' })">
+                          Venues
+                        </button>
+                      </div>
+                    </div>
+                    <button class="chip-arrow chip-arrow-right" (click)="scrollChips(chipScroll, 200)">
+                      <i class="bi bi-chevron-right"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="search-container">
+                  <div class="search-box">
+                    <!-- Search Input -->
+                    <div class="input-section1 input-flex position-relative">
+                      <input type="text" style="margin-left: 0px !important"
+                        class="input-search search-focus form-control"
+                        placeholder="Please enter at least 3 characters to search" [(ngModel)]="searchQuery"
+                        (input)="onSearchChange(searchQuery)" (focus)="isSearchActive = true" autocomplete="off"
+                        id="search_input" />
+                      <!-- (keyup)="onSearchChange($event)" -->
+                      <i class="fa fa-search position-absolute top-50 start-0 ps-3 translate-middle-y text-muted"></i>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="isSearchActive && filteredItems.length > 0" style="padding: 5px">
+                  Total {{ filteredItems.length }} result(s) found.
+                </div>
+                <div style="
+                    height: 60vh;
+                    overflow: hidden;
+                    overflow-y: auto;
+                    padding: 10px;
+                  ">
+                  <div class="row" *ngIf="isSearchActive && filteredItems?.length > 0">
+                    <div class="col-lg-6 col-md-12" *ngFor="let item of filteredItems">
+                      <div (click)="onSelectResult(item)" class="search-card" style="
+                          cursor: pointer;
+                          display: flex;
+                          border: 1px solid #ebebeb;
+                          justify-content: flex-start;
+                        ">
+                        <!-- Image / Placeholder -->
+                        <div style="
+                            width: 90px;
+                            flex-shrink: 0;
+                            display: flex;
+                            padding: 5px 0px 5px 5px;
+                            align-items: center;
+                            justify-content: center;
+                          ">
+                          <img *ngIf="
+                              (item.GLOBAL_TYPE === 'Cast' ||
+                                item.GLOBAL_TYPE === 'Casts') &&
+                              item.parsed?.PROFILE_IMAGE
+                            " [src]="
+                              retriveimgUrl +
+                              'castImages/' +
+                              item.parsed.PROFILE_IMAGE
+                            " [alt]="item.parsed.NAME || 'No name'" style="
+                              width: 80px;
+                              height: 80px;
+                              object-fit: contain;
+                              border-radius: 50%;
+                            " />
+
+                          <img *ngIf="
+                              (item.GLOBAL_TYPE === 'Venue' ||
+                                item.GLOBAL_TYPE === 'Venues') &&
+                              item.parsed?.BANNER_IMAGE
+                            " [src]="
+                              retriveimgUrl +
+                              'venueImages/' +
+                              item.parsed.BANNER_IMAGE
+                            " [alt]="item.GLOBAL_TITLE" style="
+                              width: 100%;
+                              height: 100%;
+                              object-fit: cover;
+                              border-radius: 8px;
+                            " />
+
+                          <img *ngIf="
+                              item.GLOBAL_TYPE !== 'Cast' &&
+                              item.GLOBAL_TYPE !== 'Casts' &&
+                              item.GLOBAL_TYPE !== 'Venue' &&
+                                item.GLOBAL_TYPE !== 'Venues' &&
+                              item.parsed?.EVENT_IMAGE
+                            " [src]="
+                              retriveimgUrl +
+                              'eventImages/' +
+                              item.parsed.EVENT_IMAGE
+                            " [alt]="item.GLOBAL_TITLE" style="
+                              width: 100%;
+                              height: 100%;
+                              object-fit: cover;
+                              border-radius: 8px;
+                            " />
+                        </div>
+
+                        <div style="
+                            font-size: 13px;
+                            line-height: 1.2;
+                            width: 74%;
+                            padding: 5px 10px;
+                            height: 124px;
+                          ">
+                          <p class="mb-0 text-ellipsis" style="font-size: 11px; line-height: 18px">
+                            <span *ngIf="item.GLOBAL_TYPE != null" style="color: #878787; font-weight: 600">{{
+                              item.GLOBAL_TYPE.endsWith("s")
+                              ? item.GLOBAL_TYPE.slice(0, -1)
+                              : item.GLOBAL_TYPE
+                              }}</span>
+                          </p>
+                          <h5 class="mb-0 text-ellipsis" style="font-size: 14px; font-weight: 600">
+                            {{ item.GLOBAL_TITLE }}
+                          </h5>
+                          <!-- [ngSwitch]="item.GLOBAL_TYPE.toUpperCase()" -->
+                          <ng-container>
+                            <ng-container *ngIf="
+                                item.GLOBAL_TYPE != null &&
+                                item.GLOBAL_TYPE.toUpperCase() !== 'BLOGS' &&
+                                item.GLOBAL_TYPE.toUpperCase() !== 'CASTS' &&
+                                item.GLOBAL_TYPE.toUpperCase() !== 'VENUES'
+                              ">
+                              <p class="mb-0 text-ellipsis" style="
+                                  line-height: 20px;
+                                  font-size: 12px;
+                                  color: grey;
+                                ">
+                                {{ item.parsed.SUB_CATEGORY_NAME }}
+                              </p>
+                              <p *ngIf="
+                                  item != undefined &&
+                                  item.parsed.LANGUAGE_NAMES
+                                " class="mb-0 text-ellipsis" style="
+                                  line-height: 20px;
+                                  font-size: 12px;
+                                  color: grey;
+                                ">
+                                <!-- style="
+                                  line-height: 18px;
+                                  font-size: 12px;
+                                  display: flex;
+                                  flex-wrap: wrap;
+                                  background-color: rgb(229, 229, 229);
+                                  color: rgb(0, 0, 0);
+                                  padding: 2px 8px;
+                                  border-radius: 2px;
+                                  align-self: flex-start;
+                                  margin-top: 4px;
+                                  width: max-content;
+                                " -->
+                                <i class="fa-solid" style="
+                                    font-size: initial;
+                                    color: #a50000;
+                                    margin-bottom: -4px;
+                                  ">
+                                  <svg xmlns="http://www.w3.org/2000/svg" fill="#a50000" width="14px" height="16px"
+                                    viewBox="0 0 24 24" data-name="Layer 1">
+                                    <path
+                                      d="M21.05566,12h-2a1,1,0,0,0,0,2v2H17.8714a2.96481,2.96481,0,0,0,.18426-1A2.99955,2.99955,0,0,0,12.458,13.50049a.99992.99992,0,1,0,1.73242.999A1.0009,1.0009,0,0,1,15.05566,14a1,1,0,0,1,0,2,1,1,0,0,0,0,2,1,1,0,1,1,0,2,1.0009,1.0009,0,0,1-.86523-.49951.99992.99992,0,1,0-1.73242.999A2.99955,2.99955,0,0,0,18.05566,19a2.96481,2.96481,0,0,0-.18426-1h1.18426v3a1,1,0,0,0,2,0V14a1,1,0,1,0,0-2ZM9.08594,11.24268a.99963.99963,0,1,0,1.93945-.48536L9.26855,3.72754a2.28044,2.28044,0,0,0-4.4248,0L3.08594,10.75732a.99963.99963,0,1,0,1.93945.48536L5.58618,9H8.52545ZM6.0863,7l.6969-2.78711a.29222.29222,0,0,1,.5459,0L8.02563,7Zm7.96936,0h1a1.001,1.001,0,0,1,1,1V9a1,1,0,0,0,2,0V8a3.00328,3.00328,0,0,0-3-3h-1a1,1,0,0,0,0,2Zm-4,9h-1a1.001,1.001,0,0,1-1-1V14a1,1,0,0,0-2,0v1a3.00328,3.00328,0,0,0,3,3h1a1,1,0,0,0,0-2Z" />
+                                  </svg>
+                                </i>
+                                {{ item.parsed.LANGUAGE_NAMES }}
+                              </p>
+                              <p style="margin-bottom: 0px" *ngIf="
+                                  item != undefined && item.parsed.GENRE_NAMES
+                                ">
+                                <span class="text-dark badgee" [title]="item.parsed.GENRE_NAMES">
+                                  {{ getFirstGenre(item.parsed.GENRE_NAMES) }}
+                                </span>
+                                <span *ngIf="hasMoreGenres(item.parsed.GENRE_NAMES)" style="
+                                    font-size: 11px;
+                                    color: #9c9ea6 !important;
+                                  ">+ More</span>
+                                <!-- {{ item.parsed.GENRE_NAMES }} -->
+                              </p>
+                            </ng-container>
+
+                            <ng-container *ngIf="
+                                item.GLOBAL_TYPE != null &&
+                                item.GLOBAL_TYPE.toUpperCase() === 'CASTS'
+                              ">
+                              <p class="mb-0 text-ellipsis" style="
+                                  line-height: 20px;
+                                  font-size: 12px;
+                                  color: grey;
+                                ">
+                                {{ item.parsed.NICKNAME }}
+                              </p>
+                              <p class="mb-0 text-ellipsis" style="font-size: 12px; line-height: 20px">
+                                Birthplace :
+                                <strong>
+                                  {{ item.parsed.BIRTHPLACE || "N/A" }}</strong>
+                              </p>
+                              <p class="mb-0 text-ellipsis" style="font-size: 12px; line-height: 20px">
+                                DOB :
+                                <strong>
+                                  {{
+                                  item.parsed.DOB | date : "mediumDate"
+                                  }}</strong>
+                              </p>
+
+                              <!-- <p class="mb-0 text-ellipsis" style="
+                                    font-size: 12px !important;
+                                    white-space: normal;
+                                    overflow-wrap: break-word;
+                                    word-wrap: break-word;
+                                  " [innerHTML]="
+                                    item.parsed.DESCRIPTION | slice : 0 : 70
+                                  " title="{{ item.parsed.DESCRIPTION }}"></p> -->
+                            </ng-container>
+                            <!-- BLOG -->
+                            <ng-container *ngIf="
+                                item.GLOBAL_TYPE != null &&
+                                item.GLOBAL_TYPE.toUpperCase() === 'BLOGS'
+                              ">
+                              <h5 class="mb-1 text-ellipsis" style="
+                                  font-size: 14px;
+                                  font-weight: 600;
+                                  color: rgb(165, 0, 0);
+                                ">
+                                {{ item.parsed.NAME || item.GLOBAL_TITLE }}
+                                ({{ item.GLOBAL_TYPE }})
+                              </h5>
+                              <p class="mb-1 text-ellipsis" style="font-size: 12px">
+                                <strong>Sub Title:</strong>
+                                {{ item.parsed.SUB_TITLE || "N/A" }}
+                              </p>
+                              <!-- <p class="mb-1 text-ellipsis" style="font-size: 12px">
+                              <strong>Slug:</strong>
+                              {{ item.parsed.SLUG || "N/A" }}
+                            </p> -->
+                            </ng-container>
+
+                            <!-- VENUE -->
+                            <ng-container *ngIf="
+                                item.GLOBAL_TYPE != null &&
+                                item.GLOBAL_TYPE.toUpperCase() === 'VENUES'
+                              ">
+                              <p class="mb-0 text-ellipsis" style="
+                                  line-height: 20px;
+                                  font-size: 12px;
+                                  color: grey;
+                                ">
+                                <a style="color: grey !important" [href]="
+                                    'https://www.google.com/maps?q=' +
+                                    item.parsed['LATITUDE'] +
+                                    ',' +
+                                    item.parsed['LONGITUDE']
+                                  " target="_blank">
+                                  <span>
+                                    <i style="
+                                        font-size: initial;
+                                        color: #a50000;
+                                        font-size: 12px;
+                                      " class="bi bi-geo-alt"></i></span>
+
+                                  {{ item.parsed.CITY_NAME }}
+                                </a>
+                              </p>
+                              <p class="mb-0 text-ellipsis" style="
+                                  line-height: 20px;
+                                  font-size: 12px;
+                                  color: grey;
+                                ">
+                                Max Capacity :
+                                <strong> {{ item.parsed.MAX_CAPACITY }}</strong>
+                              </p>
+
+                              <p style="margin-bottom: 0px" *ngIf="
+                                  item != undefined && item.parsed.AMENITY_NAMES
+                                ">
+                                <span class="text-dark badgee" [title]="item.parsed.AMENITY_NAMES">
+                                  {{ getFirstGenre(item.parsed.AMENITY_NAMES) }}
+                                </span>
+                                <span *ngIf="
+                                    hasMoreGenres(item.parsed.AMENITY_NAMES)
+                                  " style="
+                                    font-size: 11px;
+                                    color: #9c9ea6 !important;
+                                  ">+ More</span>
+                              </p>
+                            </ng-container>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div *ngIf="
+                      filteredItems?.length <= 0 && searchQuery?.length > 3
+                    ">
+                    <img src="assets/nodata1.png" alt="No data found"
+                      style="width: 180px; margin: auto; margin-bottom: 10px" />
+                    <div style="text-align: center">No results found</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- <li *ngIf="!isMobile" class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle mobile-location-link mobile"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                (click)="openLocationModal($event)"
+                style="
+                  background: #e0e0e0;
+                  padding: 4px 8px;
+                  border-radius: 4px;
+                  margin-right: 8px;
+                  font-size: 12px;
+                  color: #a50000 !important;
+                "
+              >
+                <i
+                  style="
+                    color: #a50000; /* or a contrasting color like #ffc107 (yellow) */
+
+                    vertical-align: middle;
+                  "
+                  class="bi bi-geo-alt-fill location-icon"
+                ></i>
+
+                {{
+                  cities?.NAME?.length > 7
+                    ? cities?.NAME.slice(0, 4) + "..."
+                    : cities?.NAME || "City"
+                }}
+              </a>
+
+              <a
+                class="nav-link dropdown-toggle mobile-location-link desktop"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                (click)="openLocationModal($event)"
+                style="
+                  background: #e9e9e9;
+                  padding: 3px 8px;
+                  border-radius: 4px;
+                  font-size: 12px;
+                  color: #a50000 !important;
+                "
+              >
+                <i
+                  class="bi bi-geo-alt-fill location-icon"
+                  style="color: #a50000; vertical-align: middle"
+                ></i>
+                <span>
+                  {{ cities?.NAME || "City" }}
+                </span>
+              </a>
+              <div class="custom-backdrop"></div>
+              <ul
+                class="dropdown-menu dropdown-submenu custom-dropdown show"
+                style="overflow: hidden"
+              >
+ 
+                <h6 style="font-weight: 600; font-weight: 600; margin: 10px">
+                  Select Location
+                  <span
+                    (click)="clearCity()"
+                    style="
+                      cursor: pointer;
+                      color: #a50000;
+                      border-radius: 28px;
+                      padding: 3px 4px 2px;
+                      font-size: 10px;
+                      margin-top: -6px;
+                      margin-left: 5px;
+                      border: 1px solid #a50000;
+                    "
+                  >
+                    Clear City
+                  </span>
+                  <span
+                    (click)="closeDropdown2()"
+                    style="
+                      cursor: pointer;
+                      color: #a50000;
+                      border-radius: 28px;
+                      padding: 3px 4px 2px;
+                      float: right;
+                      font-size: 12px;
+                      margin-top: -6px;
+                      border: 1px solid #a50000;
+                    "
+                    ><i class="bi bi-x-lg"></i
+                  ></span>
+                </h6>
+                <li
+                  class="sticky-top bg-white p-2"
+                  style="z-index: 10; margin-right: 0px; border-radius: 24px"
+                >
+                  <input
+                    type="text"
+                    class="form-control"
+                    style="
+                      border-radius: 24px !important;
+                      padding: 0px 10px 0px 30px !important;
+                    "
+                    [(ngModel)]="searchText"
+                    (ngModelChange)="getCities2($event)"
+                    placeholder="Search city..."
+                  />
+                  <i
+                    class="fa fa-search position-absolute top-50 start-0 translate-middle-y text-muted"
+                    style="padding-left: 1.2rem"
+                  ></i>
+                </li>
+
+
+                <div style="max-height: 80vh; overflow-y: auto">
+             
+                  <ng-container>
+      
+                    <li>
+                      <h6
+                        class="dropdown-header"
+                        style="
+                          padding: 8px !important;
+                          font-weight: 600 !important;
+                        "
+                      >
+                        Popular Cities
+                      </h6>
+                    </li>
+                    <li class="px-2">
+                      <div class="row gx-2 gy-2" style="margin: 0px 8px 8px">
+                        <div
+                          class="col-6 col-sm-6 col-md-4 col-lg-4"
+                          *ngFor="let city of popularCities"
+                          [ngClass]="{
+                            'selected-city': cities?.ID === city.ID
+                          }"
+                        >
+                          <div
+                            class="city-card text-center"
+                            (click)="selectModalCity(city)"
+                          >
+                          
+                            <div class="city-name">{{ city.NAME }}</div>
+                          </div>
+                        </div>
+                        <div
+                          style="text-align: center"
+                          *ngIf="popularCities.length == 0"
+                        >
+                          No Popular Cities Found
+                        </div>
+                      </div>
+                    </li>
+
+                    <li>
+                      <hr class="dropdown-divider" />
+                    </li>
+
+                    <li>
+                      <h6
+                        class="dropdown-header"
+                        style="
+                          padding: 8px !important;
+                          font-weight: 600 !important;
+                        "
+                      >
+                        All Cities
+                      </h6>
+                    </li>
+                
+
+                    <li style="margin-left: 7px !important">
+                      <div class="row gx-2 gy-2" style="margin: 0px 8px 8px">
+                        <div
+                          class="col-6 col-sm-6 col-md-3 col-lg-3"
+                          *ngFor="let city of otherCities"
+                          [ngClass]="{
+                            'selected-city': cities?.ID === city.ID
+                          }"
+                        >
+                          <div
+                            class="city-card text-center"
+                            (click)="selectModalCity(city)"
+                          >
+                            <div class="city-name">{{ city.NAME }}</div>
+                          </div>
+                        </div>
+                        <div
+                          style="text-align: center"
+                          *ngIf="popularCities.length == 0"
+                        >
+                          No Cities Found
+                        </div>
+                      </div>
+                    </li>
+               
+                  </ng-container>
+
+           
+                </div>
+              </ul>
+            </li> -->
+            <!-- <li>
+              <a href="https://api.whatsapp.com/send?phone=917447405844&text=Hello." target="_blank"
+                class="flexbox-row ajc" id="contact-whatsapp-button">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-whatsapp" width="30"
+                  height="30" viewBox="0 0 24 24" stroke-width="1.5" stroke="#fff" fill="none" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" />
+                  <path
+                    d="M9 10a.5 .5 0 0 0 1 0v-1a.5 .5 0 0 0 -1 0v1a5 5 0 0 0 5 5h1a.5 .5 0 0 0 0 -1h-1a.5 .5 0 0 0 0 1" />
+                </svg>
+                
+              </a>
+            </li> -->
+
+            <li *ngIf="!isLoggedIn">
+              <!-- <a [routerLink]="'/sign-in'" style="margin-right: 10px; font-size: 12px;    padding: 0px !important;"
+                class="account-link">
+                <img [src]="imagePreview || userImage" alt="" />
+              </a> -->
+
+              <!-- <a class="btn btn-primary login-button">Login</a> -->
+              <a [routerLink]="'/sign-in'" class="nav-link" role="button" style="
+                  background: #e9e9e9;
+                  padding: 3px 8px;
+                  border-radius: 4px;
+                  font-size: 12px;
+                  color: #a50000 !important;
+                ">
+                <i class="bi bi-person-fill location-icon" style="color: #a50000; vertical-align: middle"></i>
+                <span> Login </span>
+              </a>
+            </li>
+
+            <li *ngIf="isLoggedIn" class="dropdown account-dropdown">
+              <a class="account-link" role="button" #accountClick id="accountClick" data-bs-auto-close="outside"
+                data-bs-toggle="dropdown" aria-expanded="false" (click)="onAccountClick()">
+                <img [src]="imagePreview || userImage" alt="" />
+
+                <!-- <i class="fas fa-caret-down arrow-icon"></i> -->
+              </a>
+              <ul class="dropdown-menu dropdown-menu-account dropdown-menu-end" [class.show]="isAccountDropdownOpen"
+                style="height: max-content ;right: 0;left: auto;" aria-labelledby="accountClick">
+                <li>
+                  <div class="dropdown-account-header" style="padding: 10px 7px 5px !important">
+                    <div class="account-holder-avatar">
+                      <img [src]="imagePreview || userImage" alt="" />
+                    </div>
+                    <h5 style="
+                        margin-top: 5px !important;
+                        margin-bottom: 0px !important;
+                      ">
+                      {{ userName }}
+                    </h5>
+                    <p>{{ userEmail }}</p>
+                  </div>
+                </li>
+                <li class="profile-link" style="padding: 0px !important">
+                  <a style="cursor: pointer; padding: 9px !important" [routerLink]="'/myprofile'"
+                    (click)="closeDropdown()" class="link-item anchors">
+                    <span class="anchors">My Profile</span>
+                  </a>
+                  <a style="cursor: pointer; padding: 0px 9px 9px !important" class="link-item anchors"
+                    (click)="signOut()">
+                    <span *ngIf="!isLoggingOut" class="anchors">Sign Out</span>
+                    <span *ngIf="isLoggingOut">
+                      <i class="fa fa-spinner fa-spin" style="font-size: 14px; margin-right: 5px"></i>
+                      Logging out...
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- <li>
+              <div class="night_mode_switch__btn">
+                <div id="night-mode" class="fas fa-moon fa-sun"></div>
+              </div>
+            </li> -->
+
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div *ngIf="isMobile && !hidenav" style="
+        margin-top: 70px;
+        background-color: white;
+        padding: 6px 0px 8px;
+        justify-items: center;
+        box-shadow: 0px 0.052083333in 11.25pt -9px rgb(0 0 0 / 10%);
+      ">
+      <div class="d-flex nav-scroll" style="width: 100vw; justify-content: left"
+        [ngStyle]="categories?.length > 3 ? {} : { 'justify-content': 'left' }">
+        <!-- <a style="width: 100%" [routerLink]="['/membership']" routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }" class="nav-icon-text" data-id="Member"
+          (click)="selectSpecialCategory('Member')">
+          <span>Membership</span>
+        </a> -->
+        <a #categoryEl style="width: 100%" *ngFor="let category of categories"
+          [routerLink]="['/explore/', cities?.NAME || 'all', category.TYPE]" (click)="selectCategory(category)"
+          routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" class="nav-icon-text"
+          [attr.data-id]="category.ID">
+          <span>{{ category.TYPE }}</span>
+        </a>
+
+        <!-- <a [routerLink]="['/menu/plays', 'Events']" routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }" class="nav-icon-text">
+          <i class="fas fa-laugh nav-icon"></i>
+          <span>Events</span>
+        </a>
+
+        <a [routerLink]="['/menu/plays', 'Activites']" routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }" class="nav-icon-text">
+          <i class="fas fa-running nav-icon"></i>
+          <span>Activites</span>
+        </a> -->
+
+        <!-- <a style="    width: 100%;" [routerLink]="['/blogs']" routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }" class="nav-icon-text">
+          <span>Blogs</span>
+        </a>-->
+
+        <!-- <a style="    width: 100%;" [routerLink]="['/membership']" routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }" class="nav-icon-text">
+          
+          <span>Membership</span>
+        </a>  -->
+
+        <a style="width: 100%" [routerLink]="['/blogs']" routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }" class="nav-icon-text" data-id="blog"
+          (click)="selectSpecialCategory('blog')">
+          <span>Blogs</span>
+        </a>
+
+
+
+        <!-- <i class="fas fa-chalkboard-teacher nav-icon"></i> -->
+      </div>
+
+      <!-- </div> -->
+    </div>
+    <div class="overlay"></div>
+  </div>
+
+  <!-- {{ isSearchVisible }} -->
+</header>
+
+<!-- <div style="display: none;">{{getcityyyy()}}</div> -->

@@ -1,0 +1,117 @@
+<div class="movie-booking">
+  <div style="
+      padding: 15px;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px;
+    background-color: #fff;
+    margin-top: 70px;">
+    <!-- Flex container -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start">
+
+      <!-- Movie poster and title -->
+      <div class="d-flex flex-column flex-md-row align-items-start gap-3 w-100 w-md-auto">
+        <img *ngIf="MoviesData.MOVIE_IMAGES?.length"
+          [src]="MoviesData.MOVIE_IMAGES ? retriveimgUrl + 'movieImages/' + movieImage : 'assets/movie_skel.jpg'"
+          alt="Poster" class="img-thumbnail mb-2 mb-md-0 me-md-3 imgposter">
+
+        <div class="movie-title-section mt-2 mt-md-0">
+          <h2 class="movie-title">Asen Me Nasen Me</h2>
+          <span class="badge bg-secondary">Theatre</span>
+        </div>
+      </div>
+
+      <!-- Dates and Search section -->
+      <!-- <div class="date-search-container mt-4 mt-md-0 d-flex flex-column align-items-md-end w-100 w-md-auto"> -->
+        <!-- Dates scroll -->
+        <!-- <div class="date-scroll d-flex flex-row flex-wrap justify-content-start justify-content-md-end">
+          <div class="event-top-date me-2 mb-2" *ngFor="let date of dates; let i = index"
+            [ngClass]="{ active: selectedDateIndex === i }" (click)="selectDate(i)">
+            <span class="event-month">{{ date.day }}</span>
+            <span class="event-date">{{ date.date }}</span>
+          </div>
+        </div>
+
+
+      </div> -->
+    </div>
+
+  </div>
+</div>
+
+
+
+<div class="container movie-booking movie-booking-list">
+
+    <h6 style="font-size: 16px;font-weight: 600;">Venues</h6>
+
+  <div class="theatre forweb" *ngFor="let theatre of theatres" style="margin-top: 15px;">
+
+
+
+
+    <div class="row g-3 align-items-start" style="min-height: 50px;">
+
+      <div class="col-sm-12 col-md-10 align-items-start">
+        <h5 style="font-size: 14px; font-weight: 600;">{{ theatre.NAME }} </h5>
+        <h6 style="    font-size: 14px; 
+    font-weight: 500;
+    margin: 5px 0px !important;">Show Time : {{ theatre.DATETIME | date : "dd-MMM-yyyy HH:mm a" }} </h6>
+        <h6 style="    font-size: 12px;
+    color: #676767;
+    font-weight: 500;
+    margin: 5px 0px !important;"><a
+            [href]="'https://www.google.com/maps?q=' + theatre.LATITUDE + ',' + theatre.LONGITUDE" target="_blank"
+            rel="noopener noreferrer" title="Open in Google Maps">
+            <i class="fa-solid fa-location-dot" style="color: #b91c1c; padding-right: 0px;"></i>
+            <span class="tooltip-text"></span>
+          </a> {{ theatre.address }} </h6>
+
+      </div>
+      <div class="col-sm-12 col-md-2 align-items-end">
+        <button class="book-button">Select Seat</button>
+      </div>
+    </div>
+
+
+    <!-- <div *ngIf="theatre.expanded" class="row mt-2">
+      <div class="col-md-3">
+
+      </div>
+      <div class="col-md-8" style="margin-top: -40px;">
+        <div *ngFor="let movie of theatre.MOVIE_SHOWS">
+          <div *ngFor="let screen of movie.SCREEN_TYPES">
+            <div *ngFor="let lang of screen.LANGUAGES">
+              
+              <div class="showtime-container">
+                <div class="showtime-card" *ngFor="let show of lang.SHOWS">
+                  <div class="tag1"> {{ lang.LANGUAGE }} - {{ screen.SCREEN_TYPE }}</div>
+                  <div class="time">    {{ formatTime(show.START_TIME) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+       
+        
+      </div>
+
+      <div class="col-md-1"></div>
+    </div> -->
+
+  </div>
+
+
+
+
+
+
+
+  <div *ngIf="theatres.length === 0" class="no-data-container">
+    <img src="assets/nodata1.png" alt="No Data Found" class="no-data-img" />
+    <p>No shows available for the selected filters.</p>
+  </div>
+
+
+
+
+</div>

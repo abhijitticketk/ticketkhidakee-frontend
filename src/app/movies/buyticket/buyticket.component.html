@@ -1,0 +1,459 @@
+
+
+<!-- <div style="
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      background-color: #fff;margin-top: 70px;">
+
+  <div class="d-flex flex-column flex-md-row">
+    <div class="d-flex justify-content-between align-items-center flex-wrap flex-md-nowrap gap-2">
+
+      <img *ngIf="MoviesData.MOVIE_IMAGES?.length"
+        [src]="MoviesData.MOVIE_IMAGES ? retriveimgUrl + 'movieImages/' + movieImage : 'assets/movie_skel.jpg'"
+        alt="Poster" class="img-thumbnail mb-2 mb-md-0 me-md-3 imgposter">
+
+      <div class="movie-title-section d-flex flex-column">
+        <h2 class="movie-title mt-2 mt-md-3">{{ MoviesData.NAME }}</h2>
+        <span class="badge bg-secondary">{{ MoviesData.GENRES.join(', ') }}</span>
+      </div>
+
+      <div class="date-scroll d-flex mb-2 mb-md-0 flex-grow-1">
+        <div class="event-top-date" *ngFor="let date of dates; let i = index"
+          [ngClass]="{ active: selectedDateIndex === i }" (click)="selectDate(i)">
+          <span class="event-month"> {{ date.day }}</span>
+          <span class="event-date">{{ date.date }}</span>
+        </div>
+        <div class="search-container position-relative">
+          <i class="bi bi-search search-icon position-absolute" style=" cursor: pointer;"></i>
+          <input #searchInput id="search-input" type="text" name="search" [(ngModel)]="searchText"
+            placeholder="Search..." (input)="onSearchInputChange()">
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<div class="movie-booking">
+  <div style="
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      background-color: #fff;margin-top: 90px;">
+  <!-- Flex container -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start">
+    
+    <!-- Movie poster and title -->
+    <div class="d-flex flex-column flex-md-row align-items-start gap-3 w-100 w-md-auto">
+      <img *ngIf="MoviesData.MOVIE_IMAGES?.length"
+      [src]="MoviesData.MOVIE_IMAGES ? retriveimgUrl + 'movieImages/' + movieImage : 'assets/movie_skel.jpg'"
+      alt="Poster" class="img-thumbnail mb-2 mb-md-0 me-md-3 imgposter">
+
+      <div class="movie-title-section mt-2 mt-md-0">
+        <h2 class="movie-title">{{ MoviesData.NAME }}</h2>
+        <span class="badge bg-secondary">{{ MoviesData.GENRES.join(', ') }}</span>
+      </div>
+    </div>
+
+    <!-- Dates and Search section -->
+    <div class="date-search-container mt-4 mt-md-0 d-flex flex-column align-items-md-end w-100 w-md-auto">
+      <!-- Dates scroll -->
+      <div class="date-scroll d-flex flex-row flex-wrap justify-content-start justify-content-md-end">
+        <div class="event-top-date me-2 mb-2" *ngFor="let date of dates; let i = index"
+          [ngClass]="{ active: selectedDateIndex === i }" (click)="selectDate(i)">
+          <span class="event-month">{{ date.day }}</span>
+          <span class="event-date">{{ date.date }}</span>
+        </div>
+      </div>
+
+      <!-- Search input -->
+      <div class="search-container position-relative">
+        <i class="bi bi-search search-icon position-absolute" style=" cursor: pointer;"></i>
+          <input #searchInput id="search-input" type="text" name="search" [(ngModel)]="searchText"
+            placeholder="Search..." (input)="onSearchInputChange()">
+      </div>
+    </div>
+  </div>
+
+  <div class="event-filter-items">
+    <div class="featured-controls" style="font-family: Roboto, sans-serif;">
+      <div class="filter-tag">
+        <a (click)="selectLanguage('All')" style="cursor: pointer;"
+          [class.active]="selectedLanguage === 'All'">All</a>
+        <a *ngFor="let item of LangaugeData" style="cursor: pointer;" (click)="selectLanguage(item.NAME)"
+          [class.active]="selectedLanguage === item.NAME">
+          {{item.NAME}}
+        </a>
+      </div>
+
+      <div style="cursor: pointer;" class="filter-tag">
+        <a (click)="selectScreenType('All')" [class.active]="selectedScreenType === 'All'">All</a>
+        <a (click)="selectScreenType('2D')" [class.active]="selectedScreenType === '2D'">2D</a>
+        <a (click)="selectScreenType('3D')" [class.active]="selectedScreenType === '3D'">3D</a>
+        <a (click)="selectScreenType('IMAX 3D')" [class.active]="selectedScreenType === 'IMAX 3D'">IMAX 3D</a>
+        <a (click)="selectScreenType('4DX')" [class.active]="selectedScreenType === '4DX'">4DX</a>
+        <a (click)="selectScreenType('4DX 3D')" [class.active]="selectedScreenType === '4DX 3D'">4DX 3D</a>
+        <a (click)="selectScreenType('MX4D 3D')" [class.active]="selectedScreenType === 'MX4D 3D'">MX4D 3D</a>
+        <a (click)="selectScreenType('3D SCREEN X')" [class.active]="selectedScreenType === '3D SCREEN X'">3D SCREEN
+          X</a>
+        <a (click)="selectScreenType('IMAX 2D')" [class.active]="selectedScreenType === 'IMAX 2D'">IMAX 2D</a>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- <div class="col-xl-8 col-lg-7 col-md-12"> -->
+
+<!-- <div> -->
+<!-- <div class="event-img position-relative" style="margin-top: 70px;">
+ 
+  <img [src]="retriveimgUrl + 'movieImages/' + movieImage" alt="" class="poster-img"
+    style="border-radius: 3px;">
+
+ 
+  <div class="position-absolute top-0 start-0 w-100 " style="background-color: rgba(128, 128, 128, 0.8); z-index: 1;">
+  </div>
+
+ 
+  <img *ngIf="MoviesData.MOVIE_IMAGES?.length" [src]="retriveimgUrl + 'movieImages/' + PosterImage" alt="Poster"
+    class="position-absolute rounded shadow d-none d-md-block"
+    style="width: 170px; height: 250px; top: 50%; left: 90px; transform: translateY(-50%); z-index: 2;">
+ 
+  <button *ngIf="MoviesData.MOVIE_VIDEOS?.length" class="position-absolute btn btn-sm d-none d-md-block"
+    (click)="loglink(MoviesData.MOVIE_VIDEOS[0].URL)" style="    top: calc(50% + 140px);
+    left: 120px; z-index: 3;
+                          background-color: rgba(128, 128, 128, 0.5);
+                              color: #fff; border-radius: 20px;">
+    ▶ Watch Trailer
+  </button>
+
+
+  <div class="movie-title-section position-absolute btn btn-sm d-none d-md-block" style="top: calc(21% + 10px);
+              left: 290px; 
+              z-index: 3;text-align: left;
+                  color: #fff; border-radius: 20px;">
+    <h2 class="movie-title mt-2 mt-md-3" style="font-size:40px">{{ MoviesData.NAME }}</h2>
+    <span class="badge bg-secondary">{{ MoviesData.GENRES.join(', ') }}</span>
+  </div> 
+  <a *ngIf="MoviesData.MOVIE_VIDEOS?.length" (click)="loglink(MoviesData.MOVIE_VIDEOS[0].URL)"
+    class="btn btn-outline-light position-absolute d-block d-md-none" style="top: 50%; left: 50%; transform: translate(-50%, -50%);
+                        z-index: 4; background: rgba(0,0,0,0.5);">
+    ▶ Watch Trailer
+  </a>
+</div> -->
+
+<div class="movie-booking">
+
+  <!-- <div style="
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  background-color: #fff;"> -->
+
+
+
+    <!-- <div class="date-search-container mt-3">
+      <div class="d-flex justify-content-between align-items-center flex-wrap flex-md-nowrap gap-2"> -->
+        <!-- Horizontally scrollable dates -->
+        <!-- <div class="date-scroll d-flex mb-2 mb-md-0 flex-grow-1"> -->
+          <!-- <div class="date-box me-2" *ngFor="let date of dates; let i = index"
+            [ngClass]="{ active: selectedDateIndex === i }" (click)="selectDate(i)">
+            {{ date.day }}<br><span>{{ date.date }}</span>
+          </div> -->
+          <!-- <div class="event-top-date" *ngFor="let date of dates; let i = index"
+            [ngClass]="{ active: selectedDateIndex === i }" (click)="selectDate(i)">
+            <span class="event-month"> {{ date.day }}</span>
+            <span class="event-date">{{ date.date }}</span>
+          </div>
+        </div> -->
+
+        <!-- Search bar -->
+        <!-- <div class="search-container position-relative">
+          <i class="bi bi-search search-icon position-absolute" style=" cursor: pointer;"></i>
+          <input #searchInput id="search-input" type="text" name="search" [(ngModel)]="searchText"
+            placeholder="Search..." (input)="onSearchInputChange()">
+        </div> -->
+      <!-- </div>
+    </div> -->
+  <!-- </div> -->
+
+  <div class="theatre forweb" *ngFor="let theatre of theatres" style="margin-top: 15px;">
+
+
+    <div class="row g-3 align-items-start" style="min-height: 50px;">
+
+      <div class="col-12 col-sm-6 col-md-3 align-items-start">
+        <h5 class="mb-0">{{ theatre.THEATER_NAME }} <i class="bi"
+            [ngClass]="{ 'bi-heart': !theatre.isLiked, 'bi-heart-fill text-danger': theatre.isLiked }"
+            (click)="toggleLike(theatre)" style="cursor: pointer;"></i></h5>
+        <div class="tags mt-1">
+          <span *ngIf="theatre.facilitiesSet.has('M-Ticket')" class="badge m-ticket">
+            <img src="assets/icons/M.png" style="height: 15px;width: 15px;" alt="No Data Found" class="no-data-img" />
+            M-Ticket</span>
+          <span *ngIf="theatre.facilitiesSet.has('Ticket Cancellation')" class="badge food">
+            <img src="assets/icons/TC.png" style="height: 15px;width: 15px;" alt="No Data Found" class="no-data-img" />
+            Ticket Cancellation</span>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-12 col-md-6">
+        <div *ngFor="let movie of theatre.MOVIE_SHOWS">
+          <div *ngFor="let screen of movie.SCREEN_TYPES">
+            <div *ngFor="let lang of screen.LANGUAGES">
+              <!-- <div class="d-flex align-items-start mt-1">
+                <div class="me-3" style="width: 60px; text-align: left;">
+                  {{ lang.LANGUAGE }}
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                  <div class="time p-1 px-2 border rounded" style="height: 45px;" *ngFor="let show of lang.SHOWS"
+                    [ngClass]="{ 'text-danger border-danger': show.BOOKING_STATUS === 'F' }">
+                    {{ formatTime(show.START_TIME) }}<br />
+                    <small style="font-size: 9px; text-align: center; display: flow;">{{ screen.SCREEN_TYPE }}</small>
+                  </div>
+                </div>
+              </div> -->
+              <div class="showtime-container">
+                <div class="showtime-card" *ngFor="let show of lang.SHOWS">
+                  <div class="tag1"> {{ lang.LANGUAGE }} - {{ screen.SCREEN_TYPE }}</div>
+                  <div class="time"> {{ formatTime(show.START_TIME) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div style="padding: 20px"
+        class="col-12 col-sm-6 col-md-3 text-md-end d-flex align-items-center justify-content-end flex-wrap gap-2 mt-2 mt-md-0">
+        <span class="event-type-name icon-tooltip-container">
+          <a [href]="'https://www.google.com/maps?q=' + theatre.LATITUDE + ',' + theatre.LONGITUDE" target="_blank"
+            rel="noopener noreferrer" title="Open in Google Maps">
+            <i class="fa-solid fa-location-dot" style="color: #b91c1c; padding-right: 0px;"></i>
+            <span class="tooltip-text">Location</span>
+          </a>
+        </span>
+        <!-- Food Court -->
+        <div class="icon-tooltip-container" *ngIf="theatre.facilitiesSet.has('Food Court')">
+          <img src="assets/icons/FB.png" style="height: 15px;width: 15px;" alt="No Data Found" class="no-data-img" />
+          <span class="tooltip-text">Food Court</span>
+        </div>
+
+        <!-- Parking -->
+        <div class="icon-tooltip-container" *ngIf="theatre.facilitiesSet.has('Parking Facility')">
+          <img src="assets/icons/P.png" style="height: 15px;width: 15px;" alt="No Data Found" class="no-data-img" />
+          <span class="tooltip-text">Parking</span>
+        </div>
+
+        <!-- AC -->
+        <div class="icon-tooltip-container" *ngIf="theatre.facilitiesSet.has('AC')">
+          <!-- <i class="bi bi-snow fs-5 icon-tooltip" aria-label="AC"></i> -->
+          <img src="assets/icons/AC.png" style="height: 15px;width: 15px;" alt="No Data Found" class="no-data-img" />
+          <span class="tooltip-text">AC</span>
+        </div>
+        <div class="icon-tooltip-container" *ngIf="theatre.facilitiesSet.has('Recliner Seats')">
+          <img src="assets/icons/Recliner.png" style="height: 15px;width: 15px;" alt="No Data Found"
+            class="no-data-img" />
+          <span class="tooltip-text">Recliner Seats</span>
+        </div>
+        <!-- WiFi -->
+        <div class="icon-tooltip-container"
+          *ngIf="theatre.facilitiesSet.has('Wi-Fi') || theatre.facilitiesSet.has('wifi')">
+          <!-- <i class="bi bi-wifi fs-5 icon-tooltip" aria-label="WiFi"></i> -->
+          <img src="assets/icons/Wifi.png" style="height: 15px;width: 15px;" alt="No Data Found" class="no-data-img" />
+          <span class="tooltip-text">WiFi</span>
+        </div>
+
+        <!-- Charging Point -->
+        <div class="icon-tooltip-container" *ngIf="theatre.facilitiesSet.has('Charging Spots')">
+          <!-- <i class="bi bi-lightning-charge fs-5 icon-tooltip" aria-label="Charging Point"></i> -->
+          <img src="assets/icons/Charging.png" style="height: 15px;width: 15px;" alt="No Data Found"
+            class="no-data-img" />
+          <span class="tooltip-text">Charging Point</span>
+        </div>
+
+        <!-- Wheelchair -->
+        <div class="icon-tooltip-container" *ngIf="theatre.facilitiesSet.has('Wheel Chair Facility')">
+          <!-- <i class="bi bi-person-wheelchair fs-5 icon-tooltip" aria-label="Wheelchair"></i> -->
+          <img src="assets/icons/W.png" style="height: 15px;width: 15px;" alt="No Data Found" class="no-data-img" />
+          <span class="tooltip-text">Wheelchair</span>
+        </div>
+
+
+
+        <!-- <i class="bi" [ngClass]="{ 'bi-chevron-down': !theatre.expanded, 'bi-chevron-up': theatre.expanded }"
+          (click)="toggleExpand(theatre)" style="cursor: pointer;"></i> -->
+      </div>
+
+    </div>
+
+
+    <!-- <div *ngIf="theatre.expanded" class="row mt-2">
+      <div class="col-md-3">
+
+      </div>
+      <div class="col-md-8" style="margin-top: -40px;">
+        <div *ngFor="let movie of theatre.MOVIE_SHOWS">
+          <div *ngFor="let screen of movie.SCREEN_TYPES">
+            <div *ngFor="let lang of screen.LANGUAGES">
+              
+              <div class="showtime-container">
+                <div class="showtime-card" *ngFor="let show of lang.SHOWS">
+                  <div class="tag1"> {{ lang.LANGUAGE }} - {{ screen.SCREEN_TYPE }}</div>
+                  <div class="time">    {{ formatTime(show.START_TIME) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+       
+        
+      </div>
+
+      <div class="col-md-1"></div>
+    </div> -->
+
+  </div>
+
+  <div class="theatre formobile" *ngFor="let theatre of theatres">
+    <div class="theatre-row d-flex flex-column flex-md-row align-items-start justify-content-between">
+
+      <!-- Left Side: Name, Heart, Tags -->
+      <div class="col-name">
+        <div class="d-flex align-items-center justify-content-between w-100">
+          <h5 class="mb-1">
+            {{ theatre.THEATER_NAME }}
+
+            <!-- <i class="bi" [ngClass]="{ 'bi-heart': !theatre.isLiked, 'bi-heart-fill text-danger': theatre.isLiked }"
+              (click)="toggleLike(theatre)" style="cursor: pointer;"></i> -->
+            <i class="fa" (click)="toggleLike(theatre)" style="cursor: pointer;"
+              [ngClass]="theatre.isLiked ? 'fa-solid fa-heart liked-heart' : 'fa-regular fa-heart unliked-heart'">
+            </i>
+          </h5>
+
+          <!-- Toggle icon aligned to the right -->
+          <i class="bi ms-2" [ngClass]="{ 'bi-chevron-down': !theatre.expanded, 'bi-chevron-up': theatre.expanded }"
+            (click)="toggleExpand(theatre)" style="cursor: pointer;"></i>
+        </div>
+
+        <!-- Tags below title -->
+        <div class="tags mt-1">
+          <span class="badge m-ticket">M-Ticket</span>
+          <span class="badge food">Ticket Cancellation</span>
+        </div>
+      </div>
+
+      <!-- Middle: Feature Icons -->
+      <div class="col-info flex-wrap mt-2 mt-md-0">
+        <span class="event-type-name icon-tooltip-container">
+          <a [href]="'https://www.google.com/maps?q=' + theatre.LATITUDE + ',' + theatre.LONGITUDE" target="_blank"
+            rel="noopener noreferrer" title="Open in Google Maps">
+            <i class="fa-solid fa-location-dot" style="color: #b91c1c; padding-right: 0px;"></i>
+            <span class="tooltip-text">Location</span>
+          </a>
+        </span>
+        <!-- Food Court -->
+        <div class="icon-tooltip-container" *ngIf="theatre.facilitiesSet.has('Food Court')">
+          <img src="assets/icons/FB.png" style="height: 15px;width: 15px;" alt="No Data Found" class="no-data-img" />
+          <span class="tooltip-text">Food Court</span>
+        </div>
+
+        <!-- Parking -->
+        <div class="icon-tooltip-container" *ngIf="theatre.facilitiesSet.has('Parking Facility')">
+          <img src="assets/icons/P.png" style="height: 15px;width: 15px;" alt="No Data Found" class="no-data-img" />
+          <span class="tooltip-text">Parking</span>
+        </div>
+
+        <!-- AC -->
+        <div class="icon-tooltip-container" *ngIf="theatre.facilitiesSet.has('AC')">
+          <!-- <i class="bi bi-snow fs-5 icon-tooltip" aria-label="AC"></i> -->
+          <img src="assets/icons/AC.png" style="height: 15px;width: 15px;" alt="No Data Found" class="no-data-img" />
+          <span class="tooltip-text">AC</span>
+        </div>
+        <div class="icon-tooltip-container" *ngIf="theatre.facilitiesSet.has('Recliner Seats')">
+          <img src="assets/icons/Recliner.png" style="height: 15px;width: 15px;" alt="No Data Found"
+            class="no-data-img" />
+          <span class="tooltip-text">Recliner Seats</span>
+        </div>
+        <!-- WiFi -->
+        <div class="icon-tooltip-container"
+          *ngIf="theatre.facilitiesSet.has('Wi-Fi') || theatre.facilitiesSet.has('wifi')">
+          <!-- <i class="bi bi-wifi fs-5 icon-tooltip" aria-label="WiFi"></i> -->
+          <img src="assets/icons/Wifi.png" style="height: 15px;width: 15px;" alt="No Data Found" class="no-data-img" />
+          <span class="tooltip-text">WiFi</span>
+        </div>
+
+        <!-- Charging Point -->
+        <div class="icon-tooltip-container" *ngIf="theatre.facilitiesSet.has('Charging Spots')">
+          <!-- <i class="bi bi-lightning-charge fs-5 icon-tooltip" aria-label="Charging Point"></i> -->
+          <img src="assets/icons/Charging.png" style="height: 15px;width: 15px;" alt="No Data Found"
+            class="no-data-img" />
+          <span class="tooltip-text">Charging Point</span>
+        </div>
+
+        <!-- Wheelchair -->
+        <div class="icon-tooltip-container" *ngIf="theatre.facilitiesSet.has('Wheel Chair Facility')">
+          <!-- <i class="bi bi-person-wheelchair fs-5 icon-tooltip" aria-label="Wheelchair"></i> -->
+          <img src="assets/icons/W.png" style="height: 15px;width: 15px;" alt="No Data Found" class="no-data-img" />
+          <span class="tooltip-text">Wheelchair</span>
+        </div>
+
+
+
+        <!-- <i class="bi" [ngClass]="{ 'bi-chevron-down': !theatre.expanded, 'bi-chevron-up': theatre.expanded }"
+          (click)="toggleExpand(theatre)" style="cursor: pointer;"></i> -->
+      </div>
+
+      <!-- Expanded Movie Shows -->
+      <div class="col-12 col-sm-12 col-md-6">
+        <div *ngFor="let movie of theatre.MOVIE_SHOWS">
+          <div *ngFor="let screen of movie.SCREEN_TYPES">
+            <div *ngFor="let lang of screen.LANGUAGES">
+              <!-- <div class="d-flex align-items-start mt-1">
+              <div class="me-3" style="width: 60px; text-align: left;">
+                {{ lang.LANGUAGE }}
+              </div>
+
+              <div class="d-flex flex-wrap gap-2">
+                <div class="time p-1 px-2 border rounded" style="height: 45px;" *ngFor="let show of lang.SHOWS"
+                  [ngClass]="{ 'text-danger border-danger': show.BOOKING_STATUS === 'F' }">
+                  {{ formatTime(show.START_TIME) }}<br />
+                  <small style="font-size: 9px; text-align: center; display: flow;">{{ screen.SCREEN_TYPE }}</small>
+                </div>
+              </div>
+            </div> -->
+              <div class="showtime-container">
+                <div class="showtime-card" *ngFor="let show of lang.SHOWS">
+                  <div class="tag1"> {{ lang.LANGUAGE }} - {{ screen.SCREEN_TYPE }}</div>
+                  <div class="time"> {{ formatTime(show.START_TIME) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+
+
+
+  <div *ngIf="theatres.length === 0" class="no-data-container">
+    <img src="assets/nodata1.png" alt="No Data Found" class="no-data-img" />
+    <p>No shows available for the selected filters.</p>
+  </div>
+
+
+
+
+</div>

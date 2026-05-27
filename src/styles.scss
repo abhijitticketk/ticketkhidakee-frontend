@@ -1,0 +1,49 @@
+/* You can add global styles to this file, and also import other style files */
+
+.grecaptcha-badge {
+  visibility: hidden !important;
+}
+/* src/styles.css */
+// body {
+//   font-family: 'Roboto', sans-serif;
+// }
+
+
+.toast {
+  opacity: 1 !important;
+  display: block !important;
+  z-index: 2147483648 !important;
+  pointer-events: auto;
+}
+
+#toast-container {
+  z-index: 2147483648 !important;
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+}
+
+.user-dt-block {
+  padding-bottom: 30px;
+}
+
+// #toast-container > div {
+//   background-color: rgb(255 27 49 / 86%) !important;
+//   color: #fff !important;
+// }
+.toast-error {
+  background-color: #a50000 !important;
+  color: white !important;
+}
+
+.toast-info {
+  background-color: #a50000 !important;
+  /* default blue */
+  color: white !important;
+
+}
+
+
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";

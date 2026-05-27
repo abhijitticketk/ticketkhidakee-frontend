@@ -1,0 +1,264 @@
+
+
+<div class="wrapper" style="margin-top: 8%;">
+    <!-- banner section -->
+    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+        <!-- Show grey overlay and loader until data is loaded -->
+        <!-- Show placeholder image while loading -->
+        <div *ngIf="isLoading" class="loading-placeholder-wrapper">
+            <div class="loading-placeholder-content">
+                <img src="https://d1jcsq1lz9cdtw.cloudfront.net/media/logo-1.png" alt="Loading..."
+                    class="placeholder-logo" />
+            </div>
+        </div>
+
+
+        <!-- Show carousel once data is loaded -->
+        <div *ngIf="!isLoading" class="carousel-inner">
+            <div class="carousel-item" *ngFor="let banner of banners; let i = index" [class.active]="i === 0">
+                <div class="hero-banner" style="min-height: 350px;" [ngStyle]="{
+            'background-image':
+              'url(' + retriveimgUrl + 'bannerImages/' + banner.IMG_URL + ')'
+          }">
+                    <div class="container-fluid h-100">
+                        <div class="row justify-content-center align-items-center h-100">
+                            <div class="col-xl-7 col-lg-9 col-md-10 col-sm-11 px-4">
+                                <div class="hero-banner-content text-center text-white">
+                                    <h2 class="banner-title">{{ banner.NAME }}</h2>
+                                    <p class="banner-description">{{ banner.description }}</p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+    <!-- banner section end -->
+
+    <div class="explore-events p-80" style="padding: 35px 0 ;">
+        <div class="container" style="width: 96% !important; margin-left: 2%;max-width: 1230px;">
+
+            <div style="text-align: right;"><a class=" btn "
+                    style="color: rgb(255 90 90); cursor: pointer; font-weight: bold;" [routerLink]="['/theater']"
+                    routerLinkActive="mixitup-control-active">
+                    <i class="bi bi-film"></i> Browse Cinemas by Theater
+                </a></div>
+            <div>
+                <h4>Explore Movies in {{City}}</h4>
+            </div>
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12" style="
+                padding:5px 15px;
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                margin-bottom: 30px;
+                background-color: #fff;">
+
+                    <div class="filter-tag">
+                        <a (click)="selectLanguage('All')" [class.active]="selectedLanguage === 'All'">All</a>
+                        <a *ngFor="let item of LangaugeData" (click)="selectLanguage(item.NAME)"
+                            [class.active]="selectedLanguage === item.NAME">
+                            {{item.NAME}}
+                        </a>
+                    </div>
+
+                    <div class="filter-tag">
+                        <a (click)="selectScreenType('All')" [class.active]="selectedScreenType === 'All'">All</a>
+                        <a (click)="selectScreenType('2D')" [class.active]="selectedScreenType === '2D'">2D</a>
+                        <a (click)="selectScreenType('3D')" [class.active]="selectedScreenType === '3D'">3D</a>
+                        <a (click)="selectScreenType('IMAX 3D')" [class.active]="selectedScreenType === 'IMAX 3D'">IMAX
+                            3D</a>
+                        <a (click)="selectScreenType('4DX 3D')" [class.active]="selectedScreenType === '4DX 3D'">4DX
+                            3D</a>
+                        <a (click)="selectScreenType('MX4D 3D')" [class.active]="selectedScreenType === 'MX4D 3D'">MX4D
+                            3D</a>
+                        <a (click)="selectScreenType('3D SCREEN X')"
+                            [class.active]="selectedScreenType === '3D SCREEN X'">3D SCREEN X</a>
+                        <a (click)="selectScreenType('IMAX 2D')" [class.active]="selectedScreenType === 'IMAX 2D'">IMAX
+                            2D</a>
+                    </div>
+
+                    <div class="filter-tag">
+                        <a (click)="selectGenre('All')" [class.active]="selectedGenre === 'All'">All</a>
+                        <a *ngFor="let item of GenresData" (click)="selectGenre(item.TYPE)"
+                            [class.active]="selectedGenre === item.TYPE">
+                            {{item.TYPE}}
+                        </a>
+                    </div>
+
+                </div>
+                <div class="col-xl-12 col-lg-12 col-md-12">
+                    <div class="event-filter-items">
+                        <div class="featured-controls" style="font-family: Roboto, sans-serif;">
+
+                            <div *ngIf="searchLoading" class="d-flex justify-content-center">
+                                <div class="loader"></div> <!-- Add your loader CSS here -->
+                            </div>
+                            <div *ngIf="!searchLoading && filteredMoviesData.length === 0 && filteredMoviesDataUpcoming.length === 0"
+                                class="no-data-container">
+                                <img src="assets/nodata1.png" alt="No Data Found" class="no-data-img" />
+                                <p>No shows available for the selected filters.</p>
+                            </div>
+                            <div class="row">
+                                <div *ngIf="!searchLoading && filteredMoviesData.length > 0">
+                                    <h4>Now Showing</h4>
+                                </div>
+
+                                <!-- movie section  -->
+                                <div *ngIf="!searchLoading && filteredMoviesData.length > 0" class="explore-events p-80"
+                                    style="padding: 0px 0 ;">
+                                    <div class="container"
+                                        style="width: 96% !important; margin-left: 2%;max-width: 1230px;">
+
+                                        <div class="row" data-ref="event-filter-content">
+                                            <div class="col-6 col-sm-6 col-md-4 col-lg-3 event-card-wrapper"
+                                                *ngFor="let event of filteredMoviesData">
+                                                <div class="main-card mt-4">
+                                                    <div class="event-thumbnail">
+                                                        <a [routerLink]="['/movie', event.NAME | lowercase | replaceSpaces ,event.MOVIE_ID, 'nowshowing']"
+                                                            class="thumbnail-img">
+                                                            <!-- <img [src]="retriveimgUrl + 'movieImages/' + event.MOVIE_IMAGES" alt="{{ event.NAME }}"> -->
+                                                            <img style="border-bottom-left-radius: 0px !important;border-bottom-right-radius: 0px !important;"
+                                                                [src]="retriveimgUrl + 'movieImages/' + event.MOVIE_IMAGES"
+                                                                alt="{{ event.NAME }}" (error)="onImageError($event)">
+                                                        </a>
+                                                        <span class="bookmark-icon" title="Bookmark"
+                                                            [ngClass]="{ 'bookmarked': event.bookmarked }"
+                                                            (click)="toggleBookmark(event)">
+                                                        </span>
+                                                    </div>
+                                                    <div class="event-footer" style="background-color: black;
+                                                     border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;">
+                                                        <div class="event-timing" style="font-size: 14px;
+                                                                color: white;
+                                                                font-weight: 300;">
+                                                            <div class="publish-date">
+                                                                <span><i class="fa-solid fa-calendar-day me-2"></i>{{
+                                                                    event.RELEASE_DATE | date:'dd MMM'
+                                                                    }}</span>
+                                                                <!-- <span class="dot"><i class="fa-solid fa-circle"></i></span>
+                                                          <span>{{ event.SCREEN_TYPE }}</span> -->
+                                                            </div>
+                                                            <span class="publish-time">
+                                                                <i style="color: rgb(255 44 82);"
+                                                                    class="bi bi-star-fill me-2"></i> {{
+                                                                event.AVERAGE_RATING }}/10
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="event-content" style="padding: 15px 1px 20px;">
+                                                    <a [routerLink]="['/movie', event.NAME | lowercase | replaceSpaces,event.MOVIE_ID, 'nowshowing']"
+                                                        class="event-title"
+                                                        style="min-height: 25px;margin-bottom: 2px;">
+                                                        {{ event.NAME }}
+                                                    </a>
+                                                    <div class="duration-price-remaining">
+                                                        <span class="duration-price">{{ event.LANGUAGES?.join(',
+                                                            ')
+                                                            }} | {{ event.CENSOR_BOARD_RATING
+                                                            }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- movie section end -->
+
+                                <div class="row">
+                                    <div *ngIf="filteredMoviesDataUpcoming.length>0"
+                                        class="col-xl-12 col-lg-12 col-md-12">
+                                        <div class="main-title">
+                                            <h4> Upcoming</h4>
+                                        </div>
+                                    </div>
+                                    <!-- movie section  -->
+                                    <div *ngIf="!searchLoading && filteredMoviesDataUpcoming.length > 0"
+                                        class="explore-events p-80" style="padding: 0px 0 ;margin-left: 10px;">
+                                        <div class="container"
+                                            style="width: 96% !important; margin-left: 2%;max-width: 1230px;">
+                                            <div class="row">
+
+                                                <div class="col-xl-12 col-lg-12 col-md-12">
+                                                    <div class="row" data-ref="event-filter-content">
+                                                        <div class="col-lg-5 col-md-4 col-sm-6 event-card-wrapper"
+                                                            *ngFor="let event of filteredMoviesDataUpcoming">
+                                                            <div class="main-card mt-4">
+                                                                <div class="event-thumbnail">
+                                                                    <a [routerLink]="['/movie', event.NAME | lowercase | replaceSpaces, event.MOVIE_ID,'upcoming']"
+                                                                        class="thumbnail-img">
+                                                                        <!-- <img [src]="retriveimgUrl + 'movieImages/' + event.MOVIE_IMAGES" alt="{{ event.NAME }}"> -->
+                                                                        <img style="border-bottom-left-radius: 0px !important;border-bottom-right-radius: 0px !important;"
+                                                                            [src]="retriveimgUrl + 'movieImages/' + event.MOVIE_IMAGES"
+                                                                            alt="{{ event.NAME }}"
+                                                                            (error)="onImageError($event)">
+                                                                    </a>
+                                                                    <span class="bookmark-icon" title="Bookmark"
+                                                                        [ngClass]="{ 'bookmarked': event.bookmarked }"
+                                                                        (click)="toggleBookmark(event)">
+                                                                    </span>
+                                                                </div>
+                                                                <div class="event-footer" style="background-color: black;
+                                                     border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;">
+                                                                    <div class="event-timing" style="font-size: 12px;
+                                                      color: white;
+                                                      font-weight: 400;">
+                                                                        <div class="publish-date">
+                                                                            <span><i
+                                                                                    class="fa-solid fa-calendar-day me-2"></i>{{
+                                                                                event.RELEASE_DATE | date:'dd MMM'
+                                                                                }}</span>
+                                                                            <!-- <span class="dot"><i class="fa-solid fa-circle"></i></span>
+                                                          <span>{{ event.SCREEN_TYPE }}</span> -->
+                                                                        </div>
+                                                                        <span class="publish-time">
+                                                                            <i class="fa-solid fa-film me-2"></i>{{
+                                                                            event.SCREEN_TYPES?.join('/ ') }}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="event-content" style="padding: 15px 1px 20px;">
+                                                                <a [routerLink]="['/movie', event.NAME | lowercase | replaceSpaces,event.MOVIE_ID, 'upcoming']"
+                                                                    class="event-title"
+                                                                    style="min-height: 25px;margin-bottom: 2px;">
+                                                                    {{ event.NAME }}
+                                                                </a>
+                                                                <div class="duration-price-remaining">
+                                                                    <span class="duration-price">{{
+                                                                        event.LANGUAGES?.join(', ')
+                                                                        }} | {{ event.CENSOR_BOARD_RATING
+                                                                        }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- movie section end -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>

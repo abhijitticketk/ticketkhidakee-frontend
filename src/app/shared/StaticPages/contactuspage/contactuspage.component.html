@@ -1,0 +1,150 @@
+<div class="h-full" style="    padding-right: 0px !important;
+    overflow-y: hidden;
+">
+
+  <section class="hero-bg relative py-12">
+    <div class="container px-4 relative z-10 ptop" >
+      <div class="max-w-4xl mx-auto text-center">
+        <h4 class="text-5xl md:text-6xl text-white mb-6 animate-fade-up"
+          style="animation-delay: 0.2s; font-size: 24px; animation-fill-mode: forwards;margin-bottom: 0px !important; margin-top: 0px;font-size: 22px !important;">
+          Contact Us
+        </h4>
+      </div>
+    </div>
+  </section>
+  <div class="container px-4 max-w-6xl h-full" style="margin-bottom: 2rem;">
+    <!-- <h1 class="text-3xl font-bold text-center mb-8">Contact Us</h1> -->
+    <!-- Hero Section -->
+
+    <!-- Contact Info Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4" style="margin-top: 2rem; margin-bottom: 2rem">
+      <!-- Email Card -->
+      <div class="bg-white rounded-lg shadow-sm p-4 flex items-center">
+        <div
+          class="w-10 h-10 flex items-center justify-center mr-3 bg-[#9B0000] bg-opacity-10 rounded-full text-[#9B0000]">
+          <!-- <i class="ri-mail-line text-xl"></i> -->
+          <i class="bi bi-envelope"></i>
+
+        </div>
+        <div>
+          <p class="text-sm font-medium text-gray-900 event-name">Email</p>
+          <span class="text-sm text-gray-600 hover:text-[#9B0000] cursor-pointer" (click)="openGmailCompose()">
+            contact&#64;tickethkidakhee.com
+          </span>
+        </div>
+      </div>
+      <!-- Website Card -->
+      <div class="bg-white rounded-lg shadow-sm p-4 flex items-center">
+        <div
+          class="w-10 h-10 flex items-center justify-center mr-3 bg-[#9B0000] bg-opacity-10 rounded-full text-[#9B0000]">
+          <!-- <i class="ri-global-line text-xl"></i> -->
+          <i class="bi bi-globe" style="font-size: 1.25rem;"></i>
+
+        </div>
+        <div>
+          <p class="text-sm font-medium text-gray-900 event-name">Website</p>
+          <span class="text-sm text-gray-600 hover:text-[#9B0000] cursor-pointer" (click)="openWebsite()">
+            tickethkidakhee.com
+          </span>
+        </div>
+      </div>
+      <!-- Company Card -->
+      <div class="bg-white rounded-lg shadow-sm p-4 flex items-center" (click)="openWideWingsLocation()">
+        <div
+          class="w-10 h-10 flex items-center justify-center mr-3 bg-[#9B0000] bg-opacity-10 rounded-full text-[#9B0000]">
+          <!-- <i class="ri-building-line text-xl"></i> -->
+          <i class="bi bi-building" style="font-size: 1rem;margin-left:1px;"></i>
+
+        </div>
+        <div>
+          <p class="text-sm font-medium text-gray-900 event-name">Company</p>
+          <span class="text-sm text-gray-600">Globillete Entertainment Solutions Pvt. Ltd.</span>
+        </div>
+      </div>
+    </div>
+    <!-- Map and Form Container -->
+    <div class="flex flex-col md:flex-row gap-6">
+      <!-- Left Column - Map -->
+      <div class="w-full md:w-1/2">
+        <div class="bg-white rounded-lg shadow-sm h-full overflow-hidden flex flex-col">
+          <!-- Ensures map fills available height -->
+          <div id="map" class="w-full grow min-h-[400px] md:min-h-full"></div>
+        </div>
+      </div>
+
+      <!-- Right Column - Contact Form -->
+      <div class="w-full md:w-1/2 flex flex-col">
+        <div class="bg-white rounded-lg shadow-sm p-6 flex-grow" style="padding-top: 9px;">
+          <div class="bg-white rounded-lg h-full">
+            <form #form="ngForm" (ngSubmit)="submitContactDetails(form)" novalidate>
+              <div class="contact-form">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group" style="margin-top: 8px">
+                      <label class="form-label label-sm event-name1">
+                        Name <span style="color: red">*</span>
+                      </label>
+                      <input class="form-control input-sm" type="text" name="NAME" [(ngModel)]="contact.NAME" required
+                        placeholder="Please Enter Full Name" #NAME="ngModel" maxlength="128"
+                        (keypress)="alphaOnly($event)" />
+                      <small class="text-danger text-sm-danger" *ngIf="NAME.invalid && NAME.touched">
+                        First Name is required.
+                      </small>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group" style="margin-top: 8px">
+                      <label class="form-label label-sm event-name1">Email <span style="color: red">*</span></label>
+                      <input class="form-control input-sm" type="email" name="EMAIL_ID" [(ngModel)]="contact.EMAIL_ID"
+                        placeholder="Please Enter Email ID" maxlength="64" required email #EMAIL_ID="ngModel" />
+                      <small class="text-danger text-sm-danger" *ngIf="EMAIL_ID.invalid && EMAIL_ID.touched">
+                        <span *ngIf="EMAIL_ID.errors?.['required']">Email is required.</span>
+                        <span *ngIf="EMAIL_ID.errors?.['email']">Invalid email format.</span>
+                      </small>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-group" style="margin-top: 8px">
+                      <label class="form-label label-sm event-name1">Phone <span style="color: red">*</span></label>
+                      <input class="form-control input-sm" type="tel" name="CONTACT_NO" [(ngModel)]="contact.CONTACT_NO"
+                        required pattern="^[0-9]{10}$" placeholder="Please Enter Mobile No."
+                        (keypress)="commonfunction.omit($event)" maxlength="10" minlength="10" #CONTACT_NO="ngModel" />
+                      <small class="text-danger text-sm-danger" *ngIf="CONTACT_NO.invalid && CONTACT_NO.touched">
+                        <span *ngIf="CONTACT_NO.errors?.['required']">Phone number is required.</span>
+                        <span *ngIf="CONTACT_NO.errors?.['pattern']">Enter a valid 10-digit Indian mobile
+                          number.</span>
+                      </small>
+                    </div>
+                  </div>
+
+                  <div class="col-md-12">
+                    <div class="form-group" style="margin-top: 8px">
+                      <label class="form-label label-sm event-name1">Message <span style="color: red">*</span></label>
+                      <textarea class="form-textarea input-sm" name="MESSAGE" [(ngModel)]="contact.MESSAGE" required
+                        maxlength="1024" placeholder="Please Enter Message" #MESSAGE="ngModel"
+                        style="font-size: 11px"></textarea>
+                      <small class="text-danger text-sm-danger" *ngIf="MESSAGE.invalid && MESSAGE.touched">Message is
+                        required.</small>
+                    </div>
+                  </div>
+
+                  <div class="col-md-12">
+                    <div class="text-center mt-4">
+                      <button type="submit" style="border-radius: 8px;font-weight: 600;font-size: 13px;"
+                        class="submit-btn w-full bg-[#9B0000] text-white text-sm font-medium py-3 px-4 rounded-button !rounded-button hover:bg-[#800000] transition-all duration-300 whitespace-nowrap">
+                        Submit
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- </section> -->
+</div>

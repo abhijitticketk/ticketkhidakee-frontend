@@ -1,0 +1,570 @@
+<main
+  class="main"
+  [ngStyle]="{
+    'margin-top': isMobile ? '' : '5%'
+  }"
+>
+  <!-- Page Title -->
+  <div
+    class="page-title dark-background"
+    style="
+      background-image: url(assets/about-page-title-bg.jpg) !important;
+      padding: 40px 0 45px 0;
+    "
+  >
+    <div class="container">
+      <h1 style="color: white !important; font-size: 22px">Blogs</h1>
+    </div>
+  </div>
+  <div
+    *ngIf="isLoading && recentPosts.length === 0"
+    style="height: 300px; padding-top: 100px"
+    class="d-flex justify-content-center"
+  >
+    <div>
+      <img
+        src="assets/TK-Loading-Animation-ver-2.gif"
+        class="img-loader"
+        alt="Loading..."
+        style="width: 70px; height: auto; display: block"
+      />
+    </div>
+  </div>
+
+  <!-- <div *ngIf="searchLoading" [ngClass]="isMobile ? '' : 'wrapper'">
+    <div class="row" style="width: 100% !important;">
+      <div class="col-12 col-md-9" style="display: flex;">
+        <div class="row" style="width: 100% !important;">
+          <div class="skeleton-loader col-12 col-md-6" [ngStyle]="{'width': isMobile ? '100%' : '50%'}">
+            <div class="skeleton skeleton-img" style=" height: 300px;"></div>
+          </div>
+          <div class="skeleton-loader col-12 col-md-6" [ngStyle]="{'width': isMobile ? '100%' : '50%'}">
+            <div class="skeleton skeleton-img" style=" height: 300px;"></div>
+          </div>
+          <div class="skeleton-loader col-12 col-md-6" [ngStyle]="{'width': isMobile ? '100%' : '50%'}">
+            <div class="skeleton skeleton-img" style=" height: 300px;"></div>
+          </div>
+          <div class="skeleton-loader col-12 col-md-6" [ngStyle]="{'width': isMobile ? '100%' : '50%'}">
+            <div class="skeleton skeleton-img" style=" height: 300px;"></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-12 col-md-3">
+        <div class="skeleton-loader">
+          <div class="skeleton skeleton-img" style=" height: 300px;"></div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <div class="container" *ngIf="!(isLoading && recentPosts.length === 0) && recentPosts">
+    <!-- Mobile Search on Top -->
+    <div
+      class="d-block d-lg-none px-3 mt-3"
+      style="padding: 0px !important; margin-top: 20px !important"
+    >
+      <div class="d-flex" style="justify-content: space-between">
+        <div
+          class="search-widget widget-item"
+          style="
+            padding: 0px !important;
+            background: none;
+            border: none;
+            margin-bottom: 0px !important;
+            width: 70%;
+          "
+        >
+          <form>
+            <input
+              type="text"
+              [(ngModel)]="searchKeyword"
+              style="padding: 2px"
+              autocomplete="off"
+              class="small-input"
+              (keyup)="onKeyup($event)"
+              placeholder="Type to search..."
+              name="search1"
+            />
+            <button title="Search">
+              <i
+                class="bi bi-search"
+                style="font-size: 11px"
+                (click)="onSearchClick()"
+              ></i>
+            </button>
+          </form>
+        </div>
+        <div
+          class="d-flex flex-wrap align-items-center gap-2 my-3"
+          style="margin: 0px !important"
+        >
+          <button
+            class="btn btn-outline-danger d-md-none mr-4"
+            (click)="openMobileFilters()"
+            style="
+              border-radius: 20px;
+              margin-right: 0px !important;
+              font-size: 12px;
+            "
+          >
+            <i class="fa fa-filter me-1"></i> Filters
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Modal -->
+    <div class="modal fade" id="mobileFilterModal" tabindex="-1">
+      <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+          <div class="modal-header" style="padding: 7px !important">
+            <h5 class="modal-title">Filters</h5>
+            <button
+              class="btn btn-sm btn-outline-secondary"
+              data-bs-dismiss="modal"
+            >
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+          <div class="modal-body" style="overflow-x: hidden">
+            <div
+              class="row"
+              style="height: 100% !important; width: 100% !important"
+            >
+              <!-- Left: Filter type -->
+              <div
+                class="col-5 border-end"
+                style="background: #f8f9fa !important; padding: 0px !important"
+                (scroll)="onTagScroll($event)"
+              >
+                <ul class="list-group">
+                  <li
+                    class="list-group-item"
+                    [class.active]="activeFilter === 'category'"
+                    (click)="activeFilter = 'category'"
+                  >
+                    Categories
+                  </li>
+                  <li
+                    *ngIf="Tags !== undefined && Tags.length > 0"
+                    class="list-group-item"
+                    [class.active]="activeFilter === 'tags'"
+                    (click)="activeFilter = 'tags'"
+                  >
+                    Tags
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Right: Filter options -->
+              <div class="col-7" style="padding: 6px 9px !important">
+                <div
+                  *ngIf="activeFilter === 'category' && Categories.length > 0"
+                >
+                  <p
+                    (click)="clearCategoriesOnly()"
+                    style="font-size: 12px; margin-bottom: 7px; color: #a50000"
+                    *ngIf="
+                      selectedCategories !== null &&
+                      selectedCategories.length > 0
+                    "
+                  >
+                    Clear Categories
+                  </p>
+
+                  <div
+                    *ngFor="let cat of Categories; let i = index"
+                    class="form-check"
+                  >
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [id]="'cat-' + i"
+                      [value]="cat.EVENT_TYPE"
+                      [checked]="selectedCategories.includes(cat.EVENT_TYPE)"
+                      (change)="selectCategory(cat.EVENT_TYPE)"
+                    />
+                    <label
+                      class="form-check-label"
+                      [for]="'cat-' + i"
+                      style="font-size: 12px"
+                      >{{ cat.EVENT_TYPE }}</label
+                    >
+                  </div>
+                </div>
+
+                <div *ngIf="activeFilter === 'tags' && Tags.length > 0">
+                  <input
+                    type="text"
+                    class="form-control form-control-sm mb-2 small-input"
+                    placeholder="Search tags..."
+                    [(ngModel)]="tagSearchTerm"
+                  />
+                  <p
+                    (click)="clearTagsOnly()"
+                    style="font-size: 12px; margin-bottom: 7px; color: #a50000"
+                    *ngIf="selectedTags !== null && selectedTags.length > 0"
+                  >
+                    Clear Tags
+                  </p>
+
+                  <div
+                    *ngFor="let tag of filteredTags(); let i = index"
+                    class="form-check"
+                  >
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      [value]="tag"
+                      [id]="'tag-' + i"
+                      [checked]="selectedTags.includes(tag)"
+                      (change)="selectTag(tag)"
+                    />
+                    <label
+                      class="form-check-label"
+                      [for]="'tag-' + i"
+                      style="font-size: 12px"
+                      >{{ tag }}</label
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal Footer -->
+          <div
+            class="modal-footer d-flex justify-content-between"
+            style="padding: 8px !important;"
+          >
+            <div
+              class="bg-white d-flex justify-content-between p-2"
+              style="width: 100% !important; padding: 0px !important"
+            >
+              <button
+                class="btn btn-outline-danger w-50 me-2"
+                style="font-size: 12px"
+                (click)="clearAllFilters()"
+              >
+                Clear All
+              </button>
+              <button
+                class="btn btn-danger w-50"
+                style="font-size: 12px"
+                (click)="applyFilters()"
+              >
+                Apply All
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-9" style="padding: 0px">
+        <section
+          id="blog-posts"
+          class="blog-posts section rounded mb-4 mt-4"
+          style="
+            margin-bottom: 30px !important;
+            height: 100vh;
+            overflow-y: scroll;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            overflow-x: hidden;
+          "
+        >
+          <div class="container px-3">
+            <div
+              class="row gy-4 gx-3"
+              *ngIf="reviewscount > 0; else elsereviewblock"
+            >
+              <div
+                class="col-12 col-sm-4 col-lg-4 mb-2"
+                *ngFor="let blog of recentPosts ;"
+              >
+                <article
+                  (click)="blogClick(blog)"
+                  style="padding: 0px !important"
+                >
+                  <div class="post-img" style="margin: 0px !important">
+                    <img
+                      [src]="
+                        blog.IMAGE
+                          ? retriveimgUrl + 'blog/' + blog.IMAGE
+                          : 'assets/default.png'
+                      "
+                      style="
+                        height: 190px !important;
+                        width: 100%;
+                        background-size: 100% 100%;
+                      "
+                      alt="Blog Image"
+                      class="img-fluid"
+                    />
+                  </div>
+                  <p
+                    style="
+                      font-size: 11px !important;
+                      color: #9c9ea6;
+                      padding: 9px 15px 0px 15px !important;
+                    "
+                    class="post-category"
+                  >
+                    <i class="fa-regular fa-calendar-days me-2"></i>
+                    {{ blog.CREATED_MODIFIED_DATE | date : "mediumDate" }}
+                  </p>
+                  <p
+                    style="padding: 0px 15px 0px 15px !important"
+                    class="post-category"
+                    *ngIf="recentPosts && blog.CATEGORY_NAME"
+                  >
+                    {{ blog.CATEGORY_NAME }}
+                  </p>
+                  <h2
+                    class="title"
+                    style="padding: 0px 15px 0px 15px !important"
+                  >
+                    <a
+                      style="
+                        display: block;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        font-size: 16px !important;
+                        text-overflow: ellipsis;
+                        padding-top: 5px;
+                      "
+                      (click)="blogClick(blog)"
+                    >
+                      {{ blog.TITLE }}
+                    </a>
+                  </h2>
+                  <p
+                    class="meta-top line-clamp-4"
+                    style="
+                      text-align: justify;
+                      margin-bottom: 15px !important;
+                      font-size: 12px !important;
+                      margin-top: 9px;
+                      padding: 0px 15px 0px 15px !important;
+                    "
+                  >
+                    {{ getPlainTextFromHTML(blog.DESCRIPTION) }}
+                  </p>
+                </article>
+              </div>
+              <div class="col-12 col-sm-4 col-lg-4 mb-2" *ngIf="isLoading">
+  <div class="skeleton-card">
+    <div class="skeleton skeleton-img"></div>
+    <div class="skeleton skeleton-text"></div>
+    <div class="skeleton skeleton-text short"></div>
+  </div>
+</div>
+
+
+              <!-- <div
+                class="col-12"
+                *ngIf="isLoading"
+                class="text-center mt-2"
+                style="margin-top: 2.5rem !important"
+              >
+                <i class="fa fa-spinner fa-spin"></i> Loading more blogs...
+              </div> -->
+            </div>
+            <ng-template #elsereviewblock>
+              <div
+                style="
+                  width: 100%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  align-self: center;
+                  flex-direction: column;
+                "
+              >
+                <img
+                  src="assets/nodata1.png"
+                  style="height: 170px !important"
+                  alt="No result"
+                />
+                <h1 style="font-size: 16px">Results Not Found</h1>
+              </div>
+            </ng-template>
+          </div>
+        </section>
+      </div>
+
+      <div class="col-lg-3 ps-0 sidebar">
+        <div class="widgets-container rounded mb-8 mt-4 d-none d-lg-block">
+          <!-- Search widget for desktop only -->
+          <div
+            class="search-widget widget-item d-none d-lg-block"
+            style="border-radius: 15px !important"
+          >
+            <h3 class="widget-title">Search</h3>
+            <form>
+              <input
+                type="text"
+                [(ngModel)]="searchKeyword"
+                autocomplete="off"
+                (keyup)="onKeyup($event)"
+                placeholder="Type here to search..."
+                name="search"
+              />
+              <button title="Search">
+                <i class="bi bi-search" (click)="onSearchClick()"></i>
+              </button>
+            </form>
+          </div>
+
+          <!-- Categories -->
+          <div
+            *ngIf="Categories !== undefined && Categories.length > 0"
+            class="tags-widget widget-item d-none d-lg-block"
+            style="border-radius: 15px !important; display: block !important"
+          >
+            <div style="display: flex; justify-content: space-between">
+              <div>
+                <h3 class="widget-title" style="margin-bottom: 0px !important">
+                  Categories
+                </h3>
+              </div>
+              <div style="display: flex; justify-content: flex-end">
+                <span
+                  style="
+                    border: 1px solid #a50000;
+                    background: #fefdfd;
+                    padding: 4px 10px;
+                    border-radius: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    color: #a50000;
+                  "
+                  (click)="clearAllTagscat()"
+                  *ngIf="
+                    selectedCategories !== null && selectedCategories.length > 0
+                  "
+                >
+                  Clear
+                </span>
+              </div>
+            </div>
+            <!-- <ul class="category-scroll mt-3 d-flex d-lg-block overflow-auto flex-nowrap">
+              <li class="me-3" *ngFor="let cat of Categories" style="    padding-bottom: 0px !important;">
+                <p style="margin-bottom: 0px !important;font-size: 13px !important;cursor: pointer;"
+                  [ngClass]="{ 'selectedclass1': isSelectedcat(cat.EVENT_TYPE) }"
+                  (click)="selecttagcat(cat.EVENT_TYPE)">{{cat.EVENT_TYPE}}</p>
+              </li>
+            </ul> -->
+
+            <ul style="margin-top: 20px">
+              <li *ngFor="let cat of Categories">
+                <a
+                  [ngClass]="
+                    isSelectedcat(cat.EVENT_TYPE) ? 'selectedclass' : ''
+                  "
+                  style="
+                    border-radius: 20px;
+                    font-size: 12px;
+                    padding: 4px 14px;
+                    cursor: pointer;
+                  "
+                  (click)="selecttagcat(cat.EVENT_TYPE)"
+                  >{{ cat.EVENT_TYPE }}</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <!-- Tags -->
+          <div
+            class="tags-widget widget-item d-none d-lg-block"
+            *ngIf="Tags !== undefined && Tags.length > 0"
+            style="border-radius: 15px !important"
+          >
+            <div style="display: flex; justify-content: space-between">
+              <div>
+                <h3 class="widget-title" style="margin-bottom: 0px !important">
+                  Tags
+                </h3>
+              </div>
+              <div style="display: flex; justify-content: flex-end">
+                <span
+                  style="
+                    border: 1px solid #a50000;
+                    background: #fefdfd;
+                    padding: 4px 10px;
+                    border-radius: 5px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    color: #a50000;
+                  "
+                  (click)="clearAllTags()"
+                  *ngIf="selectedTags !== null && selectedTags.length > 0"
+                >
+                  Clear
+                </span>
+              </div>
+            </div>
+
+            <!-- <ul  style="margin-top: 20px">
+              <li *ngFor="let tag of Tags">
+                <a [ngClass]="isSelected(tag) ? 'selectedclass' : ''" style="
+                    border-radius: 20px;
+                    font-size: 12px;
+                    padding: 4px 14px;
+                    cursor: pointer;
+                  " (click)="selecttag(tag)">{{ tag }}</a>
+              </li>
+            </ul> -->
+            <!-- <ul style="margin-top: 20px; max-height: 200px; overflow-y: Tagslength >10 :'auto':'visible" (scroll)="onTagScroll($event)">
+              <li *ngFor="let tag of Tags">
+                <a [ngClass]="isSelected(tag) ? 'selectedclass' : ''" style="
+        border-radius: 20px;
+        font-size: 12px;
+        padding: 4px 14px;
+        cursor: pointer;
+        display: inline-block;
+        margin-bottom: 5px;
+      " (click)="selecttag(tag)">{{ tag }}</a>
+              </li>
+            </ul> -->
+
+            <ul
+              (scroll)="onTagScroll($event)"
+              [ngStyle]="{
+                padding: '0px',
+                'margin-top': '20px',
+                'overflow-y': Tags.length > 10 ? 'scroll' : 'visible',
+                'overflow-x': 'hidden',
+                'max-height': Tags.length > 10 ? '97px' : '70px',
+                'scroll-behavior': 'smooth'
+              }"
+              class="tag-scroll"
+            >
+              <li *ngFor="let tag of Tags">
+                <a
+                  [ngClass]="isSelected(tag) ? 'selectedclass' : ''"
+                  style="
+                    border-radius: 20px;
+                    font-size: 12px;
+                    padding: 4px 14px;
+                    cursor: pointer;
+                    display: inline-block;
+                    margin-bottom: 5px;
+                  "
+                  (click)="selecttag(tag)"
+                >
+                  {{ tag }}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

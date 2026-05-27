@@ -1,0 +1,382 @@
+/* Parent container */
+.parent {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 900px;
+  padding: 20px;
+  color: #000;
+  margin-top: 7%;
+}
+
+.title {
+  color: #af0404;
+  font-size: 22px;
+  font-weight: bold;
+  border-bottom: 2px solid #af0404;
+  padding-bottom: 5px;
+}
+.subtitle {
+  font-size: 14px;
+  margin-top: 5px;
+}
+.highlight {
+  color: #af0404;
+}
+.contact-section {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.contact-section .left,
+.contact-section .right {
+  width: 48%;
+}
+.form-container {
+  border: 1px solid #e1e1e1;
+  border-radius: 8px;
+  padding: 20px;
+  background-color: #fff;
+}
+.form-title {
+  color: #af0404;
+  font-weight: bold;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+form {
+  display: flex;
+  flex-direction: column;
+}
+.form-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+input[type="text"],
+input[type="email"],
+textarea {
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+.file-upload {
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.file-upload input[type="file"] {
+  display: none;
+}
+.submit-btn {
+  background-color: #af0404;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.submit-btn:hover {
+  background-color: #8b0303;
+}
+
+@media (max-width: 768px) {
+  .contact-section {
+    flex-direction: column;
+  }
+  .contact-section .left,
+  .contact-section .right {
+    width: 100%;
+  }
+  .form-row {
+    flex-direction: column;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.form-control {
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-top: 4px;
+}
+label {
+  font-weight: 500;
+  font-size: 13px;
+}
+.required {
+  color: #af0404;
+}
+.form-textarea {
+  background-color: white !important;
+}
+.view-link:hover {
+  color: #af0404;
+}
+
+/* Mobile view */
+// @media (max-width: 767.98px) {
+//   .container {
+//     margin-top: 17%; /* or whatever value fits better on mobile */
+//   }
+// }
+
+.contact-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  font-size: 14px;
+}
+
+.bottom-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 3px;
+}
+
+.left,
+.right {
+  flex: 1;
+  min-width: 280px;
+}
+
+.contact-info {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: start;
+  margin-bottom: 10px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+/* Mobile view: stack in column */
+@media (max-width: 767.98px) {
+  .contact-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (min-width: 768px) {
+  .top-row.contact-info {
+    display: flex;
+    gap: 20px; /* Adjust spacing as needed */
+    align-items: center;
+  }
+}
+
+// @media (min-width: 768px) and (max-width: 991.98px) {
+//   .container {
+//     margin-top: 9%; /* Adjust this value as needed for your layout */
+//   }
+// }
+
+.file-upload-group {
+  position: relative;
+  font-size: 16px;
+}
+
+.upload-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  margin-bottom: 2px;
+}
+
+.info-icon {
+  color: #007bff;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.tooltip-note {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 250px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  font-size: 13px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 6px;
+  z-index: 10;
+}
+
+// .file-upload {
+//   display: inline-block;
+//   padding: 8px 14px;
+//   background-color: #f0f0f0;
+//   color: #333;
+//   border-radius: 5px;
+//   cursor: pointer;
+//   transition: background-color 0.3s;
+// }
+
+// .file-upload:hover {
+//   background-color: #e0e0e0;
+// }
+
+@media (max-width: 600px) {
+  .tooltip-note {
+    width: 90%;
+    left: 0;
+    right: 0;
+    font-size: 14px;
+  }
+}
+
+/* Target tablets: 768px–1024px width */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .container {
+    margin-top: 8%;
+  }
+}
+
+.custom-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.custom-modal {
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.modal-actions button {
+  margin: 0 8px;
+  padding: 4px 14px;
+  border: none;
+  border-radius: 4px;
+  background: #af0404;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.modal-actions button:last-child {
+  background: #ccc;
+  color: black;
+}
+
+.custom-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-modal-content {
+  background: #fff;
+  width: 900px;
+  max-width: 95%;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.close-button {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  color: #333;
+}
+
+.modal-body {
+  padding: 20px;
+  min-height: 400px;
+  overflow-y: auto;
+}
+
+.iframe-container {
+  width: 100%;
+  height: 396px;
+}
+
+.spinner {
+  text-align: center;
+  font-size: 13px;
+  color: white;
+  padding: 0px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spinner-icon {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ccc;
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

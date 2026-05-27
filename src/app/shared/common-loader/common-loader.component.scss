@@ -1,0 +1,100 @@
+// .loader-container {
+//   height: 100vh;
+//   background-color: #fdfdfd; // Soft background for a professional look
+// }
+
+// .loader-content {
+//   .animated-logo {
+//     width: 150px;
+//     animation: pulse 1.5s ease-in-out infinite;
+//   }
+// }
+
+// @keyframes pulse {
+//   0% {
+//     transform: scale(1);
+//     opacity: 0.8;
+//   }
+//   50% {
+//     transform: scale(1.1);
+//     opacity: 1;
+//   }
+//   100% {
+//     transform: scale(1);
+//     opacity: 0.8;
+//   }
+// // }
+// :host ::ng-deep .loader-container {
+//   height: 100vh;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   background-color: #ffffff;
+// }
+
+// :host ::ng-deep .animated-logo {
+//   width: 150px;
+//   animation: pulse 1.5s ease-in-out infinite;
+//   background-color: rgb(165, 0, 0);
+// }
+
+// @keyframes pulse {
+//   0% {
+//     transform: scale(1);
+//     opacity: 0.8;
+//   }
+//   50% {
+//     transform: scale(1.1);
+//     opacity: 1;
+//   }
+//   100% {
+//     transform: scale(1);
+//     opacity: 0.8;
+//   }
+// }
+
+
+.loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease-in-out;
+  z-index: 9999;
+}
+
+.loader-container.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.animated-logo {
+  width: 70px;
+  // animation: pulse 1.5s ease-in-out infinite;
+  // background-color: rgb(165, 0, 0);
+}
+
+// @keyframes pulse {
+//   0% {
+//     transform: scale(1);
+//     opacity: 0.8;
+//   }
+//   50% {
+//     transform: scale(1.1);
+//     opacity: 1;
+//   }
+//   100% {
+//     transform: scale(1);
+//     opacity: 0.8;
+//   }
+// }
+

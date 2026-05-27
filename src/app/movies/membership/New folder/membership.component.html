@@ -1,0 +1,450 @@
+<div *ngIf="loadBookingFlag1" class="loader-container show">
+  <div class="loader-content text-center">
+    <div style="text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;">
+      <img src="assets/TK-Loading-Animation-ver-2.gif" alt="Ticket Khidakee Logo" class="animated-logo" />
+    </div>
+
+    <p *ngIf='(cancelled=="Cancelled") else elseblocks;' style="width: 100% !important;margin: 0px !important;"
+      class="text-muted mb-4 text-center m-auto newclass">
+      You've cancelled the payment. You can try again anytime.
+    </p>
+    <ng-template #elseblocks>
+      Almost there! We're processing your request.
+    </ng-template>
+  </div>
+</div>
+
+<div class="container py-5 text-center mt-9" *ngIf="mainlist && !loadBookingFlag1">
+  <h2 class="fw-bold my-3">Membership Plans</h2>
+  <p *ngIf="mainlist && !loadBookingFlag1" class="text-muted mb-4 text-center m-auto newclass">
+    Choose the plan that fits your needs. All plans include essential features to get you started, with scalable options
+    as your needs grow. No hidden fees, and the flexibility to change plans anytime.
+  </p>
+  <p *ngIf="mainlist && loadBookingFlag1" class="text-muted mb-4 text-center m-auto newclass">
+    Almost there! We're processing your request.
+  </p>
+  <div *ngIf="isloading || loadBookingFlag" style="height: 50vh; padding-top: 100px"
+    class="d-flex justify-content-center">
+    <div>
+      <img src="assets/TK-Loading-Animation-ver-2.gif" class="img-loader" alt="Loading..." style="  width: 100px;
+  height: auto;
+  display: block;" />
+
+    </div>
+  </div>
+  <div *ngIf="mainlist">
+    <div class="row g-4 px-7 justify-content-center" *ngIf="!isloading && !loadBookingFlag">
+
+      <button style="display: none" id="loginmodaltrack" data-bs-toggle="modal" data-bs-target="#loginmodal">
+        data
+      </button>
+
+      <div class="modal fade" id="loginmodal" tabindex="-1" aria-labelledby="loginmodalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="width: 300px;margin:auto;">
+          <div class="modal-content p-3 rounded-3" style="padding: 0px !important; border: none !important">
+            <div class="modal-body">
+              <div class="popup">
+                <header style="justify-content: end; display: flex; padding: 9px 10px;cursor: pointer;">
+                  <div class="close" data-bs-dismiss="modal" #closelogin aria-label="Close" style="display: none">
+                    <i class="fa-solid fa-xmark"></i>
+                  </div>
+                  <div class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-xmark"></i>
+                  </div>
+                </header>
+                <hr style="margin-top: 0px !important;color: #808080ad !important;">
+                <div class="content">
+                  <div style="justify-content: center; display: flex">
+                    <img src="assets/playdetails/Group.png" alt="login" />
+                  </div>
+                  <button class="book-btn btn btn-danger mt-3 w-100 w-md-auto reviewbtn1" (click)="openlogin()">
+                    Sign In To Continue &nbsp; <i class="fa-solid fa-arrow-right"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="col-md-6 col-lg-4 align-self" *ngFor="let plan of planwithsubdata">
+        <div *ngIf="searchLoading" class="d-flex justify-content-center">
+          <div class="loader"></div>
+        </div>
+        <div class="card h-100 shadow-sm p-4 rounded-4" [ngClass]="{'border border-warning position-relative': plan?.highlight
+           
+        } ">
+          <div *ngIf="plan?.highlight"
+            class="badge bg-warning text-dark position-absolute top-0 start-50 translate-middle-x mt-2 title">
+            MOST POPULAR PLAN
+          </div>
+          <h5 class="fw-bold text-start" [attr.title]="plan.NAME" style="cursor: pointer;">
+            {{ plan.NAME.length > 70 ? (plan.NAME | slice: 0:70) + '...' : plan.NAME }}
+          </h5>
+          <div #descRef class="text-muted text-start truncate-html me-1"
+            [innerHTML]="getSanitizedHtml(plan.DESCRIPTION)">
+          </div>
+          <div class="text-start">
+            <button type="button" class="btn btn-link p-0 see-more-btn" *ngIf="getTextLength(plan.DESCRIPTION) > 36"
+              data-bs-toggle="modal" [attr.data-bs-target]="'#descModal' + plan.ID" style="font-size: 10px;">
+              See More
+            </button>
+          </div>
+
+          <div class="modal fade" [id]="'descModal' + plan.ID" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Description</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <div [innerHTML]="getSanitizedHtml(plan.DESCRIPTION)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+          <h2 class="fw-bold mb-3 text-start" style="align-items: center;display: flex;">
+            {{ plan.price === 0 ? 'Free' : '₹' + ' '+ plan.RATE }}
+            <small *ngIf="plan.RATE !== 0" class="fs-6 text-muted">&nbsp;(Per user)</small>
+          </h2>
+
+
+          <ul class="list-unstyled text-start">
+
+
+
+
+            <li *ngIf="plan.VALIDITY_DAYS_FROM_PURCHASE" class="d-flex textgap">
+              <i class="fa fa-check-circle" style="color: green; font-size: 15px; margin: 2px; margin-top: 3px;"
+                aria-hidden="true"></i>
+              Valid for {{ plan.VALIDITY_DAYS_FROM_PURCHASE }} days after purchase
+            </li>
+
+
+            <li *ngIf="plan.VALIDITY_ON_DAYS == 0" class="d-flex textgap">
+              <i class="fa fa-check-circle" style="color: green; font-size: 15px; margin: 2px; margin-top: 3px;"
+                aria-hidden="true"></i>
+              Validity : {{ plan.PLAN_START_DATE | date : 'dd MMM YYYY' }} -
+              {{ plan.PLAN_END_DATE | date : 'dd MMM YYYY' }}
+            </li>
+
+
+
+
+            <li class="d-flex align-items-start textgap">
+              <i *ngIf="plan.EARLY_ACCESS_ALLOWED == 1; else crossIcon" class="fa fa-check-circle"
+                style="color: green; font-size: 15px; margin: 2px; margin-top: 3px;" aria-hidden="true"></i>
+
+              <ng-template #crossIcon>
+                <i class="fa fa-times-circle" style="color: #a50000; font-size: 15px; margin: 2px; margin-top: 3px;"
+                  aria-hidden="true"></i>
+              </ng-template>
+
+              <ng-container *ngIf="plan.EARLY_ACCESS_ALLOWED == 1; else noAccess">
+                <span>Early access to bookings</span>
+              </ng-container>
+
+              <ng-template #noAccess>
+                <span>No early access available for booking</span>
+              </ng-template>
+            </li>
+
+
+
+            <li *ngIf="plan.IS_SPECIFIC_EVENT" class="d-flex textgap ">
+              <i class="fa fa-check-circle" style="color: green; font-size: 15px; margin: 2px; margin-top: 3px;"
+                aria-hidden="true"></i>
+              Applies to specific events
+            </li>
+
+            <li *ngIf="plan.IS_SPECIFIC_VENUE" class="d-flex textgap ">
+              <i class="fa fa-check-circle" style="color: green; font-size: 15px; margin: 2px; margin-top: 3px;"
+                aria-hidden="true"></i>
+              Applies to specific venues
+            </li>
+
+            <li *ngIf="plan.IS_SPECIFIC_CITY" class="d-flex textgap ">
+              <i class="fa fa-check-circle" style="color: green; font-size: 15px; margin: 2px; margin-top: 3px;"
+                aria-hidden="true"></i>
+              Applies to specific cities
+            </li>
+
+            <li *ngIf="plan.IS_SPECIFIC_CATEGORY" class="d-flex textgap ">
+              <i class="fa fa-check-circle" style="color: green; font-size: 15px; margin: 2px; margin-top: 3px;"
+                aria-hidden="true"></i>
+              Applies to specific categories
+            </li>
+            <li *ngIf="plan.DISCOUNT_TYPE && plan.DISCOUNT_TYPE !== 'None'" class="d-flex textgap  align-items-start">
+              <i class="fa fa-check-circle" style="color: green; font-size: 15px; margin: 2px; margin-top: 3px;"
+                aria-hidden="true"></i>
+              <span>
+                <ng-container [ngSwitch]="plan.DISCOUNT_TYPE">
+                  <span *ngSwitchCase="'Percentage'">
+                    Get {{ plan.DISCOUNT_VALUE }}% off
+                  </span>
+                  <span *ngSwitchCase="'Flat'">
+                    Get Flat ₹{{ plan.DISCOUNT_VALUE }} Off
+                  </span>
+                  <span *ngSwitchCase="'Bogo'">
+                    Buy 1 Get 1 Free
+                  </span>
+                </ng-container>
+              </span>
+            </li>
+            <li
+              *ngIf="plan.MAX_DISCOONT_PER_TICKET && plan.DISCOUNT_TYPE !== 'None' && plan.MAX_DISCOONT_PER_TICKET != '0.00'"
+              class="d-flex textgap ">
+              <i class="fa fa-check-circle" style="color: green; font-size: 15px; margin: 2px; margin-top: 3px;"
+                aria-hidden="true"></i>
+              Max ₹{{ plan.MAX_DISCOONT_PER_TICKET }} per ticket
+            </li>
+
+            <li *ngIf="plan.MAX_TOTAL_DISCOUNT && plan.DISCOUNT_TYPE !== 'None' && plan.MAX_TOTAL_DISCOUNT != '0.00'"
+              class="d-flex textgap ">
+              <i class="fa fa-check-circle" style="color: green; font-size: 15px; margin: 2px; margin-top: 3px;"
+                aria-hidden="true"></i>
+              Save up to ₹{{ plan.MAX_TOTAL_DISCOUNT }} total
+            </li>
+
+            <li *ngIf="plan.MAX_OCCURENCES" class="d-flex textgap ">
+              <i class="fa fa-check-circle" style="color: green; font-size: 15px; margin: 2px; margin-top: 3px;"
+                aria-hidden="true"></i>
+              Can be used {{ plan.MAX_OCCURENCES }} times
+            </li>
+
+            <li *ngIf="plan.MAX_OCCURENCES" class="d-flex textgap ">
+              <i class="fa fa-check-circle" style="color: green; font-size: 15px; margin: 2px; margin-top: 3px;"
+                aria-hidden="true"></i>
+              Max {{ plan.TICKET_LIMIT }} tickets per use
+            </li>
+          </ul>
+          <div *ngIf="plan.ADDITIONAL_DETAILS && stripHtmlTags(plan.ADDITIONAL_DETAILS).length > 0"
+            class="d-flex flex-column" style="text-align:left">
+            <p style="font-weight: bold; margin-top:5px; margin-bottom:0; font-size:11px; line-height:15px;">
+              Additional Details:
+            </p>
+            <div class="text-muted text-start truncate-html me-1" style="font-size: 10px;"
+              [innerHTML]="getSanitizedHtml(plan.ADDITIONAL_DETAILS)">
+            </div>
+            <div class="text-start mb-2">
+              <button type="button" class="btn btn-link p-0 see-more-btn" data-bs-toggle="modal"
+                [attr.data-bs-target]="'#additionalModal' + plan.ID" style="font-size: 10px;"
+                *ngIf="getTextLength(plan.ADDITIONAL_DETAILS) > 43">
+                See More
+              </button>
+            </div>
+          </div>
+
+          <div class="modal fade" [id]="'additionalModal' + plan.ID" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Additional Details</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <div [innerHTML]="getSanitizedHtml(plan.ADDITIONAL_DETAILS)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button *ngIf="!userID" [disabled]="loadsubscribe[plan.ID]" class="btn mt-auto w-100 rounded-pill" style="background-color: #af0404; color: white;margin-top: 15px !important;    position: absolute;
+    bottom: 14px;
+    width: 90% !important;
+" (click)="openLogin(plan)">
+            <div class="spinner-border text-danger"
+              style="color: #ffffff !important;height: 1rem !important; width: 1rem !important;margin-right: 10px;"
+              role="status" *ngIf="loadsubscribe[plan.ID]">
+              <span class="sr-only"></span>
+            </div>
+            {{ plan.RATE === 0 ? 'Try for free' : 'Subscribe Now' }}
+          </button>
+          <button *ngIf="userID" [disabled]="loadsubscribe[plan.ID]" class="btn mt-auto w-100 rounded-pill" style="background-color: #af0404; color: white;margin-top: 15px !important;    position: absolute;
+    bottom: 14px;
+    width: 90% !important;
+" (click)="plan.isSubscribed ? '' : openLogin(plan)" [ngClass]="{'disabled-plan': plan?.isSubscribed}">
+            <div class="spinner-border text-danger"
+              style="color: #ffffff !important;height: 1rem !important; width: 1rem !important;margin-right: 10px;"
+              role="status" *ngIf="loadsubscribe[plan.ID]">
+              <span class="sr-only"></span>
+            </div>
+            {{ plan.isSubscribed ? 'Subscribed' : (plan.RATE === 0 ? 'Try for free' : 'Subscribe Now') }}
+          </button>
+          <p *ngIf="plan?.RATE !== 0" class="mt-2"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="py-5 text-center mt-9" *ngIf="!mainlist && !loadBookingFlag1">
+  <h2 class="fw-bold my-3">Membership Plans</h2>
+  <div>
+    <div class="containerrrrr">
+      <div style="text-align: left;">
+        <span (click)="goBack()" style="cursor: pointer;color: #a50000;align-items: center; display: flex;">
+          <span style="font-size: 20px;">&lt;&nbsp;</span> Back
+        </span>
+      </div>
+      <div class="bg-white rounded-md shadow-sm p-2 space-y-6 mb-4">
+        <div>
+          <h4 class="section-title-small" style="font-size: 13px; font-weight: 600; margin-bottom: 8px">
+            Plan Details
+          </h4>
+          <div class="  p-3 mx-3 border rounded shadow-sm" style=" cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);text-align: left;">
+            <div style="font-size: 14px;font-weight: 600"> {{plandataaaa.NAME }}</div>
+            <li style="font-size: 12px !important;margin-left: 20px;" *ngIf="plandataaaa.VALIDITY_DAYS_FROM_PURCHASE">
+              Valid for {{ plandataaaa.VALIDITY_DAYS_FROM_PURCHASE }} days after purchase
+            </li>
+            <li style="font-size: 12px !important;margin-left: 20px;" *ngIf="plandataaaa.VALIDITY_ON_DAYS == 0">
+
+              Validity : {{ plandataaaa.PLAN_START_DATE | date : 'dd MMM YYYY' }} -
+              {{ plandataaaa.PLAN_END_DATE | date : 'dd MMM YYYY' }}
+            </li>
+
+            <li style="font-size: 12px !important;margin-left: 20px;" *ngIf="plandataaaa.MAX_OCCURENCES">
+              Can be used {{ plandataaaa.MAX_OCCURENCES }} times
+            </li>
+
+            <li style="font-size: 12px !important;margin-left: 20px;" *ngIf="plandataaaa.TICKET_LIMIT"> Max {{
+              plandataaaa.TICKET_LIMIT }}
+              tickets per use</li>
+            <li style="font-size: 12px !important;margin-left: 20px;"
+              *ngIf="plandataaaa.DISCOUNT_TYPE && plandataaaa.DISCOUNT_TYPE !== 'None'">
+              <ng-container [ngSwitch]="plandataaaa.DISCOUNT_TYPE">
+                <span style="font-size: 12px !important;" *ngSwitchCase="'Percentage'">
+                  Get {{ plandataaaa.DISCOUNT_VALUE }}% off
+                </span>
+                <span style="font-size: 12px !important;" *ngSwitchCase="'Flat'">
+                  Get Flat ₹{{ plandataaaa.DISCOUNT_VALUE }} Off
+                </span>
+                <span style="font-size: 12px !important;" *ngSwitchCase="'Bogo'">
+                  Buy 1 Get 1 Free
+                </span>
+              </ng-container>
+            </li>
+          </div>
+        </div>
+        <div>
+          <h4 class="section-title-small" style="font-size: 13px; font-weight: 600; margin-bottom: 8px">
+            Coupons
+          </h4>
+          <div *ngIf="!spincuponopen" class="coupon-box  p-3 mx-3 border rounded shadow-sm" style="
+                cursor: pointer;
+                display: flex;
+                border-color: #a50000;
+              ">
+            <input type="text" [disabled]="coupanapplies" class="form-control form-control-sm fs-6 custom-placeholder"
+              placeholder="Enter Coupon Code" [(ngModel)]="applycode" style="font-size: 13px" />
+            <button class="btn btn-sm btn-primary ms-2 py-2" *ngIf="!coupanapplies" (click)="applyforcupon()"
+              [disabled]="!applycode" style="font-size: 13px">
+              Apply Coupon
+            </button>
+            <button class="btn btn-sm btn-primary ms-2 py-2" *ngIf="coupanapplies" (click)="clearcupon()"
+              [disabled]="!applycode" style="font-size: 13px">
+              Remove Coupon
+            </button>
+          </div>
+
+          <div class="d-flex justify-content-center" *ngIf="spincuponopen">
+            <div class="spinner-border text-danger" role="status">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h4 class="section-title-small" style="font-size: 13px; font-weight: 600; margin-bottom: 8px">
+            Payment Details
+          </h4>
+          <div class="space-y-2 px-3">
+            <div class="flex justify-between" style="font-size: 12px">
+              <div>Plan Amount</div>
+              <div>₹ {{baseAmount|number}}</div>
+            </div>
+            <div *ngIf="discount>0" class="flex justify-between" style="font-size: 12px">
+              <div>Coupan Discount</div>
+              <div class="text-right">
+                <div>- ₹ {{discount |number}} </div>
+              </div>
+            </div>
+
+            <div *ngIf="convenienceFee>0" class="flex justify-between" style="font-size: 12px">
+              <div>Convenience Fee</div>
+              <div class="text-right">
+                <div> ₹ {{convenienceFee|number }} </div>
+              </div>
+            </div>
+            <div *ngIf="convenienceFee>0 && cgstAmount>0" class="flex justify-between" style="font-size: 12px">
+              <div>CGST @ 9 % </div>
+              <div class="text-right">
+                <div>₹ {{cgstAmount|number}}</div>
+              </div>
+            </div>
+
+            <div *ngIf="convenienceFee>0 && sgstAmount>0" class="flex justify-between" style="font-size: 12px">
+              <div>SGST @ 9 %</div>
+              <div class="text-right">
+                <div>₹ {{sgstAmount|number}}</div>
+              </div>
+            </div>
+            <div class="border-t pt-2 mt-3 flex justify-between" style="font-weight: 600; font-size: 12px">
+              <div>Total</div>
+              <div style="text-align: end !important;">₹ {{totalAmount|number}} <br>
+                <small>{{commonFunction.amountInWords(totalAmount) }}</small>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div *ngIf="plandataaaa.TERMS_AND_CONDITIONS && stripHtmlTags(plandataaaa.TERMS_AND_CONDITIONS).length > 0"
+          class="d-flex flex-column" style="text-align:left">
+          <div class="align-items-center ml-4 d-flex align-items-center">
+            <input type="checkbox" [(ngModel)]="isAgreed" id="agreeCheck">
+            <label for="agreeCheck" class="mb-0 ms-2" style="font-size: 11px;">I agree to the</label>
+
+            <button type="button" class="btn btn-link p-0 see-more-btn ms-1" data-bs-toggle="modal"
+              [attr.data-bs-target]="'#termsModal' + plandataaaa.ID" style="font-size: 10px;">
+              Terms & Conditions
+            </button>
+          </div>
+        </div>
+
+        <div class="modal fade" [id]="'termsModal' + plandataaaa.ID" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Terms & Conditions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <div [innerHTML]="getSanitizedHtml(plandataaaa.TERMS_AND_CONDITIONS)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Continue Button -->
+
+        <button *ngIf="!spincuponopen && totalAmount>0" (click)="proceedToPay()"
+          class="w-full btn-primary text-white py-2 rounded-md uppercase font-medium hover:opacity-90 transition-opacity mt-4"
+          style="font-size: 12px;">
+          Proceed to Pay
+        </button>
+        <button *ngIf="!spincuponopen &&  totalAmount==0" (click)="proceedToPaywith0()"
+          class="w-full btn-primary text-white py-2 rounded-md uppercase font-medium hover:opacity-90 transition-opacity mt-4"
+          style="font-size: 12px">
+          Proceed to Pay
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

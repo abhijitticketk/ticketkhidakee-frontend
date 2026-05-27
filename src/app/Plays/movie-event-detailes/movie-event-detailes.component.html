@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theater Booking - Show Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#e11d48',
+                        secondary: '#f43f5e'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :where([class^="ri-"])::before {
+            content: "\f3c2";
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #1f2937;
+        }
+
+        .date-item {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .date-item.active {
+            background-color: #e11d48;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .time-slot {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .time-slot:hover:not(.unavailable) {
+            transform: scale(1.05);
+        }
+
+        .time-slot.unavailable {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .breadcrumb-item+.breadcrumb-item::before {
+            content: "/";
+            padding: 0 0.5rem;
+            color: #9ca3af;
+        }
+
+        .rating-stars i {
+            color: #f59e0b;
+        }
+
+        .facility-icon {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .facility-icon:hover {
+            transform: translateY(-3px);
+        }
+
+        .cast-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .cast-item img {
+            transition: all 0.3s ease-in-out;
+        }
+
+        .gallery-item {
+            overflow: hidden;
+        }
+
+        .gallery-item img {
+            transition: all 0.3s ease-in-out;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .booking-widget {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .price-category-tab {
+            transition: all 0.2s ease-in-out;
+        }
+    </style>
+</head>
+<!-- <body class="bg-gray-50"> -->
+
+
+<!-- Hero Banner -->
+<div class="relative w-full h-[400px] md:h-[500px] overflow-hidden" style="margin-top: 70px;">
+    <!-- <img src="https://readdy.ai/api/search-image?query=A%20dramatic%20theater%20stage%20with%20professional%20lighting%2C%20showing%20a%20modern%20interpretation%20of%20Hamlet%20play.%20The%20stage%20has%20rich%20red%20curtains%20and%20dramatic%20lighting%20effects.%20The%20scene%20shows%20actors%20in%20modern%20costumes%20with%20classical%20elements%2C%20creating%20a%20visually%20striking%20composition%20perfect%20for%20a%20theater%20booking%20website%20banner.&width=1200&height=500&seq=1&orientation=landscape" -->
+    <img src="assets/Play Photos/aistage.png" alt="Hamlet: The Modern Tale" class="w-full h-full object-cover">
+    <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row items-start md:items-end justify-between">
+                <div>
+                    <h1 class="text-3xl md:text-5xl font-bold text-white mb-2">Mahabharat: A New Perspective</h1>
+                    <div class="flex items-center space-x-4 mb-3">
+                        <div class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium flex items-center">
+                            <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                <i class="ri-star-fill"></i>
+                            </div>
+                            <span>4.8/5</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">Drama</span>
+                            <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">Tragedy</span>
+                            <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">Classic</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-6 text-white">
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-1">
+                                <i class="ri-time-line"></i>
+                            </div>
+                            <span>2h 30m</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-1">
+                                <i class="ri-translate-2"></i>
+                            </div>
+                            <span>English</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-5 h-5 flex items-center justify-center mr-1">
+                                <i class="ri-film-line"></i>
+                            </div>
+                            <span>UA</span>
+                        </div>
+                    </div>
+                </div>
+                <button
+                    class="mt-4 md:mt-0 bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-button font-medium flex items-center whitespace-nowrap">
+                    <div class="w-5 h-5 flex items-center justify-center mr-2">
+                        <i class="ri-ticket-2-line"></i>
+                    </div>
+                    Book Tickets
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
+        <!-- Left Content -->
+        <div class="w-full lg:w-2/3">
+
+
+            <!-- Date and Time Selection -->
+            <!-- <div class="bg-white rounded shadow-sm p-6 mb-8">
+                    <h2 class="text-xl font-bold mb-4">Select Date & Time</h2>
+                    
+                 
+                    <div class="overflow-x-auto pb-2 mb-6">
+                        <div class="flex space-x-3 min-w-max">
+                            <div class="date-item active cursor-pointer w-16 h-20 rounded flex flex-col items-center justify-center">
+                                <span class="text-sm font-medium">Wed</span>
+                                <span class="text-xl font-bold">21</span>
+                                <span class="text-sm">May</span>
+                            </div>
+                            <div class="date-item cursor-pointer w-16 h-20 rounded border border-gray-200 flex flex-col items-center justify-center">
+                                <span class="text-sm font-medium">Thu</span>
+                                <span class="text-xl font-bold">22</span>
+                                <span class="text-sm">May</span>
+                            </div>
+                            <div class="date-item cursor-pointer w-16 h-20 rounded border border-gray-200 flex flex-col items-center justify-center">
+                                <span class="text-sm font-medium">Fri</span>
+                                <span class="text-xl font-bold">23</span>
+                                <span class="text-sm">May</span>
+                            </div>
+                            <div class="date-item cursor-pointer w-16 h-20 rounded border border-gray-200 flex flex-col items-center justify-center">
+                                <span class="text-sm font-medium">Sat</span>
+                                <span class="text-xl font-bold">24</span>
+                                <span class="text-sm">May</span>
+                            </div>
+                            <div class="date-item cursor-pointer w-16 h-20 rounded border border-gray-200 flex flex-col items-center justify-center">
+                                <span class="text-sm font-medium">Sun</span>
+                                <span class="text-xl font-bold">25</span>
+                                <span class="text-sm">May</span>
+                            </div>
+                            <div class="date-item cursor-pointer w-16 h-20 rounded border border-gray-200 flex flex-col items-center justify-center">
+                                <span class="text-sm font-medium">Mon</span>
+                                <span class="text-xl font-bold">26</span>
+                                <span class="text-sm">May</span>
+                            </div>
+                            <div class="date-item cursor-pointer w-16 h-20 rounded border border-gray-200 flex flex-col items-center justify-center">
+                                <span class="text-sm font-medium">Tue</span>
+                                <span class="text-xl font-bold">27</span>
+                                <span class="text-sm">May</span>
+                            </div>
+                        </div>
+                    </div>
+                     
+                    <div class="flex border-b border-gray-200 mb-6">
+                        <button class="price-category-tab px-6 py-3 font-medium text-primary border-b-2 border-primary">Premium (£75)</button>
+                        <button class="price-category-tab px-6 py-3 font-medium text-gray-500 hover:text-primary">Standard (£45)</button>
+                        <button class="price-category-tab px-6 py-3 font-medium text-gray-500 hover:text-primary">Budget (£25)</button>
+                    </div>
+                     
+                    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                        <div class="time-slot cursor-pointer border border-primary text-primary hover:bg-primary hover:text-white rounded-button py-2 flex items-center justify-center font-medium">
+                            10:30 AM
+                        </div>
+                        <div class="time-slot cursor-pointer border border-primary text-primary hover:bg-primary hover:text-white rounded-button py-2 flex items-center justify-center font-medium">
+                            1:00 PM
+                        </div>
+                        <div class="time-slot unavailable cursor-pointer border border-gray-300 text-gray-400 rounded-button py-2 flex items-center justify-center font-medium">
+                            3:30 PM
+                        </div>
+                        <div class="time-slot cursor-pointer border border-primary text-primary hover:bg-primary hover:text-white rounded-button py-2 flex items-center justify-center font-medium">
+                            6:00 PM
+                        </div>
+                        <div class="time-slot cursor-pointer border border-primary text-primary hover:bg-primary hover:text-white rounded-button py-2 flex items-center justify-center font-medium">
+                            8:30 PM
+                        </div>
+                    </div>
+                </div> -->
+
+            <!-- Show Details -->
+            <div class="bg-white rounded shadow-sm p-6 mb-8">
+                <h2 class="text-xl font-bold mb-4">About the Show</h2>
+                <p class="text-gray-700 mb-6 leading-relaxed">
+                    Experience the epic of Mahabharat from a new perspective. "Mahabharat: A New Perspective" brings
+                    this timeless saga of Dharma, Karma, and justice to life on a modern stage. This critically
+                    acclaimed production stars **Aryan Khan** as Arjun and **Priya Sharma** as Draupadi, with stunning
+                    performances from the entire cast that breathe new life into this ancient masterpiece.
+
+
+                </p>
+                <p class="text-gray-700 mb-6 leading-relaxed">
+                    Set against a backdrop of contemporary social and political struggles, this adaptation maintains the
+                    core essence and philosophy of the Mahabharat while making its themes resonate with today's
+                    audiences. The innovative use of multimedia elements and a soulful original score create an
+                    immersive theatrical experience you won't soon forget.
+                </p>
+
+                <!-- Cast & Crew -->
+                <h3 class="text-lg font-bold mb-4 mt-8">Cast & Crew</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+                    <div class="cast-item flex flex-col items-center">
+                        <div class="w-20 h-20 rounded-full overflow-hidden mb-2">
+                            <img src="https://readdy.ai/api/search-image?query=Professional%20headshot%20of%20a%20male%20actor%20in%20his%2030s%20with%20intense%20expression%2C%20suitable%20for%20a%20theater%20program%2C%20high%20quality%20portrait%20with%20neutral%20background&width=200&height=200&seq=2&orientation=squarish"
+                                alt="James Richardson" class="w-full h-full object-cover">
+                        </div>
+                        <h6 class="font-medium text-center">James Richardson</h6>
+                        <p class="text-sm text-primary text-center">as Hamlet</p>
+                    </div>
+                    <div class="cast-item flex flex-col items-center">
+                        <div class="w-20 h-20 rounded-full overflow-hidden mb-2">
+                            <img src="https://readdy.ai/api/search-image?query=Professional%20headshot%20of%20an%20elegant%20female%20actress%20in%20her%2040s%20with%20regal%20appearance%2C%20suitable%20for%20a%20theater%20program%2C%20high%20quality%20portrait%20with%20neutral%20background&width=200&height=200&seq=3&orientation=squarish"
+                                alt="Victoria Harlow" class="w-full h-full object-cover">
+                        </div>
+                        <h6 class="font-medium text-center">Victoria Harlow</h6>
+                        <p class="text-sm text-primary text-center">as Gertrude</p>
+                    </div>
+                    <div class="cast-item flex flex-col items-center">
+                        <div class="w-20 h-20 rounded-full overflow-hidden mb-2">
+                            <img src="https://readdy.ai/api/search-image?query=Professional%20headshot%20of%20a%20distinguished%20male%20actor%20in%20his%2050s%20with%20stern%20expression%2C%20suitable%20for%20a%20theater%20program%2C%20high%20quality%20portrait%20with%20neutral%20background&width=200&height=200&seq=4&orientation=squarish"
+                                alt="Robert Kingsley" class="w-full h-full object-cover">
+                        </div>
+                        <h6 class="font-medium text-center">Robert Kingsley</h6>
+                        <p class="text-sm text-primary text-center">as Claudius</p>
+                    </div>
+                    <div class="cast-item flex flex-col items-center">
+                        <div class="w-20 h-20 rounded-full overflow-hidden mb-2">
+                            <img src="https://readdy.ai/api/search-image?query=Professional%20headshot%20of%20a%20young%20female%20actress%20in%20her%2020s%20with%20gentle%20expression%2C%20suitable%20for%20a%20theater%20program%2C%20high%20quality%20portrait%20with%20neutral%20background&width=200&height=200&seq=5&orientation=squarish"
+                                alt="Emily Winters" class="w-full h-full object-cover">
+                        </div>
+                        <h6 class="font-medium text-center">Emily Winters</h6>
+                        <p class="text-sm text-primary text-center">as Ophelia</p>
+                    </div>
+                </div>
+
+                <!-- Director -->
+                <div class="mt-8 flex items-center">
+                    <div class="w-16 h-16 rounded-full overflow-hidden mr-4">
+                        <img src="https://readdy.ai/api/search-image?query=Professional%20headshot%20of%20a%20creative%20male%20theater%20director%20in%20his%2040s%20with%20artistic%20appearance%2C%20suitable%20for%20a%20theater%20program%2C%20high%20quality%20portrait%20with%20neutral%20background&width=200&height=200&seq=6&orientation=squarish"
+                            alt="Michael Thompson" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h6 class="font-medium">Michael Thompson</h6>
+                        <p class="text-sm text-primary">Director</p>
+                        <p class="text-sm text-gray-600 mt-1">Award-winning director known for his innovative approach
+                            to classical theater</p>
+                    </div>
+                </div>
+
+                <!-- Gallery -->
+                <h3 class="text-lg font-bold mb-4 mt-8">Gallery</h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="gallery-item rounded overflow-hidden h-40">
+                        <img src="https://readdy.ai/api/search-image?query=Dramatic%20scene%20from%20modern%20Hamlet%20play%20on%20theater%20stage%20with%20professional%20lighting%2C%20actors%20in%20contemporary%20costumes%20performing%20an%20intense%20moment&width=400&height=300&seq=7&orientation=landscape"
+                            alt="Scene from Hamlet" class="w-full h-full object-cover">
+                    </div>
+                    <div class="gallery-item rounded overflow-hidden h-40">
+                        <img src="https://readdy.ai/api/search-image?query=Theater%20stage%20with%20minimalist%20set%20design%20for%20Hamlet%20play%2C%20showing%20creative%20lighting%20and%20modern%20interpretation%20of%20the%20classic&width=400&height=300&seq=8&orientation=landscape"
+                            alt="Stage Design" class="w-full h-full object-cover">
+                    </div>
+                    <div class="gallery-item rounded overflow-hidden h-40">
+                        <img src="https://readdy.ai/api/search-image?query=Close-up%20of%20actors%20performing%20emotional%20scene%20from%20Hamlet%20on%20stage%20with%20dramatic%20lighting%20and%20contemporary%20costumes&width=400&height=300&seq=9&orientation=landscape"
+                            alt="Emotional Scene" class="w-full h-full object-cover">
+                    </div>
+                    <div class="gallery-item rounded overflow-hidden h-40">
+                        <img src="https://readdy.ai/api/search-image?query=Theater%20audience%20watching%20Hamlet%20play%20from%20perspective%20of%20the%20stage%2C%20showing%20elegant%20theater%20interior%20with%20red%20seats&width=400&height=300&seq=10&orientation=landscape"
+                            alt="Theater Interior" class="w-full h-full object-cover">
+                    </div>
+                    <div class="gallery-item rounded overflow-hidden h-40">
+                        <img src="https://readdy.ai/api/search-image?query=Behind%20the%20scenes%20of%20Hamlet%20production%20showing%20crew%20and%20actors%20preparing%20for%20performance&width=400&height=300&seq=11&orientation=landscape"
+                            alt="Behind the Scenes" class="w-full h-full object-cover">
+                    </div>
+                    <div class="gallery-item rounded overflow-hidden h-40">
+                        <img src="https://readdy.ai/api/search-image?query=Artistic%20promotional%20poster%20for%20modern%20Hamlet%20play%20with%20dramatic%20typography%20and%20minimalist%20design&width=400&height=300&seq=12&orientation=landscape"
+                            alt="Promotional Poster" class="w-full h-full object-cover">
+                    </div>
+                </div>
+
+                <!-- Reviews -->
+                <h3 class="text-lg font-bold mb-4 mt-8">Reviews</h3>
+                <div class="space-y-6">
+                    <div class="border-b border-gray-100 pb-6">
+                        <div class="flex items-center mb-2">
+                            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-3">
+                                <span class="font-medium text-primary">SL</span>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">Sarah Lawrence</h4>
+                                <div class="flex items-center rating-stars">
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                </div>
+                            </div>
+                            <span class="ml-auto text-sm text-gray-500">May 15, 2025</span>
+                        </div>
+                        <p class="text-gray-700">Absolutely stunning performance! James Richardson's portrayal of Hamlet
+                            was mesmerizing. The modern setting worked perfectly with the timeless themes of the play.
+                            Highly recommend catching this before the run ends.</p>
+                    </div>
+
+                    <div class="border-b border-gray-100 pb-6">
+                        <div class="flex items-center mb-2">
+                            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-3">
+                                <span class="font-medium text-primary">DM</span>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">David Mitchell</h4>
+                                <div class="flex items-center rating-stars">
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-line"></i>
+                                </div>
+                            </div>
+                            <span class="ml-auto text-sm text-gray-500">May 12, 2025</span>
+                        </div>
+                        <p class="text-gray-700">A fresh take on a classic that manages to honor the original while
+                            making it accessible to modern audiences. The multimedia elements were integrated
+                            seamlessly. My only criticism would be that some scenes felt rushed, but overall a fantastic
+                            production.</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center mb-2">
+                            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center mr-3">
+                                <span class="font-medium text-primary">RJ</span>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">Rachel Johnson</h4>
+                                <div class="flex items-center rating-stars">
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-fill"></i>
+                                    <i class="ri-star-half-fill"></i>
+                                </div>
+                            </div>
+                            <span class="ml-auto text-sm text-gray-500">May 10, 2025</span>
+                        </div>
+                        <p class="text-gray-700">Emily Winters as Ophelia was the standout performance for me. Her
+                            portrayal of Ophelia's descent into madness was heartbreaking and beautifully executed. The
+                            set design and lighting created the perfect atmosphere for this dark tale. Will definitely
+                            be recommending to friends!</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Theater Info -->
+            <div class="bg-white rounded shadow-sm p-6 mb-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold mb-2">Royal Shakespeare Theater</h2>
+                        <div class="flex items-center text-gray-600">
+                            <div class="w-5 h-5 flex items-center justify-center mr-2 text-primary">
+                                <i class="ri-map-pin-line"></i>
+                            </div>
+                            <span>42 Shakespeare Avenue, London, UK</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 md:mt-0 flex space-x-4">
+                        <div class="facility-icon w-10 h-10 flex items-center justify-center bg-red-50 rounded-full">
+                            <i class="ri-parking-line text-primary"></i>
+                        </div>
+                        <div class="facility-icon w-10 h-10 flex items-center justify-center bg-red-50 rounded-full">
+                            <i class="ri-restaurant-line text-primary"></i>
+                        </div>
+                        <div class="facility-icon w-10 h-10 flex items-center justify-center bg-red-50 rounded-full">
+                            <i class="ri-wheelchair-line text-primary"></i>
+                        </div>
+                        <div class="facility-icon w-10 h-10 flex items-center justify-center bg-red-50 rounded-full">
+                            <i class="ri-wifi-line text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="h-[200px] bg-gray-100 rounded overflow-hidden">
+                    <img src="https://public.readdy.ai/gen_page/map_placeholder_1280x720.png" alt="Theater Location"
+                        class="w-full h-full object-cover">
+                </div>
+
+                <!-- <div class="mt-4 p-4 bg-red-50 rounded border border-red-100 flex items-center">
+                    <div class="w-10 h-10 flex items-center justify-center mr-3 text-primary">
+                        <i class="ri-shield-check-line text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-medium">Safety Measures</h3>
+                        <p class="text-sm text-gray-600">Contactless digital tickets • Sanitized venue • Social
+                            distancing in seating</p>
+                    </div>
+                </div> -->
+            </div>
+            <!-- Related Shows -->
+            <div class="bg-white rounded shadow-sm p-6">
+                <h2 class="text-xl font-bold mb-4">You May Also Like</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    <div class="rounded overflow-hidden shadow-sm">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://readdy.ai/api/search-image?query=Theater%20stage%20performance%20of%20Macbeth%20with%20dramatic%20lighting%20and%20fog%20effects%2C%20showing%20actors%20in%20contemporary%20costumes%20with%20classical%20elements&width=400&height=300&seq=13&orientation=landscape"
+                                alt="Macbeth: Reimagined" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4">
+                            <h5 class="font-bold mb-1">Macbeth: Reimagined</h5>
+                            <div class="flex items-center text-sm text-gray-600 mb-2">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-calendar-line"></i>
+                                </div>
+                                <span>May 25 - Jun 15</span>
+                            </div>
+                            <div class="flex items-center rating-stars text-sm mb-3">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-half-fill"></i>
+                                <span class="ml-1 text-gray-600">4.5</span>
+                            </div>
+                            <button
+                                class="w-full bg-white border border-primary text-primary hover:bg-primary hover:text-white py-2 rounded-button font-medium whitespace-nowrap">View
+                                Details</button>
+                        </div>
+                    </div>
+
+                    <div class="rounded overflow-hidden shadow-sm">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://readdy.ai/api/search-image?query=Theater%20stage%20performance%20of%20Romeo%20and%20Juliet%20with%20modern%20urban%20setting%2C%20showing%20young%20actors%20in%20contemporary%20street%20fashion%20with%20dramatic%20lighting&width=400&height=300&seq=14&orientation=landscape"
+                                alt="Romeo & Juliet: Street Tale" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4">
+                            <h5 class="font-bold mb-1">Romeo & Juliet: Street Tale</h5>
+                            <div class="flex items-center text-sm text-gray-600 mb-2">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-calendar-line"></i>
+                                </div>
+                                <span>Jun 2 - Jun 30</span>
+                            </div>
+                            <div class="flex items-center rating-stars text-sm mb-3">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-line"></i>
+                                <span class="ml-1 text-gray-600">4.0</span>
+                            </div>
+                            <button
+                                class="w-full bg-white border border-primary text-primary hover:bg-primary hover:text-white py-2 rounded-button font-medium whitespace-nowrap">View
+                                Details</button>
+                        </div>
+                    </div>
+
+                    <div class="rounded overflow-hidden shadow-sm">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://readdy.ai/api/search-image?query=Theater%20stage%20performance%20of%20A%20Midsummer%20Nights%20Dream%20with%20magical%20forest%20setting%2C%20fairy%20lights%2C%20and%20actors%20in%20whimsical%20costumes%20with%20fantasy%20elements&width=400&height=300&seq=15&orientation=landscape"
+                                alt="A Midsummer Night's Dream" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4">
+                            <h5 class="font-bold mb-1">A Midsummer Night's Dream</h5>
+                            <div class="flex items-center text-sm text-gray-600 mb-2">
+                                <div class="w-4 h-4 flex items-center justify-center mr-1">
+                                    <i class="ri-calendar-line"></i>
+                                </div>
+                                <span>Jun 10 - Jul 5</span>
+                            </div>
+                            <div class="flex items-center rating-stars text-sm mb-3">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <span class="ml-1 text-gray-600">4.9</span>
+                            </div>
+                            <button
+                                class="w-full bg-white border border-primary text-primary hover:bg-primary hover:text-white py-2 rounded-button font-medium whitespace-nowrap">View
+                                Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Sidebar - Booking Widget -->
+        <div class="w-full lg:w-1/3">
+            <div class="booking-widget bg-white rounded shadow-sm p-6 sticky top-24">
+                <h2 class="text-xl font-bold mb-4">Book Tickets</h2>
+
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium">Date</span>
+                        <span class="text-primary">May 21, 2025</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="font-medium">Time</span>
+                        <span class="text-primary">6:00 PM</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium">Category</span>
+                        <span class="text-primary">Premium</span>
+                    </div>
+                </div>
+
+                <!-- <div class="border-t border-b border-gray-100 py-4 mb-6">
+                    <h3 class="font-medium mb-3">Select Tickets</h3>
+
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <p class="font-medium">Adult</p>
+                            <p class="text-sm text-gray-500">£75 per ticket</p>
+                        </div>
+                        <div class="flex items-center">
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:border-primary hover:text-primary">
+                                <i class="ri-subtract-line"></i>
+                            </button>
+                            <input type="number" value="2" min="0"
+                                class="w-10 text-center mx-2 border-none outline-none">
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:border-primary hover:text-primary">
+                                <i class="ri-add-line"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="font-medium">Child (Under 12)</p>
+                            <p class="text-sm text-gray-500">£45 per ticket</p>
+                        </div>
+                        <div class="flex items-center">
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:border-primary hover:text-primary">
+                                <i class="ri-subtract-line"></i>
+                            </button>
+                            <input type="number" value="1" min="0"
+                                class="w-10 text-center mx-2 border-none outline-none">
+                            <button
+                                class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 text-gray-500 hover:border-primary hover:text-primary">
+                                <i class="ri-add-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div> -->
+
+                <!-- <div class="mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-600">2 × Adult Tickets</span>
+                        <span>£150.00</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-600">1 × Child Ticket</span>
+                        <span>£45.00</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-gray-600">Booking Fee</span>
+                        <span>£5.00</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-3 border-t border-gray-100">
+                        <span class="font-bold">Total</span>
+                        <span class="font-bold text-xl text-primary">£200.00</span>
+                    </div>
+                </div> -->
+
+                <!-- <div class="mb-6">
+                    <div class="relative">
+                        <input type="text" placeholder="Enter promo code"
+                            class="w-full border border-gray-200 rounded-button py-2 px-4 pr-12 outline-none focus:border-primary">
+                        <button
+                            class="absolute right-2 top-1/2 transform -translate-y-1/2 text-primary font-medium whitespace-nowrap">Apply</button>
+                    </div>
+                </div> -->
+
+                <button
+                    class="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-button font-medium mb-4 whitespace-nowrap">Book
+                    Ticket</button>
+
+                <div class="flex items-center justify-center text-sm text-gray-500">
+                    <div class="w-4 h-4 flex items-center justify-center mr-2">
+                        <i class="ri-shield-check-line"></i>
+                    </div>
+                    <span>Secure Payment • Instant Confirmation</span>
+                </div>
+
+                <!-- <div class="flex items-center justify-center mt-4 space-x-3">
+                    <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-visa-fill text-xl"></i>
+                    </div>
+                    <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-mastercard-fill text-xl"></i>
+                    </div>
+                    <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-paypal-fill text-xl"></i>
+                    </div>
+                    <div class="w-8 h-8 flex items-center justify-center">
+                        <i class="ri-apple-fill text-xl"></i>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Offers Strip -->
+<div class="bg-primary text-white py-4 mb-8">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+            <div class="flex items-center mb-4 md:mb-0">
+                <div class="w-10 h-10 flex items-center justify-center mr-3">
+                    <i class="ri-coupon-3-line text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold">Special Offers</h3>
+                    <p class="text-sm">Use code HAMLET25 for 10% off on Premium tickets</p>
+                </div>
+            </div>
+            <button class="bg-white text-primary px-6 py-2 rounded-button font-medium whitespace-nowrap">View All
+                Offers</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Date selection
+        const dateItems = document.querySelectorAll('.date-item');
+        dateItems.forEach(item => {
+            item.addEventListener('click', function () {
+                dateItems.forEach(di => di.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Time slot selection
+        const timeSlots = document.querySelectorAll('.time-slot:not(.unavailable)');
+        timeSlots.forEach(slot => {
+            slot.addEventListener('click', function () {
+                timeSlots.forEach(ts => ts.classList.remove('bg-primary', 'text-white'));
+                this.classList.add('bg-primary', 'text-white');
+            });
+        });
+
+        // Price category tabs
+        const priceTabs = document.querySelectorAll('.price-category-tab');
+        priceTabs.forEach(tab => {
+            tab.addEventListener('click', function () {
+                priceTabs.forEach(pt => {
+                    pt.classList.remove('text-primary', 'border-primary');
+                    pt.classList.add('text-gray-500');
+                });
+                this.classList.remove('text-gray-500');
+                this.classList.add('text-primary', 'border-b-2', 'border-primary');
+            });
+        });
+
+        // Ticket quantity controls
+        const minusButtons = document.querySelectorAll('button:has(.ri-subtract-line)');
+        const plusButtons = document.querySelectorAll('button:has(.ri-add-line)');
+
+        minusButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const input = this.nextElementSibling;
+                let value = parseInt(input.value);
+                if (value > 0) {
+                    input.value = value - 1;
+                }
+            });
+        });
+
+        plusButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const input = this.previousElementSibling;
+                let value = parseInt(input.value);
+                input.value = value + 1;
+            });
+        });
+    });
+</script>
+<!-- </body> -->
+
+</html>
