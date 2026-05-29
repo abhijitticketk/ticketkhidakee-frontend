@@ -113,6 +113,17 @@ export class AppComponent implements OnInit {
   hidefooterforbooking = false
   cityname: any
   ngOnInit() {
+    // Initialize user data for local development (match production guest structure)
+    if (!localStorage.getItem('deviceId')) {
+      localStorage.setItem('deviceId', this.generateDeviceId());
+    }
+    if (!localStorage.getItem('IS_GUEST')) {
+      localStorage.setItem('IS_GUEST', 'false');
+    }
+    if (!localStorage.getItem('IS_MEMBER')) {
+      localStorage.setItem('IS_MEMBER', 'N');
+    }
+
     // if (!isBuyTicketsPresent || !exactHiddenRoutes2.includes(currentUrl1)) {
 
     // } 
@@ -393,5 +404,10 @@ export class AppComponent implements OnInit {
       overlay.style.display = 'none';
       document.body.style.overflow = 'auto';
     }
+  }
+
+  generateDeviceId(): string {
+    // Generate a unique device ID for development
+    return 'dev-' + Math.random().toString(36).substr(2, 9) + '-' + Date.now();
   }
 }

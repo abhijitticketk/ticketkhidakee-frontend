@@ -2953,7 +2953,7 @@ export class ApiService {
       HOISTING_TYPE,
       RECORD_ID: QUE_ID,
       HOSTING_TYPE: HOISTING_TYPE,
-      USER_ID: localStorage.getItem('memberId') ? Number(localStorage.getItem('memberId')) : '',
+      USER_ID: localStorage.getItem('memberId') ? Number(localStorage.getItem('memberId')) : 0,
       TEMP_UNIQUE_ID: localStorage.getItem('deviceId'),
     };
 
@@ -2989,7 +2989,7 @@ export class ApiService {
       sortKey,
       sortValue,
       filter,
-      USER_ID: localStorage.getItem('memberId') ? Number(localStorage.getItem('memberId')) : '',
+      USER_ID: localStorage.getItem('memberId') ? Number(localStorage.getItem('memberId')) : 0,
       EVENT_SCHEDULE_ID: EVENT_SCHEDULE_ID,
       EVENT_ID: EVENT_ID,
       TEMP_UNIQUE_ID: TEMP_UNIQUE_ID,

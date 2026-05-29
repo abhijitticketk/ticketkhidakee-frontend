@@ -1240,6 +1240,8 @@ export class BookingCommonPageComponent {
                     clearInterval(this.interval2);
                     if (res?.code == 200 && res?.data?.length) {
                         this.bookingMeta = res.data[0]; // Save original booking metadata
+                        // Ensure ID is set for API calls (use RECORD_ID or EVENT_SCHEDULE_ID)
+                        this.bookingMeta.ID = this.bookingMeta.RECORD_ID || this.bookingMeta.EVENT_SCHEDULE_ID;
                         this.IS_QUEUE_ENABLED = res.data[0].IS_QUEUE_ENABLED;
 
 
