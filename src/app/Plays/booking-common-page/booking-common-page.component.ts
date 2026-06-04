@@ -1,4 +1,5 @@
 import {
+    AfterViewChecked,
     ChangeDetectorRef,
     Component,
     ElementRef,
@@ -34,12 +35,13 @@ declare var Tugoz: any;
     templateUrl: './booking-common-page.component.html',
     styleUrls: ['./booking-common-page.component.scss']
 })
-export class BookingCommonPageComponent {
+export class BookingCommonPageComponent implements AfterViewChecked {
 
     seatJsonData: any;
     @ViewChild('closelogin') closelogin!: ElementRef;
 
     @ViewChild('seatLayoutContainer', { static: false }) seatLayoutContainerRef!: ElementRef;
+    @ViewChild('konvaSeatContainer', { static: false }) konvaSeatContainerRef!: ElementRef;
     konvaStageInstance!: Konva.Stage;
     konvaLayoutData: any;
     public commonFunction = new CommonFunctionService();
@@ -69,6 +71,21 @@ export class BookingCommonPageComponent {
     }
     isDark = false;
     IS_EXTRA_INFO_REQUIRED = false;
+
+    private pendingKonvaRender = false;
+
+    ngAfterViewChecked(): void {
+        if (this.pendingKonvaRender) {
+            const container = document.getElementById('konva-seat-container');
+            if (container && container.clientWidth > 0) {
+                this.pendingKonvaRender = false;
+                // Run outside Angular to avoid triggering more change detection
+                this.zone.runOutsideAngular(() => {
+                    setTimeout(() => this.renderKonvaSeatChart(), 0);
+                });
+            }
+        }
+    }
     bookingFlagDetails: any = [];
     loadBookingFlag: boolean = false;
     selectedcategoryId: any;
@@ -756,8 +773,8 @@ export class BookingCommonPageComponent {
                                         const rawRows = bookingData?.SEAT_LAYOUT_JSON || '[]';
                                         this.SCREEN_MASTER.LAYOUT_JSON = bookingData?.SEAT_LAYOUT_JSON || [];
 
-
                                         this.dummylayoutforcharted = this.SCREEN_MASTER.LAYOUT_JSON;
+                                        this.getSectionData();
 
 
 
@@ -1240,8 +1257,6 @@ export class BookingCommonPageComponent {
                     clearInterval(this.interval2);
                     if (res?.code == 200 && res?.data?.length) {
                         this.bookingMeta = res.data[0]; // Save original booking metadata
-                        // Ensure ID is set for API calls (use RECORD_ID or EVENT_SCHEDULE_ID)
-                        this.bookingMeta.ID = this.bookingMeta.RECORD_ID || this.bookingMeta.EVENT_SCHEDULE_ID;
                         this.IS_QUEUE_ENABLED = res.data[0].IS_QUEUE_ENABLED;
 
 
@@ -1350,9 +1365,8 @@ export class BookingCommonPageComponent {
 
                                 this.SCREEN_MASTER.LAYOUT_JSON = rawRows
 
-
-
                                 this.dummylayoutforcharted = [...this.SCREEN_MASTER.LAYOUT_JSON];
+                                this.getSectionData();
 
 
 
@@ -1764,12 +1778,6 @@ export class BookingCommonPageComponent {
         }
     }
 
-    private commonseatdata(seatData: any): void {
-        // Placeholder implementation: seat layout rendering logic should be defined here.
-        this.seatJsonData = seatData;
-        this.changeDetectorRef.detectChanges();
-    }
-
     selectedPaymentMethod: string = 'CODD'; // Default Payment Mode
     RAZOR_PAY_KEY = environment.RAZOR_PAY_KEY; // Razorpay API Key
 
@@ -1916,6 +1924,83 @@ export class BookingCommonPageComponent {
             this.coupanapplies = false;
             this.applycode = '';
             this.selectedcupon = [];
+
+            // ── Charted venue: build TICKETS from selectedSeats1 and call getPayableCharted ──
+            if (this.Hoisting_Type === 'C') {
+                const seatGroups = new Map<string, any>();
+                for (const seat of this.selectedSeats1) {
+                    const key = `${seat.SN}_${seat.SP}`;
+                    if (!seatGroups.has(key)) {
+                        seatGroups.set(key, {
+                            TYPE: seat.SN,
+                            sectionprice: Number(seat.SP),
+                            PRICE: Number(seat.SP),
+                            QUANTITY: 1,
+                            BOOKING_FEE: Number(seat.BF || 0),
+                            BOOKING_FEE_TYPE: seat.BT || 'P',
+                        });
+                    } else {
+                        const g = seatGroups.get(key);
+                        g.QUANTITY += 1;
+                        g.PRICE += Number(seat.SP);
+                    }
+                }
+                const chartedTickets = Array.from(seatGroups.values());
+                this.orderSummary.items = chartedTickets.map((t: any) => ({
+                    event: t.TYPE, quantity: t.QUANTITY, price: t.PRICE,
+                    sectionprice: t.sectionprice, BOOKING_FEE: t.BOOKING_FEE, BOOKING_FEE_TYPE: t.BOOKING_FEE_TYPE
+                }));
+                this.iscancelled = true;
+
+                this.allpayyload = {
+                    VENUE_STATE_ID: this.selectedVenue.VENUE_STATE_ID,
+                    EVENT_DETAIL_ID: this.EVENT_SCHEDULE_ID,
+                    HOISTING_TYPE: this.Hoisting_Type,
+                    TICKETS: chartedTickets,
+                    EVENT_TICKET_BOOKING_ID: this.bookingMeta?.ID,
+                    NO_OF_SEATS: this.selectedSeats1.length,
+                    SEAT_NUMBERS: JSON.stringify(this.selectedSeats1.map((s: any) => ({
+                        seat: `${s.RN}-${s.N}`, id: s.id, price: Number(s.SP)
+                    }))),
+                    TEMP_UNIQUE_ID: localStorage.getItem('deviceId'),
+                    SESSION_ID: this.SESSION_ID,
+                    IS_PLAN_USED: false,
+                    PLAN_ID: null,
+                    USER_ID: this.userID ? this.userID : this.withoutloginmemberid,
+                    VENUE_ID: this.selectedVenue?.id,
+                    EVENT_ID: this.eventID,
+                    SHOW_TIME: this.toMySQLTime(this.selectedTime),
+                    SHOW_DATE: this.formatToDDMMYYYY111(this.selectedDate),
+                    VENUE_NAME: this.selectedVenue.name,
+                    EXTRA_INFORMATION_DATA: this.EXTRA_INFORMATION_DATA ? JSON.stringify(this.EXTRA_INFORMATION_DATA) : '',
+                };
+
+                this.apiService.getpaymentdataCharted(this.allpayyload).subscribe({
+                    next: (response: any) => {
+                        if (response.TEMP_UNIQUE_ID) localStorage.setItem('deviceId', response.TEMP_UNIQUE_ID);
+                        if (response?.code == 200) {
+                            this.stopTimer();
+                            this.paymentdata = response;
+                            this.paymentdata.finalAmountwords = this.commonFunction.amountInWords(this.paymentdata.finalAmount);
+                            this.activeStep = 4;
+                            this.loadBookingFlag = false;
+                            this.startTimerIfStep4();
+                            this.BENEFIT_APPLY = response.BENEFIT_APPLY;
+                            this.TEMP_HOLD_ID = response.TEMP_HOLD_ID;
+                        } else {
+                            this.toastr.error(response?.message || 'Something went wrong', 'Error');
+                            this.loadBookingFlag = false;
+                        }
+                    },
+                    error: (err: any) => {
+                        console.error('getPayableCharted error:', err);
+                        this.toastr.error('Something went wrong', 'Error');
+                        this.loadBookingFlag = false;
+                    }
+                });
+                return;
+            }
+
             {
                 const selectedTickets = this.tickets.filter((t) => t.QTY > 0);
                 this.orderSummary.items = selectedTickets.map((ticket) => ({
@@ -4620,6 +4705,7 @@ export class BookingCommonPageComponent {
 
     updateStepTitle() {
         this.currentStepTitle = this.stepTitles[this.activeStep] || 'Event';
+        this.hideTitle = this.Hoisting_Type == 'C' && this.activeStep == 3;
     }
 
 
@@ -4893,12 +4979,10 @@ export class BookingCommonPageComponent {
 
     hideTitle: boolean = false;
     gettitle() {
-        this.hideTitle = false
         if (this.Hoisting_Type == 'C' && this.activeStep == 3) {
-            this.hideTitle = true
-        } else {
-            return this.currentStepTitle = this.stepTitles[this.activeStep] || 'Event';
+            return '';
         }
+        return this.currentStepTitle = this.stepTitles[this.activeStep] || 'Event';
     }
 
     gettax() {
@@ -6097,7 +6181,15 @@ ${icon}
 
     // Add this method to component:
     trackBySection(index: number, item: any) {
-        return item.key;
+        return item.SN || index;
+    }
+
+    trackByRow(index: number, item: any) {
+        return item.RN || index;
+    }
+
+    trackBySeat(index: number, item: any) {
+        return item.id || item.N || index;
     }
 
 
@@ -7456,6 +7548,861 @@ ${icon}
     // }
     // }, 1000);
     // }
+    /**
+     * Expands the raw flat SEAT_LAYOUT_JSON config (as returned by /web/getVenueJson)
+     * into sections with R[] rows and ST[] seats, matching the structure expected by
+     * the seat chart renderer and updateSeatLayoutWithBookingStatus().
+     */
+    generateLayoutFromConfig(rawRows: any[]): any[] {
+        // ─── Production data format ────────────────────────────────────────────
+        // Each element in rawRows is ONE SEAT (from charted_seat_layout MySQL table).
+        // Key fields per seat:
+        //   id, EVENT_TICKET_BOOKING_ID
+        //   SN  = Section Name            SRN = Section Row Name
+        //   ML  = section margin-left     W / H = section canvas width/height
+        //   MW  = max row width           MH = margin header height
+        //   IT  = section top offset (string, can be negative e.g. "-988")
+        //   AR  = arc radius (string)     D = section shape ('C')
+        //   ISSWN = show section name (0/1)
+        //   C / CT / CB = section colors  SP = section price
+        //   BF / BT = booking fee / type  CS / RS = column/row sort direction
+        //   R_RN = row name               R_AV = row availability ('O'=open)
+        //   R_T  = row vertical tilt (string, e.g. "-7.923")
+        //   R_IRG = row is curved (0/1)   R_IRSP / R_IRST = reserved seat price/type
+        //   S_N  = seat number within row S_GN = global seat number
+        //   S_IB = is bookable ('A'=available, 'B'=booked, 'P'=in-process)
+        //   S_W / S_H = seat width/height S_ML / S_MR = seat left/right margin
+        //   S_TOP = seat top absolute     S_AT = additional top offset
+        //   S_MT = seat margin-top CSS string (e.g. "-44.15px 0 0") — curved row offset
+        //   S_T  = seat CSS transform     (e.g. "rotate(10.76deg)") — seat tilt
+        //   S_SP = seat price             S_ST = seat type
+        //   S_C / S_CT / S_CB = seat colors
+        //   S_U  = seat booking code (null if not booked)
+        //   SL   = seat absolute left     SW = section/row width
+        //   T    = seat top (absolute)    ST = seat section top offset
+        //   isEditable = 0/1
+        // ────────────────────────────────────────────────────────────────────────
+
+        // Group by section name, preserving ALL positional fields
+        const sectionMap = new Map<string, any>();
+
+        for (const seat of rawRows) {
+            const sectionName = seat.SN || 'Unknown';
+            const rowName     = seat.R_RN || seat.SRN || 'A';
+
+            if (!sectionMap.has(sectionName)) {
+                sectionMap.set(sectionName, {
+                    SN:     sectionName,
+                    C:      seat.C     || seat.S_C  || '#ccc',
+                    CT:     seat.CT    || seat.S_CT || '#000',
+                    CB:     seat.CB    || seat.S_CB || seat.C || '#ccc',
+                    D:      seat.D     || seat.S_D  || 'C',
+                    SP:     seat.SP    || seat.S_SP || '0',
+                    BF:     seat.BF    || '0',
+                    BT:     seat.BT    || 'P',
+                    // ── Absolute layout fields ──
+                    ML:     seat.ML    || 0,       // section left offset
+                    W:      seat.W     || 1100,    // section canvas width
+                    H:      seat.H     || 600,     // section canvas height
+                    IT:     seat.IT    || '0',     // section top offset (can be negative)
+                    MW:     seat.MW    || 250,
+                    MH:     seat.MH    || 80,
+                    AR:     seat.AR    || '0',     // arc radius
+                    CS:     seat.CS    || 'RTL',
+                    RS:     seat.RS    || 'TTB',
+                    ISSWN:  seat.ISSWN || 0,
+                    S_W:    seat.S_W   || 20,
+                    S_H:    seat.S_H   || 20,
+                    S_ML:   seat.S_ML  || 2,
+                    S_MR:   seat.S_MR  || 2,
+                    rowMap: new Map<string, any>(),  // keyed by rowName
+                });
+            }
+
+            const section = sectionMap.get(sectionName)!;
+
+            // Build row entry if not seen
+            if (!section.rowMap.has(rowName)) {
+                section.rowMap.set(rowName, {
+                    RN:     rowName,
+                    R_T:    seat.R_T    || '0',    // row tilt (degrees, string)
+                    R_IRG:  seat.R_IRG  || 0,      // is row curved
+                    R_IRH:  seat.R_IRH  || 0,
+                    R_IRHS: seat.R_IRHS || 0,
+                    R_IRSP: seat.R_IRSP || seat.SP || '0',
+                    R_IRST: seat.R_IRST || 'S',
+                    R_AV:   seat.R_AV   || 'O',
+                    R_M:    seat.R_M    || '0',
+                    R_AR:   seat.R_AR   || '0',
+                    R_RM:   seat.R_RM   || '0',
+                    R_BF:   seat.R_BF   || '0',
+                    R_IVIP: seat.R_IVIP || '0',
+                    SW:     seat.SW     || null,   // row/section width reference
+                    SL:     seat.SL     || null,   // row left reference
+                    ST:     [] as any[],
+                });
+            }
+
+            // Add seat with ALL positional fields preserved
+            section.rowMap.get(rowName)!.ST.push({
+                id:     seat.id,
+                N:      seat.S_N   || seat.S_GN || '0',  // seat number label
+                GN:     seat.S_GN  || seat.S_N  || '0',  // global seat number
+                SNA:    Number(seat.S_SNA ?? seat.S_IAB ?? 0),
+                IB:     seat.S_IB  || 'A',   // 'A'=available, 'B'=booked, 'P'=in-process
+                ICG:    seat.S_ICG || 0,      // is in curved group
+                SP:     seat.S_SP  || seat.SP || '0',
+                S_W:    Number(seat.S_W  || 20),
+                S_H:    Number(seat.S_H  || 20),
+                S_ML:   Number(seat.S_ML || 2),
+                S_MR:   Number(seat.S_MR || 2),
+                S_D:    seat.S_D   || seat.D || 'C',
+                S_C:    seat.S_C   || seat.C || '#ccc',
+                S_CT:   seat.S_CT  || seat.CT || '#000',
+                S_CB:   seat.S_CB  || seat.CB || seat.C || '#ccc',
+                S_VIP:  seat.S_VIP || '0',
+                S_PR:   seat.S_PR  || 0,
+                S_ST:   seat.S_ST  || 'S',
+                S_SV:   seat.S_SV  || '0',
+                S_AR:   seat.S_AR  || '0',
+                S_U:    seat.S_U   || null,   // booking code if booked
+                SG:     seat.R_SG  || seat.S_SG || null,
+                BF:     seat.BF    || '0',
+                BT:     seat.BT    || 'P',
+                // ── Absolute position fields — the ones production uses ──
+                // S_MT: CSS margin-top like "-44.15px 0 0" → vertical offset within row
+                S_MT:   seat.S_MT  || '0px 0 0',
+                // S_T: CSS transform like "rotate(10.76deg)" → seat rotation
+                S_T:    seat.S_T   || 'rotate(0deg)',
+                // S_L: additional left offset within the row (rarely set)
+                S_L:    Number(seat.S_L  || 0),
+                // S_TOP: absolute top override
+                S_TOP:  seat.S_TOP || '0',
+                // S_AT: additional top offset
+                S_AT:   seat.S_AT  || '0',
+                // SL: absolute left of the seat within the stage (from production)
+                SL:     seat.SL    != null ? Number(seat.SL) : null,
+                // T: absolute top of the seat within the stage (from production)
+                T:      seat.T     != null ? Number(seat.T)  : null,
+                // SW: reference width of the row strip
+                SW:     seat.SW    != null ? Number(seat.SW) : null,
+                // ST: section-top reference
+                ST:     seat.ST    || null,
+            });
+        }
+
+        // Convert to final array with R[] rows
+        const sections: any[] = [];
+        for (const [, section] of sectionMap) {
+            // Sort rows by their natural order (R_RN is usually a letter A,B,C...)
+            const rows = Array.from(section.rowMap.values());
+            rows.sort((a: any, b: any) => {
+                return String(a.RN).localeCompare(String(b.RN));
+            });
+            section.R = rows;
+            delete section.rowMap;
+            sections.push(section);
+        }
+
+        return sections;
+    }
+
+    getSectionData() {
+        // If sections don't have R[] rows yet, generate them from raw config
+        if (this.SCREEN_MASTER.LAYOUT_JSON?.length &&
+            !this.SCREEN_MASTER.LAYOUT_JSON[0]?.R) {
+            console.log('[Konva] Raw seat sample:', JSON.stringify(this.SCREEN_MASTER.LAYOUT_JSON[0]));
+            this.SCREEN_MASTER.LAYOUT_JSON = this.generateLayoutFromConfig(
+                this.SCREEN_MASTER.LAYOUT_JSON
+            );
+            console.log('[Konva] After grouping, sections:', this.SCREEN_MASTER.LAYOUT_JSON.map((s: any) => ({
+                SN: s.SN, rows: s.R?.length, firstRow: s.R?.[0]?.RN, seatsInFirstRow: s.R?.[0]?.ST?.length
+            })));
+        }
+        // Precompute display colors for all seats (avoids function calls in template)
+        this.refreshSeatColors();
+
+        const finalSectionList: any[] = [];
+        let maxWidth = 0;
+
+        for (const section of this.SCREEN_MASTER.LAYOUT_JSON) {
+            const realSeats = section.R?.flatMap(
+                (row: any) => row.ST?.filter((seat: any) => !(seat.N == 0 && seat.SNA == 0)) || []
+            ) || [];
+
+            if (realSeats.length > 0 && realSeats.every((seat: any) => seat.SNA == 1)) {
+                continue;
+            }
+
+            section.isEditable = false;
+            const firstRowSeats = section.R?.[0]?.ST?.length || 0;
+            const currentWidth = (firstRowSeats + 1) * 24;
+            if (currentWidth > maxWidth) {
+                maxWidth = currentWidth;
+            }
+
+            const seatTypeMap = new Map();
+            let totalSeats = 0;
+            let bookedSeats = 0;
+
+            for (const row of section.R || []) {
+                for (const seat of row.ST || []) {
+                    if (seat.SNA == 1) continue;
+                    totalSeats += 1;
+                    if (seat.IB == 'B' || seat.IB == 'P') bookedSeats += 1;
+
+                    const price = Number(seat.SP || seat.S_SP || section.SP);
+                    const color = seat.S_C || section.C || '#ccc';
+                    const key = `${price}-${color}`;
+                    const seatType = seatTypeMap.get(key) || {
+                        price,
+                        color,
+                        subname: seat.SGN || null,
+                        totalSeats: 0,
+                        bordercolor: section.C || 'black',
+                    };
+                    seatType.totalSeats += 1;
+                    seatTypeMap.set(key, seatType);
+                }
+            }
+
+            let availability = 'Available';
+            if (bookedSeats >= totalSeats) {
+                availability = 'Sold Out';
+            } else if (totalSeats > 0 && bookedSeats / totalSeats >= 0.9) {
+                availability = 'Almost Sold Out';
+            } else if (totalSeats > 0 && bookedSeats / totalSeats >= 0.7) {
+                availability = 'Filling Fast';
+            }
+
+            finalSectionList.push({
+                sectionName: section.SN,
+                seatTypes: Array.from(seatTypeMap.values()),
+                availability,
+            });
+        }
+
+        this.finalSectionList = finalSectionList;
+        this.sectionList = finalSectionList;
+        this.maxWidth = maxWidth;
+
+        // Signal ngAfterViewChecked to render once the DOM is ready
+        this.pendingKonvaRender = true;
+        console.log('[Konva] getSectionData complete, pendingKonvaRender=true, layout length:', this.SCREEN_MASTER?.LAYOUT_JSON?.length);
+    }
+
+    // ─── Konva seat chart ────────────────────────────────────────────────────────
+
+    private konvaStage: Konva.Stage | null = null;
+    private konvaLayer: Konva.Layer | null = null;
+    // Map from seatKey → Konva shape for fast colour updates
+    private konvaSeatShapes = new Map<string, Konva.Shape>();
+
+    private readonly SEAT_SELECTED_COLOR_LIGHT = '#53db78';
+    private readonly SEAT_SELECTED_COLOR_DARK  = '#f7e002';
+    private readonly SEAT_BOOKED_COLOR          = 'rgb(227,227,227)';
+    private readonly SEAT_INPROCESS_COLOR       = '#F39C12';
+
+    // ── Helper: parse CSS "Npx 0 0" or "Npx" → number ─────────────────────────
+    private parsePxValue(css: string | null | undefined): number {
+        if (!css) return 0;
+        const match = String(css).match(/^(-?[\d.]+)/);
+        return match ? parseFloat(match[1]) : 0;
+    }
+
+    // ── Helper: parse "rotate(Ndeg)" → number ───────────────────────────────
+    private parseDeg(css: string | null | undefined): number {
+        if (!css) return 0;
+        const match = String(css).match(/rotate\((-?[\d.]+)deg\)/);
+        return match ? parseFloat(match[1]) : 0;
+    }
+
+    renderKonvaSeatChart(): void {
+        const container = document.getElementById('konva-seat-container');
+        if (!container || !this.SCREEN_MASTER?.LAYOUT_JSON?.length) return;
+
+        // Destroy previous stage if any
+        if (this.konvaStage) {
+            this.konvaStage.destroy();
+            this.konvaStage = null;
+            this.konvaLayer = null;
+            this.konvaSeatShapes.clear();
+        }
+
+        const sections = this.SCREEN_MASTER.LAYOUT_JSON;
+
+        // ── Determine whether data has absolute positions ────────────────────
+        // Production data: every seat has a numeric SL (absolute left) and T (absolute top).
+        // Check first seat of first row.
+        const firstSeat = sections[0]?.R?.[0]?.ST?.[0];
+        const secondSeat = sections[0]?.R?.[0]?.ST?.[1] ?? sections[0]?.R?.[1]?.ST?.[0];
+
+        // Positions are truly absolute only if seats have DIFFERENT SL/T values.
+        // If all seats share the same SL/T (corrupt/placeholder data), fall back to GRID.
+        // Also treat as absolute if S_T contains real rotation values (curved rows).
+        const firstSeatHasRotation = firstSeat?.S_T &&
+            firstSeat.S_T !== '0' &&
+            firstSeat.S_T !== 'rotate(0deg)' &&
+            String(firstSeat.S_T).includes('rotate(');
+
+        const hasAbsolutePos = firstSeat != null &&
+            firstSeat.SL != null && firstSeat.T != null &&
+            !isNaN(Number(firstSeat.SL)) && !isNaN(Number(firstSeat.T)) &&
+            // Either seats differ in SL/T (true absolute coords), or S_T has rotation (curved layout)
+            (firstSeatHasRotation ||
+             secondSeat == null ||
+             Number(firstSeat.SL) !== Number(secondSeat.SL) ||
+             Number(firstSeat.T)  !== Number(secondSeat.T));
+
+        console.log('[Konva] render mode:', hasAbsolutePos ? 'ABSOLUTE' : 'GRID',
+            'firstSeat sample:', JSON.stringify(firstSeat));
+
+        if (hasAbsolutePos) {
+            this.renderKonvaAbsolute(container, sections);
+        } else {
+            this.renderKonvaGrid(container, sections);
+        }
+    }
+
+    // ── ABSOLUTE renderer — uses SL/T/S_MT/S_T from production data ─────────
+    private renderKonvaAbsolute(container: HTMLElement, sections: any[]): void {
+        // ── 1. Measure canvas bounds across all sections ─────────────────────
+        // Each section has W (canvas width), H (canvas height), ML (left offset),
+        // IT (top offset — can be negative for overlapping sections like Balcony).
+        // We want to find the bounding box that fits everything.
+
+        const STAGE_LABEL_H = 44;   // height reserved for the "Stage" bar at top
+        const STAGE_LABEL_MARGIN = 8;
+
+        let canvasMaxX = 0;
+        let canvasMinY = Infinity;
+        let canvasMaxY = 0;
+
+        for (const section of sections) {
+            const ml  = Number(section.ML  || 0);
+            const w   = Number(section.W   || 1100);
+            const h   = Number(section.H   || 600);
+            const it  = this.parsePxValue(section.IT);   // section top offset
+            const mh  = Number(section.MH  || 80);       // margin header height
+
+            const sectionLeft = ml;
+            const sectionTop  = STAGE_LABEL_H + STAGE_LABEL_MARGIN + it + mh;
+
+            canvasMaxX = Math.max(canvasMaxX, sectionLeft + w);
+            canvasMinY = Math.min(canvasMinY, sectionTop);
+            canvasMaxY = Math.max(canvasMaxY, sectionTop + h);
+        }
+
+        // Pad negative-top sections: shift everything down so min Y ≥ STAGE_LABEL_H
+        const yShift = canvasMinY < STAGE_LABEL_H ? (STAGE_LABEL_H - canvasMinY) : 0;
+
+        const totalW = Math.max(canvasMaxX, 400);
+        const totalH = canvasMaxY + yShift + 20;
+
+        const containerW = container.clientWidth || totalW;
+
+        this.konvaStage = new Konva.Stage({
+            container: 'konva-seat-container',
+            width:  containerW,
+            height: totalH,
+            draggable: true,
+        });
+
+        this.konvaLayer = new Konva.Layer();
+        this.konvaStage.add(this.konvaLayer);
+
+        // ── 2. Stage label bar ───────────────────────────────────────────────
+        // Position it centered within the first section's width
+        const firstML = Number(sections[0]?.ML || 0);
+        const firstW  = Number(sections[0]?.W  || containerW);
+        const stageCenterX = firstML + firstW / 2;
+
+        this.konvaLayer.add(new Konva.Rect({
+            x: stageCenterX - 60, y: STAGE_LABEL_MARGIN,
+            width: 120, height: 26,
+            fill: '#cccccc', cornerRadius: 5,
+        }));
+        this.konvaLayer.add(new Konva.Text({
+            x: stageCenterX - 60, y: STAGE_LABEL_MARGIN + 6,
+            width: 120, text: 'Stage',
+            fontSize: 12, fontFamily: 'Poppins, sans-serif',
+            fill: '#333', align: 'center',
+        }));
+
+        // ── 3. Draw each section ─────────────────────────────────────────────
+        for (const section of sections) {
+            const sectionML  = Number(section.ML || 0);
+            const sectionIT  = this.parsePxValue(section.IT);
+            const sectionMH  = Number(section.MH || 80);
+            const sectionShape = (section.D || 'C') as string;
+
+            // Origin of this section's coordinate system on the Konva canvas
+            const originX = sectionML;
+            const originY = STAGE_LABEL_H + STAGE_LABEL_MARGIN + sectionIT + sectionMH + yShift;
+
+            // Section name header
+            if (section.ISSWN == 1) {
+                this.konvaLayer.add(new Konva.Text({
+                    x: originX,
+                    y: originY - 14,
+                    width: Number(section.W || 1100),
+                    text: section.SN,
+                    fontSize: 11, fontFamily: 'Poppins, sans-serif',
+                    fontStyle: 'bold', fill: '#333', align: 'center',
+                }));
+            }
+
+            // ── 4. Draw each seat in this section ────────────────────────────
+            for (const row of section.R || []) {
+                for (const seat of row.ST || []) {
+                    if (Number(seat.SNA) === 1) continue;   // not available / hidden
+
+                    const sw = Number(seat.S_W || 20);
+                    const sh = Number(seat.S_H || 20);
+
+                    // ── Absolute position from production data ──
+                    // SL = absolute left of seat within the section's canvas
+                    // T  = absolute top of seat within the section's canvas
+                    // S_MT = additional margin-top CSS (curved row adjustment)
+                    // S_T  = CSS rotation e.g. "rotate(10.76deg)"
+
+                    const seatAbsLeft = Number(seat.SL ?? 0);
+                    const seatAbsTop  = Number(seat.T  ?? 0);
+                    const seatMT      = this.parsePxValue(seat.S_MT);  // curved row offset
+                    const seatRot     = this.parseDeg(seat.S_T);       // seat rotation
+
+                    // Final canvas coordinates
+                    const cx = originX + seatAbsLeft + sw / 2;
+                    const cy = originY + seatAbsTop  + seatMT + sh / 2;
+
+                    const seatKey  = this.getSeatKey(seat, row, section);
+                    const fillColor = this.getSeatFillColor(seat, section, seatKey);
+
+                    let seatShape: Konva.Shape;
+
+                    if (sectionShape === 'C') {
+                        seatShape = new Konva.Circle({
+                            x: cx, y: cy,
+                            radius: sw / 2,
+                            fill: fillColor,
+                            rotation: seatRot,
+                        });
+                    } else if (sectionShape === 'S') {
+                        seatShape = new Konva.Rect({
+                            x: cx - sw / 2, y: cy - sh / 2,
+                            width: sw, height: sh,
+                            fill: fillColor,
+                            rotation: seatRot,
+                            offsetX: sw / 2, offsetY: sh / 2,
+                        });
+                    } else {
+                        seatShape = new Konva.Rect({
+                            x: cx - sw / 2, y: cy - sh / 2,
+                            width: sw, height: sh,
+                            fill: fillColor,
+                            cornerRadius: [4, 4, 0, 0],
+                            rotation: seatRot,
+                            offsetX: sw / 2, offsetY: sh / 2,
+                        });
+                    }
+
+                    this.konvaSeatShapes.set(seatKey, seatShape);
+
+                    if (seat.IB !== 'B') {
+                        seatShape.on('click tap', () => {
+                            this.zone.run(() => this.onKonvaSeatClick(seat, row, section));
+                        });
+                        seatShape.on('mouseenter', () => {
+                            this.konvaStage!.container().style.cursor = 'pointer';
+                        });
+                        seatShape.on('mouseleave', () => {
+                            this.konvaStage!.container().style.cursor = 'default';
+                        });
+                    }
+
+                    this.konvaLayer!.add(seatShape);
+
+                    // Row number label: draw once at start of each row
+                    // Only draw if this is the first seat in the row (seat.SL closest to 0)
+                    if (Number(seat.SL ?? 0) < 30 && row.ST?.[0] === seat) {
+                        this.konvaLayer!.add(new Konva.Text({
+                            x: originX,
+                            y: originY + seatAbsTop + seatMT,
+                            width: Math.max(0, seatAbsLeft - 2),
+                            text: String(row.RN),
+                            fontSize: 9, fontFamily: 'Poppins, sans-serif',
+                            fill: '#666', align: 'right',
+                        }));
+                    }
+                }
+            }
+        }
+
+        // ── 5. Fit stage to container ────────────────────────────────────────
+        const fitScale = Math.min(containerW / totalW, 1);
+        this.konvaStage.scale({ x: fitScale, y: fitScale });
+        this.konvaStage.position({ x: 0, y: 0 });
+        this.konvaStage.height(totalH * fitScale);
+
+        // ── 6. Wheel zoom ────────────────────────────────────────────────────
+        this.konvaStage.on('wheel', (e: any) => {
+            e.evt.preventDefault();
+            const scaleBy = 1.08;
+            const stage = this.konvaStage!;
+            const oldScale = stage.scaleX();
+            const pointer = stage.getPointerPosition()!;
+            const mpTo = {
+                x: (pointer.x - stage.x()) / oldScale,
+                y: (pointer.y - stage.y()) / oldScale,
+            };
+            const newScale = e.evt.deltaY < 0
+                ? Math.min(oldScale * scaleBy, 4)
+                : Math.max(oldScale / scaleBy, 0.15);
+            stage.scale({ x: newScale, y: newScale });
+            stage.position({
+                x: pointer.x - mpTo.x * newScale,
+                y: pointer.y - mpTo.y * newScale,
+            });
+        });
+
+        this.konvaLayer!.draw();
+    }
+
+    // ── GRID renderer — fallback when SL/T are absent ────────────────────────
+    private renderKonvaGrid(container: HTMLElement, sections: any[]): void {
+        const SEAT_W    = Number(sections[0]?.S_W || 20);
+        const SEAT_H    = Number(sections[0]?.S_H || 20);
+        const SEAT_ML   = Number(sections[0]?.S_ML || 2);
+        const SEAT_MR   = Number(sections[0]?.S_MR || 2);
+        const ROW_LABEL_W    = 22;
+        const ROW_GAP        = 2;
+        const SECTION_GAP    = 20;
+        const STAGE_LABEL_H  = 36;
+        const SECTION_HDR_H  = 18;
+
+        let totalW = 0;
+        let totalH = STAGE_LABEL_H + 10;
+        for (const section of sections) {
+            const rows = section.R || [];
+            const maxSeats = Math.max(...rows.map((r: any) => r.ST?.length || 0), 0);
+            const sw = ROW_LABEL_W * 2 + maxSeats * (SEAT_W + SEAT_ML + SEAT_MR);
+            const sh = (section.ISSWN == 1 ? SECTION_HDR_H : 0)
+                     + rows.length * (SEAT_H + ROW_GAP);
+            totalW = Math.max(totalW, sw + Number(section.ML || 0));
+            totalH += sh + SECTION_GAP;
+        }
+        totalW = Math.max(totalW, 400);
+
+        const containerW = container.clientWidth || totalW;
+
+        this.konvaStage = new Konva.Stage({
+            container: 'konva-seat-container',
+            width: containerW, height: totalH, draggable: true,
+        });
+        this.konvaLayer = new Konva.Layer();
+        this.konvaStage.add(this.konvaLayer);
+
+        this.konvaLayer.add(new Konva.Rect({
+            x: containerW / 2 - 60, y: 8, width: 120, height: 22,
+            fill: '#cccccc', cornerRadius: 5,
+        }));
+        this.konvaLayer.add(new Konva.Text({
+            x: containerW / 2 - 60, y: 13, width: 120,
+            text: 'Stage', fontSize: 12, fontFamily: 'Poppins, sans-serif',
+            fill: '#333', align: 'center',
+        }));
+
+        let currentY = STAGE_LABEL_H + 10;
+
+        for (const section of sections) {
+            const rows: any[]  = section.R || [];
+            const sectionX     = Number(section.ML || 0);
+            const shape        = (section.D || 'C') as string;
+
+            if (section.ISSWN == 1) {
+                this.konvaLayer.add(new Konva.Text({
+                    x: sectionX, y: currentY, width: totalW,
+                    text: section.SN, fontSize: 11,
+                    fontFamily: 'Poppins, sans-serif', fontStyle: 'bold',
+                    fill: '#333', align: 'center',
+                }));
+                currentY += SECTION_HDR_H;
+            }
+
+            for (const row of rows) {
+                const seats: any[] = row.ST || [];
+                let seatX = sectionX + ROW_LABEL_W;
+
+                this.konvaLayer.add(new Konva.Text({
+                    x: sectionX, y: currentY + SEAT_H / 2 - 5,
+                    width: ROW_LABEL_W - 2, text: row.RN,
+                    fontSize: 9, fontFamily: 'Poppins, sans-serif',
+                    fill: '#555', align: 'right',
+                }));
+
+                for (const seat of seats) {
+                    const sw = Number(seat.S_W || SEAT_W);
+                    const sh = Number(seat.S_H || SEAT_H);
+                    const ml = Number(seat.S_ML || SEAT_ML);
+                    const mr = Number(seat.S_MR || SEAT_MR);
+                    seatX += ml;
+
+                    if (seat.SNA != 1) {
+                        const seatKey  = this.getSeatKey(seat, row, section);
+                        const fillColor = this.getSeatFillColor(seat, section, seatKey);
+                        let seatShape: Konva.Shape;
+
+                        if (shape === 'C') {
+                            seatShape = new Konva.Circle({
+                                x: seatX + sw / 2,
+                                y: currentY + sh / 2,
+                                radius: sw / 2,
+                                fill: fillColor,
+                            });
+                        } else if (shape === 'S') {
+                            seatShape = new Konva.Rect({
+                                x: seatX,
+                                y: currentY,
+                                width: sw,
+                                height: sh,
+                                fill: fillColor,
+                            });
+                        } else {
+                            seatShape = new Konva.Rect({
+                                x: seatX,
+                                y: currentY,
+                                width: sw,
+                                height: sh,
+                                fill: fillColor,
+                                cornerRadius: [5, 5, 0, 0],
+                            });
+                        }
+
+                        this.konvaSeatShapes.set(seatKey, seatShape);
+
+                        if (seat.IB !== 'B') {
+                            seatShape.on('click tap', () => {
+                                this.zone.run(() => this.onKonvaSeatClick(seat, row, section));
+                            });
+                            seatShape.on('mouseenter', () => {
+                                this.konvaStage!.container().style.cursor = 'pointer';
+                            });
+                            seatShape.on('mouseleave', () => {
+                                this.konvaStage!.container().style.cursor = 'default';
+                            });
+                        }
+
+                        this.konvaLayer!.add(seatShape);
+                    }
+
+                    seatX += sw + mr;
+                }
+
+                this.konvaLayer!.add(new Konva.Text({
+                    x: seatX + 2,
+                    y: currentY + SEAT_H / 2 - 5,
+                    text: row.RN,
+                    fontSize: 9, fontFamily: 'Poppins, sans-serif', fill: '#555',
+                }));
+
+                currentY += SEAT_H + ROW_GAP;
+            }
+
+            currentY += SECTION_GAP;
+        }
+
+        this.konvaStage.on('wheel', (e: any) => {
+            e.evt.preventDefault();
+            const scaleBy = 1.08;
+            const stage = this.konvaStage!;
+            const oldScale = stage.scaleX();
+            const pointer = stage.getPointerPosition()!;
+            const mpTo = {
+                x: (pointer.x - stage.x()) / oldScale,
+                y: (pointer.y - stage.y()) / oldScale,
+            };
+            const newScale = e.evt.deltaY < 0
+                ? Math.min(oldScale * scaleBy, 4)
+                : Math.max(oldScale / scaleBy, 0.15);
+            stage.scale({ x: newScale, y: newScale });
+            stage.position({
+                x: pointer.x - mpTo.x * newScale,
+                y: pointer.y - mpTo.y * newScale,
+            });
+        });
+
+        const fitScale = Math.min(containerW / totalW, 1);
+        this.konvaStage.scale({ x: fitScale, y: fitScale });
+        this.konvaStage.position({ x: 0, y: 0 });
+
+        this.konvaLayer!.draw();
+    }
+
+    private getSeatFillColor(seat: any, section: any, seatKey: string): string {
+        if (this.selectedSeatKeySet.has(seatKey)) {
+            return this.isDark ? this.SEAT_SELECTED_COLOR_DARK : this.SEAT_SELECTED_COLOR_LIGHT;
+        }
+        if (seat.IB === 'B') return this.SEAT_BOOKED_COLOR;
+        if (seat.IB === 'P') return this.SEAT_INPROCESS_COLOR;
+        return seat.S_C || section.C || '#ccc';
+    }
+
+    onKonvaSeatClick(seat: any, row: any, section: any): void {
+        if (seat.IB === 'B') return;
+
+        const key = this.getSeatKey(seat, row, section);
+
+        if (this.selectedSeatKeySet.has(key)) {
+            this.selectedSeatKeySet.delete(key);
+            const idx = this.selectedSeats1.findIndex(
+                (s: any) => s.N == seat.N && s.RN == row.RN && s.SN == section.SN
+            );
+            if (idx >= 0) this.selectedSeats1.splice(idx, 1);
+        } else {
+            if (this.selectedSeats1.length >= this.selectedSeatCount) {
+                this.toastr.warning(`You can only select ${this.selectedSeatCount} seat(s).`, '');
+                return;
+            }
+            this.selectedSeatKeySet.add(key);
+            this.selectedSeats1.push({
+                id: seat.id || `${section.SN}-${row.RN}-${seat.N}`,
+                N: seat.N,
+                RN: row.RN,
+                SN: section.SN,
+                SG: seat.SG || section.SG || null,
+                SP: seat.S_SP || section.SP,
+                BF: section.BF,
+                BT: section.BT,
+                PR: seat.S_PR || 0,
+                capacity: seat.SV || 1,
+                ST: seat.S_ST || 'S',
+            });
+        }
+
+        this.selectedSeatsIDs = this.selectedSeats1.map((s: any) => s.id);
+        this.selectedSeatsIndex = this.selectedSeats1.map((s: any) => `${s.RN}-${s.N}`);
+
+        // Update only the clicked seat's colour — no full redraw
+        const shape = this.konvaSeatShapes.get(key);
+        if (shape) {
+            shape.fill(this.getSeatFillColor(seat, section, key));
+            this.konvaLayer?.batchDraw();
+        }
+
+        this.updateGroupedSeats2();
+        this.changeDetectorRef.detectChanges();
+    }
+
+    // Override zoomIn/zoomOut to control Konva stage scale
+    zoomIn(): void {
+        if (this.konvaStage) {
+            const s = Math.min(this.konvaStage.scaleX() * 1.15, 3);
+            this.konvaStage.scale({ x: s, y: s });
+            this.konvaLayer?.batchDraw();
+        } else {
+            this.zoomInByButton();
+        }
+    }
+
+    zoomOut(): void {
+        if (this.konvaStage) {
+            const s = Math.max(this.konvaStage.scaleX() / 1.15, 0.2);
+            this.konvaStage.scale({ x: s, y: s });
+            this.konvaLayer?.batchDraw();
+        } else {
+            this.zoomOutByButton();
+        }
+    }
+
+    // Set of selected seat keys for O(1) lookup — avoids per-seat Array.find() in template
+    selectedSeatKeySet = new Set<string>();
+
+    private getSeatKey(seat: any, row: any, section: any): string {
+        return `${section.SN}__${row.RN}__${seat.N}`;
+    }
+
+    isSelectedSeat(seat: any, row: any, section: any): boolean {
+        return this.selectedSeatKeySet.has(this.getSeatKey(seat, row, section));
+    }
+
+    // Precompute _displayColor on every seat so the template reads a plain property
+    private refreshSeatColors(): void {
+        if (!this.SCREEN_MASTER?.LAYOUT_JSON) return;
+        const selectedColor = this.isDark ? '#f7e002' : '#53db78';
+        for (const section of this.SCREEN_MASTER.LAYOUT_JSON) {
+            for (const row of section.R || []) {
+                for (const seat of row.ST || []) {
+                    if (this.selectedSeatKeySet.has(this.getSeatKey(seat, row, section))) {
+                        seat._displayColor = selectedColor;
+                    } else if (seat.IB == 'B') {
+                        seat._displayColor = 'rgb(227,227,227)';
+                    } else if (seat.IB == 'P') {
+                        seat._displayColor = '#F39C12';
+                    } else {
+                        seat._displayColor = seat.S_C || section.C || '#ccc';
+                    }
+                }
+            }
+        }
+    }
+
+    onSeatClick(seat: any, row: any, section: any): void {
+        if (seat.IB == 'B') return;
+
+        const key = this.getSeatKey(seat, row, section);
+
+        if (this.selectedSeatKeySet.has(key)) {
+            // Deselect
+            this.selectedSeatKeySet.delete(key);
+            const idx = this.selectedSeats1.findIndex(
+                (s: any) => s.N == seat.N && s.RN == row.RN && s.SN == section.SN
+            );
+            if (idx >= 0) this.selectedSeats1.splice(idx, 1);
+        } else {
+            if (this.selectedSeats1.length >= this.selectedSeatCount) {
+                this.toastr.warning(`You can only select ${this.selectedSeatCount} seat(s).`, '');
+                return;
+            }
+            this.selectedSeatKeySet.add(key);
+            this.selectedSeats1.push({
+                id: seat.id || `${section.SN}-${row.RN}-${seat.N}`,
+                N: seat.N,
+                RN: row.RN,
+                SN: section.SN,
+                SG: seat.SG || section.SG || null,
+                SP: seat.S_SP || section.SP,
+                BF: section.BF,
+                BT: section.BT,
+                PR: seat.S_PR || 0,
+                capacity: seat.SV || 1,
+                ST: seat.S_ST || 'S',
+            });
+        }
+
+        this.selectedSeatsIDs = this.selectedSeats1.map((s: any) => s.id);
+        this.selectedSeatsIndex = this.selectedSeats1.map((s: any) => `${s.RN}-${s.N}`);
+        this.refreshSeatColors();
+        this.updateGroupedSeats2();
+        this.changeDetectorRef.detectChanges();
+    }
+
+    updateGroupedSeats2(): void {
+        const grouped: any = {};
+        for (const seat of this.selectedSeats1) {
+            if (!grouped[seat.SN]) {
+                grouped[seat.SN] = { SN: seat.SN, levels: [] };
+            }
+            const sgKey = seat.SG || '__none__';
+            let level = grouped[seat.SN].levels.find((l: any) => l.SG === sgKey);
+            if (!level) {
+                level = { SG: seat.SG || null, seats: [] };
+                grouped[seat.SN].levels.push(level);
+            }
+            level.seats.push(seat);
+        }
+        this.groupedSeats2 = Object.values(grouped);
+    }
+
     zoomLevel = 0.7;
     minZoom = 0.3;
     maxZoom = 1.13;
@@ -7532,12 +8479,14 @@ ${icon}
         this.applyTransform();
     }
 
-    zoomIn(): void {
-        this.zoomInByButton();
-    }
+    // Aliases used by the HTML template buttons — now handled by Konva overrides above
+    // zoomIn() and zoomOut() are defined in the Konva section of getSectionData
 
-    zoomOut(): void {
-        this.zoomOutByButton();
+    // Processes seat JSON data for the 'S' (SVG/section) hosting type
+    commonseatdata(seatJson: any): void {
+        if (!seatJson) return;
+        this.seatJsonData = Array.isArray(seatJson) ? seatJson : JSON.parse(seatJson);
+        this.changeDetectorRef.detectChanges();
     }
 
     private zoomSensitivity = 1.1;
@@ -7994,18 +8943,23 @@ ${icon}
     private adjustTranslationToPivot(pivotX: number, pivotY: number, newScale: number): void {
         const relX = (pivotX - this.currentX) / this.currentScale;
         const relY = (pivotY - this.currentY) / this.currentScale;
-        const nextX = pivotX - relX * newScale;
-        const nextY = pivotY - relY * newScale;
+        let nextX = pivotX - relX * newScale;
+        let nextY = pivotY - relY * newScale;
 
-        // Keep the current scale while checking bounds
+        // 1. Set the scale temporarily to calculate the new bounds
         const originalScale = this.currentScale;
         this.currentScale = newScale;
 
+        // 2. Clamp the proposed new position
         const clampedPos = this.getClampedPosition(nextX, nextY);
 
-        this.currentScale = originalScale;
+        // 3. Restore the scale and set the clamped position
+        this.currentScale = originalScale; // Restore to currentScale (if still mid-zoom) or keep newScale (if final)
+
+        // For simplicity in the animation loop, let's just update the state here:
         this.currentX = clampedPos.x;
         this.currentY = clampedPos.y;
+
     }
 
     private getDistance(p1: PointerEvent, p2: PointerEvent): number {
@@ -8063,7 +9017,7 @@ ${icon}
                 errorCorrectionLevel: 'H',
                 margin: 2,
                 width: size * dpr
-            }).then((qrUrl: string) => {
+            }).then(qrUrl => {
 
                 const qrImg = new Image();
                 const logoImg = new Image();

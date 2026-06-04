@@ -89,9 +89,16 @@ export class TicketpageComponent {
       let seats: string[] = [];
 
       try {
-        seats = Array.isArray(item.SEAT_NUMBERS)
+        const raw = Array.isArray(item.SEAT_NUMBERS)
           ? item.SEAT_NUMBERS
           : JSON.parse(item.SEAT_NUMBERS || '[]');
+
+        // SEAT_NUMBERS can be an array of strings ("A-1") or objects ({seat, id, price})
+        seats = raw.map((s: any) => {
+          if (typeof s === 'string') return s;
+          if (s && typeof s === 'object') return s.seat || String(s);
+          return String(s);
+        });
       } catch {
         seats = [];
       }

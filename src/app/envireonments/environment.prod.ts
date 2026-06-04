@@ -4,7 +4,7 @@ export const environment = {
   commonimgUrl: 'https://d29pjw25dw4bhv.cloudfront.net/',
   commonapikey: 'prod-api-key',
   commonapplicationkey: 'prod-application-key',
-  RAZOR_PAY_KEY: '',
+  RAZOR_PAY_KEY: 'rzp_test_Sv4GWc0P6ZcIBz',
   versionNumber: '1.0.0',
   taglabel: 'Production',
   retriveimgUrl: 'https://d29pjw25dw4bhv.cloudfront.net/'

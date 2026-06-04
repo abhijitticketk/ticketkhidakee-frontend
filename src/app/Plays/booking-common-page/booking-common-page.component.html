@@ -374,7 +374,7 @@
         [ngStyle]="{'margin-top': isMobile ? '70px' : '' }">
         </div> -->
 
-        <div *ngIf="istugoz != true && Hoisting_Type == 'C' && SCREEN_MASTER?.LAYOUT_JSON != undefined" class="row">
+        <div *ngIf="istugoz != true && Hoisting_Type == 'C' && SCREEN_MASTER?.LAYOUT_JSON?.length > 0" class="row">
 
           <div class="col-md-12 loginDIv" style="padding:15px">
             <!-- <h4 style="font-size: 13px; font-weight: 600; margin-bottom: 8px">
@@ -484,8 +484,17 @@
               </div>
             </div>
 
-            <div class="scrollable-container">
-            
+            <div class="scrollable-container" style="position:relative;">
+              <div class="zoom-controls-plus">
+                <button class="btn btn-sm btn-light" (click)="zoomIn()">➕</button>
+              </div>
+              <div class="zoom-controls-minus">
+                <button class="btn btn-sm btn-light" (click)="zoomOut()">➖</button>
+              </div>
+              <!-- Konva canvas container -->
+              <div id="konva-seat-container" #konvaSeatContainer
+                style="width:100%; min-height:300px; overflow:hidden; touch-action:none;">
+              </div>
             </div>
           </div>
           <div class="col-md-3 " style="margin: 0px 0 21px 0;text-align: center;">
