@@ -7839,18 +7839,11 @@ ${icon}
 
         // Positions are truly absolute only if seats have DIFFERENT SL/T values.
         // If all seats share the same SL/T (corrupt/placeholder data), fall back to GRID.
-        // Also treat as absolute if S_T contains real rotation values (curved rows).
-        const firstSeatHasRotation = firstSeat?.S_T &&
-            firstSeat.S_T !== '0' &&
-            firstSeat.S_T !== 'rotate(0deg)' &&
-            String(firstSeat.S_T).includes('rotate(');
-
         const hasAbsolutePos = firstSeat != null &&
             firstSeat.SL != null && firstSeat.T != null &&
             !isNaN(Number(firstSeat.SL)) && !isNaN(Number(firstSeat.T)) &&
-            // Either seats differ in SL/T (true absolute coords), or S_T has rotation (curved layout)
-            (firstSeatHasRotation ||
-             secondSeat == null ||
+            // At least two seats must differ in position to confirm real absolute coords
+            (secondSeat == null ||
              Number(firstSeat.SL) !== Number(secondSeat.SL) ||
              Number(firstSeat.T)  !== Number(secondSeat.T));
 
